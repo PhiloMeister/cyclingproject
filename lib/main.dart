@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/routes.dart';
 import 'pages/profile.dart';
-import 'pages/myRoutes.dart';
+import 'pages/my-routes.dart';
 
 void main() {
   runApp(const MyApp());
