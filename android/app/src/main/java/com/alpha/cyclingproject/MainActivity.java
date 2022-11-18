@@ -1,4 +1,4 @@
-package com.example.cyclingproject;
+package com.alpha.cyclingproject;
 
 import io.flutter.embedding.android.FlutterActivity;
 
