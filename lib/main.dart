@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/routes.dart';
 import 'pages/profile.dart';
 import 'pages/my-routes.dart';
+import 'pages/mapPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,7 +30,7 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
-  final List<Widget> pages = const [Routes(), Profile(), MyRoutes()];
+  final List<Widget> pages = const [Routes(), Profile(), MyRoutes(), MyMap()];
 
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = const Routes();
@@ -38,7 +39,7 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Text"),
+        title: const Text("The best cycling Application"),
       ),
       body: PageStorage(
         bucket: bucket,
@@ -75,21 +76,43 @@ class _RootPageState extends State<RootPage> {
                     ],
                   ),
                 ),
+                // MaterialButton(
+                //   minWidth: 40.0,
+                //   onPressed: () {
+                //     setState(() {
+                //       currentScreen = const Profile();
+                //       currentPage = 1;
+                //     });
+                //   },
+                //   child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     children: [
+                //       Icon(Icons.pedal_bike,
+                //           color:
+                //               currentPage == 1 ? Colors.white : Colors.black),
+                //       Text('Profile',
+                //           style: TextStyle(
+                //               color: currentPage == 1
+                //                   ? Colors.white
+                //                   : Colors.black))
+                //     ],
+                //   ),
+                // ),
                 MaterialButton(
                   minWidth: 40.0,
                   onPressed: () {
                     setState(() {
-                      currentScreen = const Profile();
+                      currentScreen = const MyMap();
                       currentPage = 1;
                     });
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.pedal_bike,
+                      Icon(Icons.map,
                           color:
                               currentPage == 1 ? Colors.white : Colors.black),
-                      Text('Profile',
+                      Text('Map',
                           style: TextStyle(
                               color: currentPage == 1
                                   ? Colors.white
