@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.orange),
+      theme: ThemeData(useMaterial3: true),
       home: const RootPage(),
     );
   }
@@ -39,23 +39,29 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("The best cycling Application"),
+        backgroundColor: const Color(0XFFE84444),
+        title: const Text(
+          "The best cycling Application",
+          style: TextStyle(color: Colors.white),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.settings, color: Color(0XFFB61818)))
+        ],
       ),
       body: PageStorage(
         bucket: bucket,
         child: currentScreen,
       ),
       bottomNavigationBar: BottomAppBar(
-          color: Colors.orange,
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 10,
+          color: const Color(0XFFE84444),
           child: SizedBox(
             height: 65,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 MaterialButton(
-                  minWidth: 40.0,
                   onPressed: () {
                     setState(() {
                       currentScreen = const Routes();
@@ -66,38 +72,17 @@ class _RootPageState extends State<RootPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.pedal_bike,
-                          color:
-                              currentPage == 0 ? Colors.white : Colors.black),
-                      Text('All Routes',
+                          color: currentPage == 0
+                              ? Colors.white
+                              : const Color(0XFFB61818)),
+                      Text('Routes',
                           style: TextStyle(
                               color: currentPage == 0
                                   ? Colors.white
-                                  : Colors.black))
+                                  : const Color(0XFFB61818)))
                     ],
                   ),
                 ),
-                // MaterialButton(
-                //   minWidth: 40.0,
-                //   onPressed: () {
-                //     setState(() {
-                //       currentScreen = const Profile();
-                //       currentPage = 1;
-                //     });
-                //   },
-                //   child: Column(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     children: [
-                //       Icon(Icons.pedal_bike,
-                //           color:
-                //               currentPage == 1 ? Colors.white : Colors.black),
-                //       Text('Profile',
-                //           style: TextStyle(
-                //               color: currentPage == 1
-                //                   ? Colors.white
-                //                   : Colors.black))
-                //     ],
-                //   ),
-                // ),
                 MaterialButton(
                   minWidth: 40.0,
                   onPressed: () {
@@ -110,13 +95,14 @@ class _RootPageState extends State<RootPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.map,
-                          color:
-                              currentPage == 1 ? Colors.white : Colors.black),
+                          color: currentPage == 1
+                              ? Colors.white
+                              : const Color(0XFFB61818)),
                       Text('Map',
                           style: TextStyle(
                               color: currentPage == 1
                                   ? Colors.white
-                                  : Colors.black))
+                                  : const Color(0XFFB61818)))
                     ],
                   ),
                 ),
@@ -124,8 +110,8 @@ class _RootPageState extends State<RootPage> {
             ),
           )),
       floatingActionButton: SizedBox(
-        height: 75.0,
-        width: 75.0,
+        height: 65.0,
+        width: 65.0,
         child: FloatingActionButton(
           onPressed: () {
             setState(() {
@@ -133,7 +119,7 @@ class _RootPageState extends State<RootPage> {
               currentPage = 2;
             });
           },
-          backgroundColor: Colors.orange,
+          backgroundColor: const Color(0XFFB61818),
           tooltip: 'Add',
           elevation: 0,
           child: const Icon(Icons.add),
