@@ -15,24 +15,26 @@ class MyMap extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Navigate to my map'),
+      home: MapPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MapPage> createState() => _MapPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  // var points = <LatLng>[
-  //   new LatLng(46.28294058464128, 7.5387422133790745),
-  //   new LatLng(46.29273682028264, 7.5361982764216275),
-  // ];
+class _MapPageState extends State<MapPage> {
+
+  // Hardcoded markers to test, later use firebase
+  final _markers = [
+    LatLng(46.28294058464128, 7.5387422133790745),
+    LatLng(46.29273682028264, 7.5361982764216275),
+  ];
+
 
   @override
   Widget build(BuildContext context) {
