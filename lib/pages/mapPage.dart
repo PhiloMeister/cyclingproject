@@ -28,11 +28,11 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  // Hardcoded markers to test, later use firebase
-  var points = <LatLng>[
-    LatLng(46.28294058464128, 7.5387422133790745),
-    LatLng(46.29273682028264, 7.5361982764216275),
-  ];
+  // LatLng(46.28294058464128, 7.5387422133790745), bellevue
+  // LatLng(46.29273682028264, 7.5361982764216275), technopole
+
+  var points = <LatLng>[];
+  var markers = <Marker>[];
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +41,7 @@ class _MapPageState extends State<MapPage> {
         options: MapOptions(
           center: LatLng(46.28732243981999, 7.535148068628832),
           zoom: 15.0,
+          onTap: (tapPosition, point) => addPoint(point),
         ),
         mapController: MapController(),
         children: [
@@ -55,26 +56,7 @@ class _MapPageState extends State<MapPage> {
             //userAgentPackageName: 'dev.fleaflet.flutter_map.example',
             //urlTemplate: 'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/{z}/{y}/{x}.jpeg',
           ),
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: LatLng(46.28294058464128, 7.5387422133790745),
-                builder: (context) => const Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 40,
-                ),
-              ),
-              Marker(
-                point: LatLng(46.29273682028264, 7.5361982764216275),
-                builder: (context) => const Icon(
-                  Icons.location_on,
-                  color: Colors.red,
-                  size: 40,
-                ),
-              ),
-            ],
-          ),
+          MarkerLayer(markers: markers),
           PolylineLayer(
             polylines: [
               Polyline(points: points, strokeWidth: 5.0, color: Colors.blue),
@@ -82,6 +64,83 @@ class _MapPageState extends State<MapPage> {
           ),
         ],
       ),
+      floatingActionButton: SizedBox(
+        child: FloatingActionButton(
+          onPressed: () => {removePoint()},
+          backgroundColor: Colors.red,
+          tooltip: 'Cancel point',
+          child: const Icon(Icons.arrow_back_outlined),
+        ),
+      ),
     );
+  }
+
+  void addPoint(LatLng point) {
+    if (points.isEmpty) {
+      Marker marker = Marker(
+        point: point,
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 40,
+        ),
+      );
+      markers.add(marker);
+    } else {
+      if (markers.length >= 2) {
+        markers.removeLast();
+      }
+      Marker marker = Marker(
+        point: point,
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 40,
+        ),
+      );
+      markers.add(marker);
+    }
+    points.add(point);
+  }
+
+  void removePoint() {
+    // Remove last marker and point
+    markers.removeLast();
+    points.removeLast();
+
+    // Add marker to last -1
+    if (points.isNotEmpty) {
+      Marker marker = Marker(
+        point: points.elementAt(points.length - 1),
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 40,
+        ),
+      );
+      markers.add(marker);
+    }
+
+    // If no points, remove marker
+    if (points.isEmpty) {
+      markers.removeLast();
+    }
+
+    // Refresh screen
+    setState(() {});
+  }
+
+  void validateTrip(point) {
+    if (points.isEmpty) {
+      Marker marker = Marker(
+        point: point,
+        builder: (context) => const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 40,
+        ),
+      );
+      markers.add(marker);
+    }
   }
 }
