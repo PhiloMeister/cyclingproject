@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/routes.dart';
 import 'pages/profile.dart';
-import 'pages/my-routes.dart';
+import 'pages/newRoutePage.dart';
 import 'pages/mapPage.dart';
 
 void main() {
@@ -30,7 +30,7 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
-  final List<Widget> pages = const [Routes(), Profile(), MyRoutes(), MyMap()];
+  final List<Widget> pages = const [Routes(), Profile(), NewRoutePage(), MyMap()];
 
   final PageStorageBucket bucket = PageStorageBucket();
   Widget currentScreen = const Routes();
@@ -115,7 +115,7 @@ class _RootPageState extends State<RootPage> {
         child: FloatingActionButton(
           onPressed: () {
             setState(() {
-              currentScreen = const MyRoutes();
+              currentScreen = const NewRoutePage();
               currentPage = 2;
             });
           },

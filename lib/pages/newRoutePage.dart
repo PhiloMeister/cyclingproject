@@ -3,9 +3,6 @@ import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
 import 'package:latlong2/latlong.dart';
 
-void main() {
-  runApp(const NewRoutePage());
-}
 
 class NewRoutePage extends StatelessWidget {
   const NewRoutePage({super.key});
@@ -33,6 +30,12 @@ class _NewRouteState extends State<NewRoute> {
 
   var points = <LatLng>[];
   var markers = <Marker>[];
+  var maps =["https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?"
+      "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
+    "https://api.mapbox.com/styles/v1/glacia/claw7eka3008e15o2avubu12x/tiles/256/{z}/{x}/{y}@2x?"
+        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"];
+  var currentMap = 0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +50,7 @@ class _NewRouteState extends State<NewRoute> {
         children: [
           TileLayer(
             urlTemplate:
-                "https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
+            maps[currentMap],
             additionalOptions: const {
               'accessToken':
                   'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
@@ -64,15 +67,39 @@ class _NewRouteState extends State<NewRoute> {
           ),
         ],
       ),
-      floatingActionButton: SizedBox(
-        child: FloatingActionButton(
-          onPressed: () => {removePoint()},
-          backgroundColor: Colors.red,
-          tooltip: 'Cancel point',
-          child: const Icon(Icons.arrow_back_outlined),
-        ),
-      ),
+      floatingActionButton:
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                onPressed: () => {removePoint()},
+                backgroundColor: Colors.red,
+                tooltip: 'Cancel point',
+                child: const Icon(Icons.arrow_back_outlined),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),
+              FloatingActionButton(
+                onPressed: () => {changeMap()},
+                backgroundColor: Colors.red,
+                tooltip: 'Change map',
+                child: const Icon(Icons.map_outlined),
+              )
+        ]),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+  }
+
+  void changeMap(){
+    if(currentMap==0){
+      currentMap=1;
+    }
+    else{
+      currentMap=0;
+    }
+    setState(() {});
   }
 
   void addPoint(LatLng point) {
