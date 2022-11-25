@@ -5,7 +5,6 @@ import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
 import 'package:latlong2/latlong.dart';
 
-
 class MyMap extends StatelessWidget {
   const MyMap({super.key});
 
@@ -27,16 +26,16 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-
   // Get this from firebase
   var points = <LatLng>[];
   var markers = <Marker>[];
-  var maps =["https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?"
-                "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
-             "https://api.mapbox.com/styles/v1/glacia/claw7eka3008e15o2avubu12x/tiles/256/{z}/{x}/{y}@2x?"
-                 "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"];
+  var maps = [
+    "https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?"
+        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
+    "https://api.mapbox.com/styles/v1/glacia/claw7eka3008e15o2avubu12x/tiles/256/{z}/{x}/{y}@2x?"
+        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"
+  ];
   var currentMap = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +48,7 @@ class _MapPageState extends State<MapPage> {
         mapController: MapController(),
         children: [
           TileLayer(
-            urlTemplate:
-                maps[currentMap],
+            urlTemplate: maps[currentMap],
             additionalOptions: const {
               'accessToken':
                   'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
@@ -69,20 +67,18 @@ class _MapPageState extends State<MapPage> {
         child: FloatingActionButton(
           backgroundColor: Colors.red,
           tooltip: 'Change map',
-          onPressed: () => { changeMap()},
+          onPressed: () => {changeMap()},
           child: const Icon(Icons.map_outlined),
         ),
       ),
-
     );
   }
 
-  void changeMap(){
-    if(currentMap==0){
-      currentMap=1;
-    }
-    else{
-      currentMap=0;
+  void changeMap() {
+    if (currentMap == 0) {
+      currentMap = 1;
+    } else {
+      currentMap = 0;
     }
     setState(() {});
   }
