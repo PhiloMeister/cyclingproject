@@ -6,6 +6,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'home.dart';
 import 'mapPage.dart';
 import 'my-routes.dart';
+import 'newRoutePage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,7 +31,7 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
-  final List<Widget> _pages = const [Home(), MyMap(), MyRoutes(), Settings()];
+  final List<Widget> _pages = const [Home(), MyMap(), MyRoutes(), Settings(),  NewRoutePage()];
 
   void _navigateBottomBar(int index) {
     setState(() {
@@ -87,7 +88,7 @@ class _RootPageState extends State<RootPage> {
         child: FloatingActionButton(
           onPressed: () {
             setState(() {
-              currentPage = 3;
+              currentPage = 4;
             });
           },
           backgroundColor: const Color(0XFF1f1f1f),

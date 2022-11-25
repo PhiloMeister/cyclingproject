@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class NewRoutePage extends StatelessWidget {
@@ -36,6 +37,7 @@ class _NewRouteState extends State<NewRoute> {
         "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"
   ];
   var currentMap = 0;
+  var userLocation = LatLng(46.28732243981999, 7.535148068628832);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class _NewRouteState extends State<NewRoute> {
             urlTemplate: maps[currentMap],
             additionalOptions: const {
               'accessToken':
-                  'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
+              'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
               'id': 'mapbox.mapbox-streets-v8'
             },
             //userAgentPackageName: 'dev.fleaflet.flutter_map.example',
@@ -67,10 +69,10 @@ class _NewRouteState extends State<NewRoute> {
         ],
       ),
       floatingActionButton:
-          Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         FloatingActionButton(
           onPressed: () => {removePoint()},
-          backgroundColor: Colors.red,
+          backgroundColor: const Color(0XFF1f1f1f),
           tooltip: 'Cancel point',
           child: const Icon(Icons.arrow_back_outlined),
         ),
@@ -78,15 +80,29 @@ class _NewRouteState extends State<NewRoute> {
           height: 20.0,
         ),
         FloatingActionButton(
+            backgroundColor: Colors.blueAccent,
+            tooltip: 'Current location',
+            onPressed: () => {getCurrentLocation()},
+            child:
+            const Icon(Icons.location_searching)
+        ),
+        const SizedBox(
+          height: 20.0,
+        ),
+        FloatingActionButton(
           onPressed: () => {changeMap()},
-          backgroundColor: Colors.red,
+          backgroundColor: const Color(0XFF1f1f1f),
           tooltip: 'Change map',
           child: const Icon(Icons.map_outlined),
-        )
+        ),
+        const SizedBox(
+          height: 70.0,
+        ),
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
+
 
   void changeMap() {
     if (currentMap == 0) {
@@ -101,7 +117,8 @@ class _NewRouteState extends State<NewRoute> {
     if (points.isEmpty) {
       Marker marker = Marker(
         point: point,
-        builder: (context) => const Icon(
+        builder: (context) =>
+        const Icon(
           Icons.location_on_rounded,
           color: Colors.red,
           size: 25,
@@ -114,7 +131,8 @@ class _NewRouteState extends State<NewRoute> {
       }
       Marker marker = Marker(
         point: point,
-        builder: (context) => const Icon(
+        builder: (context) =>
+        const Icon(
           Icons.location_on,
           color: Colors.red,
           size: 25,
@@ -134,7 +152,8 @@ class _NewRouteState extends State<NewRoute> {
     if (points.isNotEmpty) {
       Marker marker = Marker(
         point: points.elementAt(points.length - 1),
-        builder: (context) => const Icon(
+        builder: (context) =>
+        const Icon(
           Icons.location_on,
           color: Colors.red,
           size: 25,
@@ -156,7 +175,8 @@ class _NewRouteState extends State<NewRoute> {
     if (points.isEmpty) {
       Marker marker = Marker(
         point: point,
-        builder: (context) => const Icon(
+        builder: (context) =>
+        const Icon(
           Icons.location_on,
           color: Colors.red,
           size: 25,
@@ -164,5 +184,13 @@ class _NewRouteState extends State<NewRoute> {
       );
       markers.add(marker);
     }
+  }
+
+  void getCurrentLocation() async {
+    var position = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      userLocation = LatLng(position.latitude, position.longitude);
+    });
   }
 }
