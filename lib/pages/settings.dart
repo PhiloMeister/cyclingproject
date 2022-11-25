@@ -1,31 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class MyRoutes extends StatefulWidget {
-  const MyRoutes({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key});
 
   @override
-  State<MyRoutes> createState() => _MyRoutesState();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _MyRoutesState extends State<MyRoutes> {
+class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<List<Routes>>(
-        stream: readRoutes(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("error");
-          } else if (snapshot.hasData) {
-            final routes = snapshot.data!;
-            return ListView(
-              children: routes.map(buildRoutes).toList(),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+    return const Scaffold(
+      body: Center(
+        child: Text("Settings"),
       ),
     );
   }
