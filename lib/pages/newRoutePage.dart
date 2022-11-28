@@ -38,27 +38,31 @@ class _NewRouteState extends State<NewRoute> {
   ];
   var currentMap = 0;
   var userLocation = LatLng(46.28732243981999, 7.535148068628832);
+  late MapController _mapController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentLocation();
+    addMarkerCurrentLocation();
+    _mapController = MapController();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
-          center: LatLng(46.28732243981999, 7.535148068628832),
+          center: userLocation,
           zoom: 15.0,
           onTap: (tapPosition, point) => addPoint(point),
         ),
-        mapController: MapController(),
+        mapController: _mapController,
         children: [
           TileLayer(
             urlTemplate: maps[currentMap],
-            additionalOptions: const {
-              'accessToken':
-              'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
-              'id': 'mapbox.mapbox-streets-v8'
-            },
-            //userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-            //urlTemplate: 'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/{z}/{y}/{x}.jpeg',
           ),
           MarkerLayer(markers: markers),
           PolylineLayer(
@@ -186,11 +190,25 @@ class _NewRouteState extends State<NewRoute> {
     }
   }
 
-  void getCurrentLocation() async {
-    var position = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+  void getCurrentLocation() async{
+
+    var position =  await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high );
+    _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
     setState(() {
       userLocation = LatLng(position.latitude, position.longitude);
     });
+
+  }
+
+  void addMarkerCurrentLocation(){
+    var marker =Marker(
+      point: userLocation,
+      builder: (context) => const Icon(
+        Icons.location_on_rounded,
+        color: Colors.blueAccent,
+        size: 25,
+      ),
+    );
+    markers.add(marker);
   }
 }

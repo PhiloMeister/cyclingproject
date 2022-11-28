@@ -60,11 +60,6 @@ class _MapPageState extends State<MapPage> {
         children: [
           TileLayer(
             urlTemplate: maps[currentMap],
-            additionalOptions: const {
-              'accessToken':
-                  'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
-              'id': 'mapbox.mapbox-streets-v8'
-            },
           ),
           MarkerLayer(markers: [Marker(
             point: userLocation,
