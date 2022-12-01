@@ -31,10 +31,8 @@ class _NewRouteState extends State<NewRoute> {
   var points = <LatLng>[];
   var markers = <Marker>[];
   var maps = [
-    "https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?"
-        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
-    "https://api.mapbox.com/styles/v1/glacia/claw7eka3008e15o2avubu12x/tiles/256/{z}/{x}/{y}@2x?"
-        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"
+    "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
+    "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
   ];
   var currentMap = 0;
   var userLocation = LatLng(46.28732243981999, 7.535148068628832);
@@ -45,7 +43,6 @@ class _NewRouteState extends State<NewRoute> {
     // TODO: implement initState
     super.initState();
     getCurrentLocation();
-    addMarkerCurrentLocation();
     _mapController = MapController();
   }
 
@@ -86,10 +83,13 @@ class _NewRouteState extends State<NewRoute> {
         FloatingActionButton(
             backgroundColor: Colors.blueAccent,
             tooltip: 'Current location',
-            onPressed: () => {getCurrentLocation()},
+            onPressed: () => {
+              getCurrentLocation()
+            },
             child:
             const Icon(Icons.location_searching)
         ),
+
         const SizedBox(
           height: 20.0,
         ),
@@ -197,10 +197,6 @@ class _NewRouteState extends State<NewRoute> {
     setState(() {
       userLocation = LatLng(position.latitude, position.longitude);
     });
-
-  }
-
-  void addMarkerCurrentLocation(){
     var marker =Marker(
       point: userLocation,
       builder: (context) => const Icon(
@@ -210,5 +206,8 @@ class _NewRouteState extends State<NewRoute> {
       ),
     );
     markers.add(marker);
+
   }
+
+
 }
