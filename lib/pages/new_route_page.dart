@@ -37,10 +37,10 @@ class _NewRouteState extends State<NewRoute> {
   final Set<Polyline> polyLines = {};
 
   // Dummy Start and Destination Points
-double startLat = 46.28294058464128;
-double startLng = 7.5387422133790745;
-double endLat = 46.29273682028264;
-double endLng = 7.5361982764216275;
+double startLat = 0.0;
+double startLng = 0.0;
+double endLat = 0.0;
+double endLng = 0.0;
 
   var maps = [
     "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
@@ -54,7 +54,6 @@ double endLng = 7.5361982764216275;
   void initState() {
     // TODO: implement initState
     super.initState();
-    getJsonData();
     getCurrentLocation();
     _mapController = MapController();
     
@@ -135,10 +134,16 @@ double endLng = 7.5361982764216275;
         ),
       );
       markers.add(marker);
+      points.add(point);
     } else {
       if (markers.length >= 3) {
         markers.removeLast();
       }
+      endLat = point.latitude;
+      endLng = point.longitude;
+      startLat = points[points.length-1].latitude;
+      startLng = points[points.length-1].longitude;
+      getJsonData();
       Marker marker = Marker(
         point: point,
         builder: (context) => const Icon(
@@ -149,18 +154,20 @@ double endLng = 7.5361982764216275;
       );
       markers.add(marker);
     }
-    points.add(point);
   }
 
   void removePoint() {
     // Remove last marker and point
-    markers.removeLast();
-    points.removeLast();
 
+
+    for(int i=0; i<points.length;i++){
+      points.removeLast();
+    }
     // Add marker to last -1
     if (points.isNotEmpty) {
+      markers.removeLast();
       Marker marker = Marker(
-        point: points.elementAt(points.length - 1),
+        point: points[points.length - 1],
         builder: (context) => const Icon(
           Icons.location_on,
           color: Colors.red,
@@ -172,7 +179,9 @@ double endLng = 7.5361982764216275;
 
     // If no points, remove marker
     if (points.isEmpty) {
-      markers.removeLast();
+      if(markers.length>1) {
+        markers.removeLast();
+      }
     }
 
     // Refresh screen
@@ -233,6 +242,7 @@ void getJsonData() async {
     for (int i = 0; i < ls.lineString.length; i++) {
       points.add(LatLng(ls.lineString[i][1], ls.lineString[i][0]));
     }
+    setState(() {});
   }
   catch(e){
     print(e);
