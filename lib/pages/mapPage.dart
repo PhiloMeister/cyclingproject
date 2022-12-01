@@ -1,4 +1,4 @@
-import 'package:cyclingproject/pages/newRoutePage.dart';
+import 'package:cyclingproject/pages/new_route_page.dart';
 import 'package:cyclingproject/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
