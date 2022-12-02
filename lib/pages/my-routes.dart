@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/BusinessObject/Routes.dart';
+import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyRoutes extends StatefulWidget {
@@ -9,49 +12,89 @@ class MyRoutes extends StatefulWidget {
 }
 
 class _MyRoutesState extends State<MyRoutes> {
+  List<Routes> listOfLikedRoutes = <Routes>[
+  ];
+  List<String> listOfIds = <String>[];
+  late List test;
+  var indexedd;
+
   @override
+  initState() {
+    super.initState();
+  }
+
+  Future<String> initVariables() async {
+    print("object");
+    listOfIds = await getLikedIdsOfUser();
+    for (var element in listOfIds) {
+      print("initVariables list of id $element");
+    }
+    listOfLikedRoutes = await getListOfLikedRoutes(listOfIds);
+    for (var element in listOfLikedRoutes) {
+      print("listOfLikedRoutes  ${element.routeName.toString()}");
+    }
+    indexedd = 2;
+    return "fils de pute";
+  }
+
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<List<Routes>>(
-        stream: readRoutes(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("error");
-          } else if (snapshot.hasData) {
-            final routes = snapshot.data!;
-            return ListView(
-              children: routes.map(buildRoutes).toList(),
-            );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+    return FutureBuilder<String>(
+      future: initVariables(),
+      builder: (context,  snapshot) {
+        List<Widget> children;
+        if (snapshot.hasData) {
+          return Scaffold(
+            body: ListView.builder(
+              itemCount: listOfLikedRoutes.length,
+              itemBuilder: (BuildContext context, int index) {
+                // return  buildRoute(listOfLikedRoutes[index]);
+                return buildRoute(listOfLikedRoutes[index]);
+              },
+            ),
+          );
+        }else if (snapshot.hasError) {
+          children = <Widget>[
+            const Icon(
+              Icons.error_outline,
+              color: Colors.red,
+              size: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text('Error: ${snapshot.error}'),
+            ),
+          ];
+        } else {
+          children = const <Widget>[
+            SizedBox(
+              width: 60,
+              height: 60,
+              child: CircularProgressIndicator(),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text('Awaiting result...'),
+            ),
+          ];
+        }
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          ),
+        );
+      },
     );
   }
 
-  Widget buildRoutes(Routes routes) => ListTile(
+  Widget buildRoute(Routes routes) => ListTile(
         leading: const CircleAvatar(child: Text("test")),
-        title: Text(routes.routeName),
-        subtitle: Text("length: ${routes.routeLenght} km"),
+        title:  Text(routes.routeName),
+        onTap: () {
+          print("route "+routes.routeName +" clicked");
+        },
+        subtitle: Text(
+            "length: ${routes.routeLenght} km  Difficulty : ${routes.routeDifficulty}"),
       );
-
-  Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
-      .collection("Routes")
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 }
 
-class Routes {
-  final String routeName;
-  final String routeLenght;
-
-  Routes({required this.routeName, required this.routeLenght});
-
-  Map<String, dynamic> toJson() =>
-      {"firsname": routeName, "routeLenght": routeLenght};
-
-  static Routes fromJson(Map<String, dynamic> json) =>
-      Routes(routeName: json['name'], routeLenght: json['length']);
-}
