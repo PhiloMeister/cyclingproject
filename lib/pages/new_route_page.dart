@@ -4,7 +4,7 @@ import 'package:flutter_map/plugin_api.dart'; // Only import if required functio
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
-import '../helper/network_helper.dart';
+
 
 OpenRouteService openrouteservice = OpenRouteService(apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e', profile: ORSProfile.cyclingMountain);
 
@@ -223,13 +223,29 @@ double endLng = 0.0;
   }
 
 void getCoordinate() async {
+  var start = ORSCoordinate(latitude: startLat, longitude: startLng);
+  var end = ORSCoordinate(latitude: endLat, longitude: endLng);
+
   final List<ORSCoordinate> routeCoordinates = await openrouteservice.directionsRouteCoordsGet(
-    startCoordinate: ORSCoordinate(latitude: startLat, longitude: startLng),
-    endCoordinate: ORSCoordinate(latitude: endLat, longitude: endLng),
+    startCoordinate: start,
+    endCoordinate: end ,
   );
   routeCoordinates.forEach((point) {
     points.add(LatLng(point.latitude, point.longitude));
   });
+
+ final List<ORSCoordinate> locations =[start, end];
+  var distances = await openrouteservice.matrixPost(locations: locations, metrics: ["distance"]);
+  var distance = distances.distances[0][1];
+
+  var durations = await openrouteservice.matrixPost(locations: locations);
+  var duration = durations.durations[0][1];
+
+  print("$distance m");
+  print("$duration sec");
+
+
+
   setState(() {});
 
 }

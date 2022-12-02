@@ -92,12 +92,11 @@ class _RootPageState extends State<RootPage> {
               ]),
         ),
       ),
-      floatingActionButton: (globals.role == "admin")
-          ? SizedBox(
+      floatingActionButton:  SizedBox(
               child: FloatingActionButton(
                 onPressed: () {
                   setState(() {
-                    currentPage = 4;
+                    currentPage = 3;
                   });
                 },
                 backgroundColor: const Color(0XFF1f1f1f),
@@ -105,8 +104,8 @@ class _RootPageState extends State<RootPage> {
                 elevation: 0,
                 child: const Icon(Icons.add),
               ),
-            )
-          : null,
+            ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
