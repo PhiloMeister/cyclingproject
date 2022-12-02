@@ -10,34 +10,40 @@ OpenRouteService openrouteservice = OpenRouteService(
     profile: ORSProfile.cyclingMountain);
 
 class NewRoutePage extends StatelessWidget {
-  const NewRoutePage({super.key});
+  const NewRoutePage({super.key, required this.canEdit});
+
+  final bool canEdit;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NewRoute(),
+      home: NewRoute(
+        canEdit: canEdit,
+      ),
     );
   }
+
+
 }
 
 class NewRoute extends StatefulWidget {
-  const NewRoute({super.key});
+  const NewRoute({super.key,required this.canEdit});
+  final bool canEdit;
 
   @override
-  State<NewRoute> createState() => _NewRouteState();
+  State<NewRoute> createState() => _NewRouteState(canEdit);
 }
 
 class _NewRouteState extends State<NewRoute> {
   // LatLng(46.28294058464128, 7.5387422133790745), bellevue
   // LatLng(46.29273682028264, 7.5361982764216275), technopole
 
+  final bool canEdit;
   var points = <LatLng>[];
   var markers = <Marker>[];
   var data;
-//For holding instance of Polyline
-  final Set<Polyline> polyLines = {};
 
   // Dummy Start and Destination Points
   double startLat = 0.0;
@@ -56,28 +62,28 @@ class _NewRouteState extends State<NewRoute> {
   var userLocation = LatLng(46.28732243981999, 7.535148068628832);
   late MapController _mapController;
 
+  _NewRouteState(this.canEdit);
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getCurrentLocation();
     _mapController = MapController();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: Stack(
         children: [
-          if (distanceTotal != 0.0)...[Text("Distance: ${(distanceTotal/1000).toStringAsFixed(3)} km")],
-          if (distanceTotal != 0.0)...[Text("Duration: ${(durationTotal/60).toStringAsFixed(2)} minutes")],
           SizedBox(
-            height: 1000,
             child: FlutterMap(
               options: MapOptions(
                 center: userLocation,
                 zoom: 15.0,
-                onTap: (tapPosition, point) => addPoint(point),
+                onTap: (tapPosition, point) => canEdit?addPoint(point):{},
               ),
               mapController: _mapController,
               children: [
@@ -93,20 +99,31 @@ class _NewRouteState extends State<NewRoute> {
                 ),
               ],
             ),
-          )
+          ),
+          if (distanceTotal != 0.0)...[ColoredBox(
+            color: const Color.fromARGB(255, 217, 217, 217),
+            child:
+                Padding(padding: const EdgeInsets.all(4.0),
+                  child:Row(children: [
+                   Text("Distance: ${(distanceTotal/1000).toStringAsFixed(3)} km ",style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    Text("Duration: ${(durationTotal/60).toStringAsFixed(2)} min",textAlign: TextAlign.right, style: const TextStyle(fontSize: 20)),
+          ]),),),],
+
         ],
       ),
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        FloatingActionButton(
-          onPressed: () => {removePoint()},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Cancel point',
-          child: const Icon(Icons.arrow_back_outlined),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
+            if(canEdit)...[
+              FloatingActionButton(
+                onPressed: () => {removePoint()},
+                backgroundColor: const Color(0XFF1f1f1f),
+                tooltip: 'Cancel point',
+                child: const Icon(Icons.arrow_back_outlined),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),],
         FloatingActionButton(
             backgroundColor: Colors.blueAccent,
             tooltip: 'Current location',
@@ -254,3 +271,4 @@ class LineString {
   LineString(this.lineString);
   List<dynamic> lineString;
 }
+
