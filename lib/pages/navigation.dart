@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/pages/profile.dart';
 import 'package:cyclingproject/pages/settings.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import '../globals.dart' as globals;
 
 import 'home.dart';
 import 'mapPage.dart';
@@ -31,7 +35,12 @@ class RootPage extends StatefulWidget {
 class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
-  final List<Widget> _pages = const [Home(), MyMap(), MyRoutes(), Settings(),  NewRoutePage()];
+  final List<Widget> _pages = const [
+    Home(),
+    MyMap(),
+    MyRoutes(),
+    NewRoutePage()
+  ];
 
   void _navigateBottomBar(int index) {
     setState(() {
@@ -56,8 +65,7 @@ class _RootPageState extends State<RootPage> {
                   MaterialPageRoute(builder: (context) => const Profile()),
                 );
               },
-              icon:
-                  const Icon(Icons.account_circle_rounded, color: Colors.white))
+              icon: const Icon(Icons.account_circle_rounded))
         ],
       ),
       body: _pages[currentPage],
@@ -66,7 +74,7 @@ class _RootPageState extends State<RootPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
           child: GNav(
-              backgroundColor: const Color(0XFF1f1f1f),
+              backgroundColor: const Color(0xFF1F1F1F),
               color: Colors.white,
               activeColor: const Color(0XFFB61818),
               tabBackgroundColor: Colors.grey.shade200,
@@ -84,19 +92,21 @@ class _RootPageState extends State<RootPage> {
               ]),
         ),
       ),
-      floatingActionButton: SizedBox(
-        child: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              currentPage = 4;
-            });
-          },
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Add',
-          elevation: 0,
-          child: const Icon(Icons.add),
-        ),
-      ),
+      floatingActionButton: (globals.role == "admin")
+          ? SizedBox(
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    currentPage = 4;
+                  });
+                },
+                backgroundColor: const Color(0XFF1f1f1f),
+                tooltip: 'Add',
+                elevation: 0,
+                child: const Icon(Icons.add),
+              ),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

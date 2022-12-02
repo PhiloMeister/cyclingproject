@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../globals.dart' as globals;
 
 import '../main.dart';
 
@@ -100,19 +102,21 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(color: Colors.grey[200]!, fontSize: 24),
               ),
               onPressed: () {
-                final user = User(
-                  firstname: firstNameController.text,
-                  lastname: lastNameController.text,
-                );
-
-                addUsername(user);
+                //final user = User(
+                //  firstname: firstNameController.text,
+                //  lastname: lastNameController.text,
+                //);
+                getUser();
+                //addUsername(user);
               },
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                    onPressed: () => {FirebaseAuth.instance.signOut()},
+                    onPressed: () {
+                      UserManagement().signOut();
+                    },
                     child: const Text("sign out"))
               ],
             ),
@@ -122,29 +126,13 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  addUsername(User user) async {
-    final docUser = FirebaseFirestore.instance
-        .collection("Users")
-        .doc(FirebaseAuth.instance.currentUser!.uid);
-
-    await docUser.set(user.toJson());
-
-    rootScaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-      content: Text("save"),
-      backgroundColor: Colors.red,
-    ));
+  Future getUser() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    Map<String, dynamic>? docData = userDoc.data() as Map<String, dynamic>?;
+    var userName = docData!['lastname'];
+    debugPrint(userName);
   }
-}
-
-class User {
-  final String lastname;
-  final String firstname;
-
-  User({required this.firstname, required this.lastname});
-
-  Map<String, dynamic> toJson() =>
-      {"firsname": firstname, "lastname": lastname};
-
-  static User fromJson(Map<String, dynamic> json) =>
-      User(firstname: json['firstname'], lastname: json['lastname']);
 }
