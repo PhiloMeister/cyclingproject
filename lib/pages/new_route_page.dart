@@ -3,44 +3,56 @@ import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:open_route_service/open_route_service.dart';
 
-import '../helper/network_helper.dart';
+OpenRouteService openrouteservice = OpenRouteService(
+    apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e',
+    profile: ORSProfile.cyclingMountain);
 
 class NewRoutePage extends StatelessWidget {
-  const NewRoutePage({super.key});
+  const NewRoutePage({super.key, required this.canEdit});
+
+  final bool canEdit;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: NewRoute(),
+      home: NewRoute(
+        canEdit: canEdit,
+      ),
     );
   }
+
+
 }
 
 class NewRoute extends StatefulWidget {
-  const NewRoute({super.key});
+  const NewRoute({super.key,required this.canEdit});
+  final bool canEdit;
 
   @override
-  State<NewRoute> createState() => _NewRouteState();
+  State<NewRoute> createState() => _NewRouteState(canEdit);
 }
 
 class _NewRouteState extends State<NewRoute> {
   // LatLng(46.28294058464128, 7.5387422133790745), bellevue
   // LatLng(46.29273682028264, 7.5361982764216275), technopole
 
-  var points = <LatLng>[];  
+  final bool canEdit;
+  var points = <LatLng>[];
   var markers = <Marker>[];
   var data;
-//For holding instance of Polyline
-  final Set<Polyline> polyLines = {};
 
   // Dummy Start and Destination Points
-double startLat = 0.0;
-double startLng = 0.0;
-double endLat = 0.0;
-double endLng = 0.0;
+  double startLat = 0.0;
+  double startLng = 0.0;
+  double endLat = 0.0;
+  double endLng = 0.0;
+
+  var distanceTotal = 0.0;
+  var durationTotal = 0.0;
 
   var maps = [
     "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
@@ -50,48 +62,68 @@ double endLng = 0.0;
   var userLocation = LatLng(46.28732243981999, 7.535148068628832);
   late MapController _mapController;
 
+  _NewRouteState(this.canEdit);
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getCurrentLocation();
     _mapController = MapController();
-    
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterMap(
-        options: MapOptions(
-          center: userLocation,
-          zoom: 15.0,
-          onTap: (tapPosition, point) => addPoint(point),
-        ),
-        mapController: _mapController,
+      body: Stack(
         children: [
-          TileLayer(
-            urlTemplate: maps[currentMap],
+          SizedBox(
+            child: FlutterMap(
+              options: MapOptions(
+                center: userLocation,
+                zoom: 15.0,
+                onTap: (tapPosition, point) => canEdit?addPoint(point):{},
+              ),
+              mapController: _mapController,
+              children: [
+                TileLayer(
+                  urlTemplate: maps[currentMap],
+                ),
+                MarkerLayer(markers: markers),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                        points: points, strokeWidth: 5.0, color: Colors.red),
+                  ],
+                ),
+              ],
+            ),
           ),
-          MarkerLayer(markers: markers),
-          PolylineLayer(
-            polylines: [
-              Polyline(points: points, strokeWidth: 5.0, color: Colors.red),
-            ],
-          ),
+          if (distanceTotal != 0.0)...[ColoredBox(
+            color: const Color.fromARGB(255, 217, 217, 217),
+            child:
+                Padding(padding: const EdgeInsets.all(4.0),
+                  child:Row(children: [
+                   Text("Distance: ${(distanceTotal/1000).toStringAsFixed(3)} km ",style: const TextStyle(fontSize: 20)),
+                    const SizedBox(width: 10),
+                    Text("Duration: ${(durationTotal/60).toStringAsFixed(2)} min",textAlign: TextAlign.right, style: const TextStyle(fontSize: 20)),
+          ]),),),],
+
         ],
       ),
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        FloatingActionButton(
-          onPressed: () => {removePoint()},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Cancel point',
-          child: const Icon(Icons.arrow_back_outlined),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
+            if(canEdit)...[
+              FloatingActionButton(
+                onPressed: () => {removePoint()},
+                backgroundColor: const Color(0XFF1f1f1f),
+                tooltip: 'Cancel point',
+                child: const Icon(Icons.arrow_back_outlined),
+              ),
+              const SizedBox(
+                height: 20.0,
+              ),],
         FloatingActionButton(
             backgroundColor: Colors.blueAccent,
             tooltip: 'Current location',
@@ -141,9 +173,9 @@ double endLng = 0.0;
       }
       endLat = point.latitude;
       endLng = point.longitude;
-      startLat = points[points.length-1].latitude;
-      startLng = points[points.length-1].longitude;
-      getJsonData();
+      startLat = points[points.length - 1].latitude;
+      startLng = points[points.length - 1].longitude;
+      getCoordinate();
       Marker marker = Marker(
         point: point,
         builder: (context) => const Icon(
@@ -157,32 +189,19 @@ double endLng = 0.0;
   }
 
   void removePoint() {
-    // Remove last marker and point
+    // Remove  marker and point
 
-
-    for(int i=0; i<points.length;i++){
+    if (markers.length > 1) {
+      markers.removeLast();
+      points.removeRange(0, points.length - 1);
       points.removeLast();
     }
-    // Add marker to last -1
-    if (points.isNotEmpty) {
+    if (markers.length > 1) {
       markers.removeLast();
-      Marker marker = Marker(
-        point: points[points.length - 1],
-        builder: (context) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 25,
-        ),
-      );
-      markers.add(marker);
     }
 
-    // If no points, remove marker
-    if (points.isEmpty) {
-      if(markers.length>1) {
-        markers.removeLast();
-      }
-    }
+    distanceTotal = 0.0;
+    durationTotal = 0.0;
 
     // Refresh screen
     setState(() {});
@@ -220,39 +239,36 @@ double endLng = 0.0;
     markers.add(marker);
   }
 
-void getJsonData() async {
-  // Create an instance of Class NetworkHelper which uses http package
-  // for requesting data to the server and receiving response as JSON format
+  void getCoordinate() async {
+    var start = ORSCoordinate(latitude: startLat, longitude: startLng);
+    var end = ORSCoordinate(latitude: endLat, longitude: endLng);
 
-  NetworkHelper network = NetworkHelper(
-    startLat: startLat,
-    startLng: startLng,
-    endLat: endLat,
-    endLng: endLng,
-  );
+    final List<ORSCoordinate> routeCoordinates =
+        await openrouteservice.directionsRouteCoordsGet(
+      startCoordinate: start,
+      endCoordinate: end,
+    );
+    routeCoordinates.forEach((point) {
+      points.add(LatLng(point.latitude, point.longitude));
+    });
 
-  try {
-    // getData() returns a json Decoded data
-    data = await network.getData();
+    final List<ORSCoordinate> locations = [start, end];
+    var distances = await openrouteservice
+        .matrixPost(locations: locations, metrics: ["distance"]);
+    distanceTotal += distances.distances[0][1];
 
-    // We can reach to our desired JSON data manually as following
-    LineString ls = LineString(
-        data['features'][0]['geometry']['coordinates']);
+    var durations = await openrouteservice.matrixPost(locations: locations);
+    durationTotal += durations.durations[0][1];
 
-    for (int i = 0; i < ls.lineString.length; i++) {
-      points.add(LatLng(ls.lineString[i][1], ls.lineString[i][0]));
-    }
+    print("$distanceTotal m");
+    print("$durationTotal sec");
+
     setState(() {});
   }
-  catch(e){
-    print(e);
-  }
-}
-
-  
 }
 
 class LineString {
   LineString(this.lineString);
   List<dynamic> lineString;
 }
+

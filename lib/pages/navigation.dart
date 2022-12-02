@@ -8,7 +8,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
 import 'home.dart';
-import 'mapPage.dart';
 import 'my-routes.dart';
 import 'new_route_page.dart';
 
@@ -37,9 +36,9 @@ class _RootPageState extends State<RootPage> {
 
   final List<Widget> _pages = const [
     Home(),
-    MyMap(),
+    NewRoutePage( canEdit: false,),
     MyRoutes(),
-    NewRoutePage()
+    NewRoutePage( canEdit: true,)
   ];
 
   void _navigateBottomBar(int index) {
@@ -92,12 +91,11 @@ class _RootPageState extends State<RootPage> {
               ]),
         ),
       ),
-      floatingActionButton: (globals.role == "admin")
-          ? SizedBox(
+      floatingActionButton:  SizedBox(
               child: FloatingActionButton(
                 onPressed: () {
                   setState(() {
-                    currentPage = 4;
+                    currentPage = 3;
                   });
                 },
                 backgroundColor: const Color(0XFF1f1f1f),
@@ -105,8 +103,8 @@ class _RootPageState extends State<RootPage> {
                 elevation: 0,
                 child: const Icon(Icons.add),
               ),
-            )
-          : null,
+            ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
