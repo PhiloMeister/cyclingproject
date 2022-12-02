@@ -1,4 +1,4 @@
-import 'package:cyclingproject/pages/newRoutePage.dart';
+import 'package:cyclingproject/pages/new_route_page.dart';
 import 'package:cyclingproject/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
@@ -31,10 +31,8 @@ class _MapPageState extends State<MapPage> {
   var points = <LatLng>[];
   var markers = <Marker>[];
   var maps = [
-    "https://api.mapbox.com/styles/v1/glacia/clauxhpdp007715qmh37hhvdn/tiles/256/{z}/{x}/{y}@2x?"
-        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg",
-    "https://api.mapbox.com/styles/v1/glacia/claw7eka3008e15o2avubu12x/tiles/256/{z}/{x}/{y}@2x?"
-        "access_token=pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg"
+    "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
+    "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
   ];
   var currentMap = 0;
   var userLocation = LatLng(46.28732243981999, 7.535148068628832) ;
@@ -60,11 +58,6 @@ class _MapPageState extends State<MapPage> {
         children: [
           TileLayer(
             urlTemplate: maps[currentMap],
-            additionalOptions: const {
-              'accessToken':
-                  'pk.eyJ1IjoiZ2xhY2lhIiwiYSI6ImNsYXV4NWNnZDAwODgzeW81ODJkNzlxaWcifQ.GHlRSCMMR-M9BzZg9247Cg',
-              'id': 'mapbox.mapbox-streets-v8'
-            },
           ),
           MarkerLayer(markers: [Marker(
             point: userLocation,
@@ -127,5 +120,6 @@ class _MapPageState extends State<MapPage> {
     });
 
   }
+
 
 }
