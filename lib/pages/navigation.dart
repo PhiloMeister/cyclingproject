@@ -8,7 +8,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
 import 'home.dart';
-import 'mapPage.dart';
 import 'my-routes.dart';
 import 'new_route_page.dart';
 
@@ -37,9 +36,9 @@ class _RootPageState extends State<RootPage> {
 
   final List<Widget> _pages = const [
     Home(),
-    MyMap(),
+    NewRoutePage( canEdit: false,),
     MyRoutes(),
-    NewRoutePage()
+    NewRoutePage( canEdit: true,)
   ];
 
   void _navigateBottomBar(int index) {
