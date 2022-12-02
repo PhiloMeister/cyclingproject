@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import '../utils/helper_widgets.dart';
+import '../utils/snackbar.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key, required this.onClickedSignIn});
@@ -19,11 +22,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
 
     super.dispose();
   }
@@ -36,9 +43,57 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             key: formKey,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SizedBox(height: 150),
+              addVerticalSpace(150),
               Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
-              const SizedBox(height: 120),
+              addVerticalSpace(75),
+              TextFormField(
+                style: const TextStyle(color: Colors.white),
+                controller: firstNameController,
+                cursorColor: Colors.white,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelStyle: const TextStyle(color: Colors.white),
+                  contentPadding: const EdgeInsets.all(25.0),
+                  labelText: "Firstname",
+                  filled: true,
+                  fillColor: const Color(0XFF1f1f1f),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                      width: 2,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+              addVerticalSpace(20),
+              TextFormField(
+                style: const TextStyle(color: Colors.white),
+                controller: lastNameController,
+                cursorColor: Colors.white,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  labelStyle: const TextStyle(color: Colors.white),
+                  contentPadding: const EdgeInsets.all(25.0),
+                  labelText: "Lastname",
+                  filled: true,
+                  fillColor: const Color(0XFF1f1f1f),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    borderSide: const BorderSide(
+                      color: Colors.white,
+                      width: 2,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                ),
+              ),
+              addVerticalSpace(20),
               TextFormField(
                 style: const TextStyle(color: Colors.white),
                 controller: emailController,
@@ -61,13 +116,13 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (email) =>
-                    email != null && !EmailValidator.validate(email)
-                        ? 'Enter a valid email'
-                        : null,
+                //autovalidateMode: AutovalidateMode.onUserInteraction,
+                //validator: (email) =>
+                //    email != null && !EmailValidator.validate(email)
+                //        ? 'Enter a valid email'
+                //        : null,
               ),
-              const SizedBox(height: 20),
+              addVerticalSpace(20),
               TextFormField(
                 style: const TextStyle(color: Colors.white),
                 controller: passwordController,
@@ -90,12 +145,12 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   ),
                 ),
                 obscureText: true,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => value != null && value.length < 6
-                    ? 'Enter min. 6 characters'
-                    : null,
+                //autovalidateMode: AutovalidateMode.onUserInteraction,
+                //validator: (value) => value != null && value.length < 6
+                //    ? 'Enter min. 6 characters'
+                //    : null,
               ),
-              const SizedBox(height: 40),
+              addVerticalSpace(40),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFB61818),
@@ -110,7 +165,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ),
                 onPressed: signUp,
               ),
-              const SizedBox(height: 24),
+              addVerticalSpace(20),
               RichText(
                 text: TextSpan(
                     style: TextStyle(color: Colors.grey[600]!),
@@ -143,16 +198,44 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      final user = User(
+        firstname: firstNameController.text,
+        lastname: lastNameController.text,
+        email: emailController.text,
+      );
+
+      addUsername(user);
     } on FirebaseAuthException catch (e) {
-      debugPrint("TEST");
-      rootScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-        content: Text(
-          e.message.toString(),
-        ),
-        backgroundColor: Colors.red,
-      ));
+      Utils.showSnackBar(e.message);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
+
+  addUsername(User user) async {
+    final docUser = FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser!.uid);
+
+    await docUser.set(user.toJson());
+
+    Utils.showSnackBar("save");
+  }
+}
+
+class User {
+  final String lastname;
+  final String firstname;
+  final String email;
+
+  User({required this.firstname, required this.lastname, required this.email});
+
+  Map<String, dynamic> toJson() =>
+      {"firsname": firstname, "lastname": lastname, "email": email};
+
+  static User fromJson(Map<String, dynamic> json) => User(
+      firstname: json['firstname'],
+      lastname: json['lastname'],
+      email: json['email']);
 }

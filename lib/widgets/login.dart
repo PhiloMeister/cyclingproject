@@ -1,9 +1,11 @@
+import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../utils/snackbar.dart';
 
 import '../main.dart';
+import '../pages/ForgotPasswordPage.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key, required this.onClickedSignUp});
@@ -31,9 +33,9 @@ class _LoginWidgetState extends State<LoginWidget> {
     return SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 8),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const SizedBox(height: 150),
+          addVerticalSpace(150),
           Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
-          const SizedBox(height: 120),
+          addVerticalSpace(120),
           TextFormField(
             style: const TextStyle(color: Colors.white),
             controller: emailController,
@@ -57,7 +59,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          addVerticalSpace(20),
           TextFormField(
             style: const TextStyle(color: Colors.white),
             controller: passwordController,
@@ -81,7 +83,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             obscureText: true,
           ),
-          const SizedBox(height: 40),
+          addVerticalSpace(40),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0XFFB61818),
@@ -95,7 +97,19 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             onPressed: signIn,
           ),
-          const SizedBox(height: 24),
+          addVerticalSpace(20),
+          GestureDetector(
+            child: Text(
+              "Forgot Password",
+              style: TextStyle(color: Colors.grey[600]!, fontSize: 15),
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ForgotPasswordPage(),
+              ),
+            ),
+          ),
+          addVerticalSpace(20),
           RichText(
             text: TextSpan(
                 style: TextStyle(color: Colors.grey[600]!),
@@ -126,12 +140,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      rootScaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-        content: Text(
-          e.message.toString(),
-        ),
-        backgroundColor: Colors.red,
-      ));
+      Utils.showSnackBar(e.message);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

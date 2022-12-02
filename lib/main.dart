@@ -1,8 +1,10 @@
-import 'package:cyclingproject/pages/homePage.dart';
-import 'package:cyclingproject/widget/AuthPage.dart';
+import 'package:cyclingproject/pages/navigation.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
+import 'package:cyclingproject/widgets/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'utils/snackbar.dart';
 import 'firebase_options.dart';
 
 Future main() async {
@@ -13,8 +15,6 @@ Future main() async {
   runApp(const MyApp());
 }
 
-final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
@@ -23,11 +23,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
+      scaffoldMessengerKey: Utils.scaffoldMessengerKey,
       navigatorKey: navigatorKey,
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: const RootPage(),
+      debugShowCheckedModeBanner: false,
+      home: UserManagement().handleAuth(context),
+      //home: const RootPage(),
     );
   }
 }
@@ -57,7 +58,7 @@ class _RootPageState extends State<RootPage> {
           }
         },
       ),
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.grey.shade700,
     );
   }
 }

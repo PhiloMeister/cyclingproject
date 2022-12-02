@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../globals.dart' as globals;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -13,7 +16,18 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!;
 
-    return Scaffold(
+    return //FutureBuilder(
+        //future: FirebaseFirestore.instance
+        //    .collection('Users')
+        //    .doc(FirebaseAuth.instance.currentUser!.uid)
+        //    .get(),
+        //builder: (context, snapshot) {
+        //  if (snapshot.hasData) {
+        //    UserManagement()
+        //        .authorizeAccess((snapshot.data as DocumentSnapshot)['role']);
+        //  }
+        //return
+        Scaffold(
       backgroundColor: Colors.grey.shade200,
       body: SingleChildScrollView(
         child: Column(
@@ -52,9 +66,14 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
+            Container(
+              height: 800.0,
+            )
           ],
         ),
       ),
     );
+//      },
+//    );
   }
 }
