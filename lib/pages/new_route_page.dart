@@ -83,6 +83,7 @@ double endLng = 0.0;
           ),
         ],
       ),
+
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         FloatingActionButton(
@@ -159,32 +160,18 @@ double endLng = 0.0;
   }
 
   void removePoint() {
-    // Remove last marker and point
+    // Remove  marker and point
 
 
-    for(int i=0; i<points.length;i++){
-      points.removeLast();
-    }
-    // Add marker to last -1
-    if (points.isNotEmpty) {
-      markers.removeLast();
-      Marker marker = Marker(
-        point: points[points.length - 1],
-        builder: (context) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 25,
-        ),
-      );
-      markers.add(marker);
-    }
-
-    // If no points, remove marker
-    if (points.isEmpty) {
+      if(markers.length>1){
+        markers.removeLast();
+        points.removeRange(0, points.length-1);
+        points.removeLast();
+      }
       if(markers.length>1) {
         markers.removeLast();
       }
-    }
+
 
     // Refresh screen
     setState(() {});
@@ -243,8 +230,6 @@ void getCoordinate() async {
 
   print("$distance m");
   print("$duration sec");
-
-
 
   setState(() {});
 
