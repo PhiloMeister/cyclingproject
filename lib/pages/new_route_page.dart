@@ -69,8 +69,8 @@ class _NewRouteState extends State<NewRoute> {
     return Scaffold(
       body: ListView(
         children: [
-          if (distanceTotal != 0.0)...[Text("Distance: ${distanceTotal.toString()}")],
-          if (distanceTotal != 0.0)...[Text("Duration: ${durationTotal.toString()}")],
+          if (distanceTotal != 0.0)...[Text("Distance: ${(distanceTotal/1000).toStringAsFixed(3)} km")],
+          if (distanceTotal != 0.0)...[Text("Duration: ${(durationTotal/60).toStringAsFixed(2)} minutes")],
           SizedBox(
             height: 1000,
             child: FlutterMap(
