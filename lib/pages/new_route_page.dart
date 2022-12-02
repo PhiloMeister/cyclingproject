@@ -3,8 +3,10 @@ import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'package:open_route_service/open_route_service.dart';
 import '../helper/network_helper.dart';
+
+OpenRouteService openrouteservice = OpenRouteService(apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e', profile: ORSProfile.cyclingMountain);
 
 class NewRoutePage extends StatelessWidget {
   const NewRoutePage({super.key});
@@ -143,7 +145,7 @@ double endLng = 0.0;
       endLng = point.longitude;
       startLat = points[points.length-1].latitude;
       startLng = points[points.length-1].longitude;
-      getJsonData();
+      getCoordinate();
       Marker marker = Marker(
         point: point,
         builder: (context) => const Icon(
@@ -220,34 +222,19 @@ double endLng = 0.0;
     markers.add(marker);
   }
 
-void getJsonData() async {
-  // Create an instance of Class NetworkHelper which uses http package
-  // for requesting data to the server and receiving response as JSON format
-
-  NetworkHelper network = NetworkHelper(
-    startLat: startLat,
-    startLng: startLng,
-    endLat: endLat,
-    endLng: endLng,
+void getCoordinate() async {
+  final List<ORSCoordinate> routeCoordinates = await openrouteservice.directionsRouteCoordsGet(
+    startCoordinate: ORSCoordinate(latitude: startLat, longitude: startLng),
+    endCoordinate: ORSCoordinate(latitude: endLat, longitude: endLng),
   );
+  routeCoordinates.forEach((point) {
+    points.add(LatLng(point.latitude, point.longitude));
+  });
+  setState(() {});
 
-  try {
-    // getData() returns a json Decoded data
-    data = await network.getData();
-
-    // We can reach to our desired JSON data manually as following
-    LineString ls = LineString(
-        data['features'][0]['geometry']['coordinates']);
-
-    for (int i = 0; i < ls.lineString.length; i++) {
-      points.add(LatLng(ls.lineString[i][1], ls.lineString[i][0]));
-    }
-    setState(() {});
-  }
-  catch(e){
-    print(e);
-  }
 }
+
+
 
   
 }

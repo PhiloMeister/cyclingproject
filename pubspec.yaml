@@ -43,6 +43,8 @@ dependencies:
   cloud_firestore: ^4.1.0
   geolocator: ^5.1.5
   http: ^0.13.3
+  open_route_service: ^1.2.2
+
 
 dev_dependencies:
   flutter_test:
