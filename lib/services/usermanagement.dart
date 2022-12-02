@@ -1,3 +1,4 @@
+import 'package:cyclingproject/pages/VerifyEmailPage.dart';
 import 'package:cyclingproject/pages/home.dart';
 import 'package:cyclingproject/pages/navigation.dart';
 import 'package:cyclingproject/widgets/auth.dart';
@@ -22,7 +23,7 @@ class UserManagement {
           } else if (snapshot.hasError) {
             return const Center(child: Text("Error"));
           } else if (snapshot.hasData) {
-            return const HomePage();
+            return const VerifyEmailPage();
           } else {
             return const AuthPage();
           }
