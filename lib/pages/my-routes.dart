@@ -34,7 +34,7 @@ class _MyRoutesState extends State<MyRoutes> {
       print("listOfLikedRoutes  ${element.routeName.toString()}");
     }
     indexedd = 2;
-    return "fils de pute";
+    return "Ghandi was good";
   }
 
   Widget build(BuildContext context) {
@@ -88,13 +88,21 @@ class _MyRoutesState extends State<MyRoutes> {
   }
 
   Widget buildRoute(Routes routes) => ListTile(
+        trailing: Icon(Icons.heart_broken),
         leading: const CircleAvatar(child: Text("test")),
-        title:  Text(routes.routeName),
+        title:  Text(routes.routeName.toString()),
         onTap: () {
-          print("route "+routes.routeName +" clicked");
+          print("route "+routes.routeName.toString() +" clicked");
         },
+    onLongPress: () {
+      deleteLikedRoute(routes);
+    },
         subtitle: Text(
             "length: ${routes.routeLenght} km  Difficulty : ${routes.routeDifficulty}"),
       );
+
+  void refresh(){
+    setState(() {});
+  }
 }
 

@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../BusinessObject/Routes.dart';
+import '../BusinessObjectManager/RouteManager.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,28 +34,21 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildRoutes(Routes routes) => ListTile(
-    leading: const CircleAvatar(child: Text("test")),
-    title: Text(routes.routeName),
-    subtitle: Text("length: ${routes.routeLenght} km"),
-  );
+  Widget buildRoutes(Routes routes) =>
+      ListTile(
+        onLongPress: ()  {
+         addToLikedRoutes(routes);
+        },
+        leading: const CircleAvatar(child: Text("test")),
+        title: Text(routes.routeName.toString()),
+        subtitle: Text("length: ${routes.routeLenght} km"),
+      );
 
-  Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
-      .collection("Routes")
-      .snapshots()
-      .map((snapshot) =>
-      snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
-}
+  Stream<List<Routes>> readRoutes() =>
+      FirebaseFirestore.instance
+          .collection("Routes")
+          .snapshots()
+          .map((snapshot) =>
+          snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 
-class Routes {
-  final String routeName;
-  final String routeLenght;
-
-  Routes({required this.routeName, required this.routeLenght});
-
-  Map<String, dynamic> toJson() =>
-      {"firsname": routeName, "routeLenght": routeLenght};
-
-  static Routes fromJson(Map<String, dynamic> json) =>
-      Routes(routeName: json['name'], routeLenght: json['length']);
 }

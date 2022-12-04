@@ -5,19 +5,20 @@ import 'package:flutter/cupertino.dart';
 
 class Routes {
 
-   String routeName;
-   String routeLenght;
-   String routeDifficulty;
-   String routeCreator;
+   String? routeName;
+   String? routeLenght;
+   String? routeDifficulty;
+   String? routeCreator;
+   String? id;
 
-  Routes({ required this.routeName, required this.routeDifficulty,  required this.routeLenght, required this.routeCreator}){
+  Routes({ this.id, this.routeName,  this.routeDifficulty,   this.routeLenght,  this.routeCreator}){
     //transferRawMarkersToMarkers(markersRaw, markers);
 
   }
   Map<String, dynamic> toJson() => {"name": routeName, "length": routeLenght,"difficulty":routeDifficulty,"creator":routeCreator};
 
-  static Routes fromJson(Map<String, dynamic>? json) {
-  return Routes(routeName: json?['name'], routeLenght: json?['length'],routeDifficulty: json?['difficulty'],routeCreator: json?['routeCreator']);
+  static Routes fromJson(Map<String, dynamic> json) {
+  return Routes(id: json?['id'],routeName: json?['name'], routeLenght: json?['length'],routeDifficulty: json?['difficulty'],routeCreator: json?['routeCreator']);
   }
    static Routes fromDocSnap(DocumentSnapshot doc) {
      return Routes(routeName: doc.data().toString().contains('name') ? doc.get('name') : "",
