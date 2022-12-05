@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:cyclingproject/pages/navigation.dart';
+import 'package:cyclingproject/pages/Navigation.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

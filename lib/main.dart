@@ -1,4 +1,4 @@
-import 'package:cyclingproject/pages/navigation.dart';
+import 'package:cyclingproject/pages/Navigation.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/widgets/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';

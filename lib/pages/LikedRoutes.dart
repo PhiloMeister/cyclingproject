@@ -4,16 +4,15 @@ import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MyRoutes extends StatefulWidget {
-  const MyRoutes({super.key});
+class LikedRoutes extends StatefulWidget {
+  const LikedRoutes({super.key});
 
   @override
-  State<MyRoutes> createState() => _MyRoutesState();
+  State<LikedRoutes> createState() => _LikedRoutesState();
 }
 
-class _MyRoutesState extends State<MyRoutes> {
-  List<Routes> listOfLikedRoutes = <Routes>[
-  ];
+class _LikedRoutesState extends State<LikedRoutes> {
+  List<Routes> listOfLikedRoutes = <Routes>[];
   List<String> listOfIds = <String>[];
   late List test;
   var indexedd;
@@ -40,7 +39,7 @@ class _MyRoutesState extends State<MyRoutes> {
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
       future: initVariables(),
-      builder: (context,  snapshot) {
+      builder: (context, snapshot) {
         List<Widget> children;
         if (snapshot.hasData) {
           return Scaffold(
@@ -52,7 +51,7 @@ class _MyRoutesState extends State<MyRoutes> {
               },
             ),
           );
-        }else if (snapshot.hasError) {
+        } else if (snapshot.hasError) {
           children = <Widget>[
             const Icon(
               Icons.error_outline,
@@ -88,21 +87,42 @@ class _MyRoutesState extends State<MyRoutes> {
   }
 
   Widget buildRoute(Routes routes) => ListTile(
-        trailing: Icon(Icons.heart_broken),
         leading: const CircleAvatar(child: Text("test")),
-        title:  Text(routes.routeName.toString()),
+        title: Text(routes.routeName.toString()),
         onTap: () {
-          print("route "+routes.routeName.toString() +" clicked");
+          print("route " + routes.routeName.toString() + " clicked");
         },
-    onLongPress: () {
-      deleteLikedRoute(routes);
-    },
+        onLongPress: () {
+          openDialogLikedRoutes(routes);
+        },
         subtitle: Text(
             "length: ${routes.routeLenght} km  Difficulty : ${routes.routeDifficulty}"),
       );
 
-  void refresh(){
+  void refresh() {
     setState(() {});
   }
-}
 
+  void openDialogLikedRoutes(Routes route) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text("Actions available"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    deleteLikedRoute(route);
+                  },
+                  child: Text("Unlike the route")),
+              ElevatedButton(
+                  onPressed: () {
+                    //TODO insert method to display route
+                  },
+                  child: const Text("Display route")),
+              BackButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ));
+}

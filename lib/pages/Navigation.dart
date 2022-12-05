@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/pages/profile.dart';
-import 'package:cyclingproject/pages/settings.dart';
+import 'package:cyclingproject/pages/Profile.dart';
+import 'package:cyclingproject/pages/Settings.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
-import 'home.dart';
-import 'my-routes.dart';
-import 'new_route_page.dart';
-
+import 'AllRoutes.dart';
+import 'LikedRoutes.dart';
+import 'New_route_page.dart';
+import "MyCreatedRoutes.dart";
+import "Settings.dart";
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -37,7 +38,8 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> _pages = const [
     Home(),
     NewRoutePage( canEdit: false,),
-    MyRoutes(),
+    LikedRoutes(),
+    MyCreatedRoutes(),
     NewRoutePage( canEdit: true,)
   ];
 
@@ -84,9 +86,10 @@ class _RootPageState extends State<RootPage> {
               },
               padding: const EdgeInsets.all(12),
               tabs: const [
-                GButton(icon: Icons.home, text: 'Home'),
-                GButton(icon: Icons.pedal_bike_outlined, text: 'Routes'),
-                GButton(icon: Icons.favorite, text: 'Likes'),
+                GButton(icon: Icons.home, text: 'All routes'),
+                GButton(icon: Icons.map, text: 'Map'),
+                GButton(icon: Icons.favorite, text: 'Liked'),
+                GButton(icon: Icons.pedal_bike_outlined, text: 'My routes'),
                 GButton(icon: Icons.settings, text: 'Settings'),
               ]),
         ),

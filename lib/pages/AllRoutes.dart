@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class _HomeState extends State<Home> {
   Widget buildRoutes(Routes routes) =>
       ListTile(
         onLongPress: ()  {
-         addToLikedRoutes(routes);
+        openDialogLikedRoutes(routes);
         },
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
@@ -51,4 +52,26 @@ class _HomeState extends State<Home> {
           .map((snapshot) =>
           snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 
+  void openDialogLikedRoutes(Routes route) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Actions available"),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                addToLikedRoutes(route);
+              },
+              child: Text("Like the route")),
+          ElevatedButton(
+              onPressed: () {
+                //TODO insert method to display route
+              },
+              child: const Text("Display route")),
+          BackButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ));
 }

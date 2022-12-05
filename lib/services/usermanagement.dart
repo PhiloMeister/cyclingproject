@@ -1,6 +1,6 @@
 import 'package:cyclingproject/pages/VerifyEmailPage.dart';
-import 'package:cyclingproject/pages/home.dart';
-import 'package:cyclingproject/pages/navigation.dart';
+import 'package:cyclingproject/pages/AllRoutes.dart';
+import 'package:cyclingproject/pages/Navigation.dart';
 import 'package:cyclingproject/widgets/auth.dart';
 import 'package:cyclingproject/widgets/login.dart';
 import 'package:flutter/material.dart';

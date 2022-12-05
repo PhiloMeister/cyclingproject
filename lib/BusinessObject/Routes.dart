@@ -15,6 +15,7 @@ class Routes {
     //transferRawMarkersToMarkers(markersRaw, markers);
 
   }
+
   Map<String, dynamic> toJson() => {"name": routeName, "length": routeLenght,"difficulty":routeDifficulty,"creator":routeCreator};
 
   static Routes fromJson(Map<String, dynamic> json) {
