@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/globals.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import '../main.dart';
 import '../utils/helper_widgets.dart';
 import '../utils/snackbar.dart';
-
+import '../BusinessObject/UserModel.dart';
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key, required this.onClickedSignIn});
 
@@ -24,6 +24,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final passwordController = TextEditingController();
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
+  bool valueSwitch = true;
+
 
   @override
   void dispose() {
@@ -42,7 +44,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         child: Form(
             key: formKey,
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               addVerticalSpace(150),
               Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
               addVerticalSpace(75),
@@ -151,6 +153,27 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 //    : null,
               ),
               addVerticalSpace(40),
+              Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Admin"),
+                      Switch(
+                        activeColor: Colors.redAccent,
+                        inactiveThumbColor: Colors.redAccent,
+                        value: valueSwitch,
+                        onChanged: (value) {
+                          setState(() {
+                            valueSwitch = value;
+                            print("value is" + valueSwitch.toString());
+                            // isfalse = admin
+                            // istrue = user
+                          });
+                        },
+                      ),
+                      const Text("User")
+                    ],
+                  )),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFB61818),
@@ -199,10 +222,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         password: passwordController.text.trim(),
       );
 
-      final user = User(
-        firstname: firstNameController.text,
-        lastname: lastNameController.text,
-        email: emailController.text,
+      final user = UserModel(
+          firstname: firstNameController.text,
+          lastname: lastNameController.text,
+          email: emailController.text,
+          role: await isAdminOrUser(valueSwitch)
       );
 
       addUsername(user);
@@ -213,7 +237,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
   }
 
-  addUsername(User user) async {
+  addUsername(UserModel user) async {
     final docUser = FirebaseFirestore.instance
         .collection("Users")
         .doc(FirebaseAuth.instance.currentUser!.uid);
@@ -223,19 +247,34 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     Utils.showSnackBar("save");
   }
 }
+Future<String> isAdminOrUser(bool valueSwitch) async {
+  String roleGiven = "";
 
-class User {
-  final String lastname;
-  final String firstname;
-  final String email;
-
-  User({required this.firstname, required this.lastname, required this.email});
-
-  Map<String, dynamic> toJson() =>
-      {"firsname": firstname, "lastname": lastname, "email": email};
-
-  static User fromJson(Map<String, dynamic> json) => User(
-      firstname: json['firstname'],
-      lastname: json['lastname'],
-      email: json['email']);
+  if(valueSwitch == true){
+    await FirebaseFirestore
+        .instance
+        .collection("Roles").where("nomRole",isEqualTo: "user")
+        .get()
+        .then((documents) =>
+        documents
+            .docs
+            .forEach((element) {
+          roleGiven = element.id;
+          print("roleGiven is : "+ roleGiven.toString());
+        }));
+    return roleGiven;
+  }else{
+    await FirebaseFirestore
+        .instance
+        .collection("Roles").where("nomRole",isEqualTo: "admin")
+        .get()
+        .then((documents) =>
+        documents
+            .docs
+            .forEach((element) {
+          roleGiven = element.id;
+          print("roleGiven is : "+ roleGiven.toString());
+        }));
+    return roleGiven;
+  }
 }

@@ -14,8 +14,6 @@ class LikedRoutes extends StatefulWidget {
 class _LikedRoutesState extends State<LikedRoutes> {
   List<Routes> listOfLikedRoutes = <Routes>[];
   List<String> listOfIds = <String>[];
-  late List test;
-  var indexedd;
 
   @override
   initState() {
@@ -32,7 +30,6 @@ class _LikedRoutesState extends State<LikedRoutes> {
     for (var element in listOfLikedRoutes) {
       print("listOfLikedRoutes  ${element.routeName.toString()}");
     }
-    indexedd = 2;
     return "Ghandi was good";
   }
 

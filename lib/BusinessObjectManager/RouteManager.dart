@@ -8,6 +8,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:flutter/services.dart';
 
+Future<List<Routes>> getAllRoutes() async {
+  List<Routes> listOfRoutes = <Routes>[];
+
+  await FirebaseFirestore
+      .instance
+      .collection("Routes")
+      .get()
+      .then((values) => values.docs.forEach((element) {
+        listOfRoutes.add(Routes.fromJson(element.data()));
+      }));
+
+return listOfRoutes;
+}
+
+Future<void> addRoute(Routes route) async {
+
+  await FirebaseFirestore
+      .instance
+      .collection("Routes").add(route.toJson());
+}
+
 Future<Routes?> getRouteByID(String idRouteInput) async {
   var docRoute =
       FirebaseFirestore.instance.collection("Routes").doc(idRouteInput);
