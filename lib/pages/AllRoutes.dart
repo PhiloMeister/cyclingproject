@@ -13,9 +13,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final firstNameController = TextEditingController();
+  var checkTextField;
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
+
 
   @override
   initState() {
@@ -24,7 +25,10 @@ class _HomeState extends State<Home> {
 
   Future<String> initVariables() async {
     listOfAllRoutes = await getAllRoutes();
-    listOfFilteredRoutes = listOfAllRoutes;
+    print("FIELD CHECK"+checkTextField.toString());
+    if(listOfFilteredRoutes.isEmpty && checkTextField == null ) {
+      listOfFilteredRoutes = listOfAllRoutes;
+    }
 
     return "Ghandi was good";
   }
@@ -40,6 +44,7 @@ class _HomeState extends State<Home> {
                     child: TextField(
                       onChanged: (value) {
                         filterList(value);
+                        checkTextField = value.toString();
                       },
                       decoration: const InputDecoration(
                           labelText: 'Search a route..',
@@ -50,7 +55,9 @@ class _HomeState extends State<Home> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: () {}, child: const Text("Length")),
+                ElevatedButton(onPressed: () {
+                  filterByLength();
+                }, child: const Text("Length")),
                 ElevatedButton(onPressed: () {}, child: const Text("Duration")),
                 ElevatedButton(onPressed: () {}, child: const Text("Liked")),
               ],
@@ -60,14 +67,13 @@ class _HomeState extends State<Home> {
               builder: (context, snapshot) {
                 List<Widget> children;
                 if (snapshot.hasData) {
-                  return Scaffold(
-                    body: ListView.builder(
+                 return  ListView.builder(
                       itemCount: listOfFilteredRoutes.length,
                       itemBuilder: (BuildContext context, int index) {
                         // return  buildRoute(listOfLikedRoutes[index]);
                         return buildRoutes(listOfFilteredRoutes[index]);
                       },
-                    ),
+
                   );
                 } else if (snapshot.hasError) {
                   children = <Widget>[
@@ -173,18 +179,26 @@ class _HomeState extends State<Home> {
               ));
 
   void filterList(String value) {
-    List<Routes> routesFound = <Routes>[];
+
     if (value.isEmpty) {
-      listOfFilteredRoutes = listOfAllRoutes;
+
     } else {
       listOfFilteredRoutes = listOfAllRoutes.where((route) =>
           route.routeName.toString().toLowerCase().contains(
               value.toLowerCase())).toList();
+
       listOfFilteredRoutes.forEach((element) {
         print(element.routeName.toString());
+
       });
+
       setState(() {
       });
     }
+  }
+  void filterByLength(){
+
+
+
   }
 }
