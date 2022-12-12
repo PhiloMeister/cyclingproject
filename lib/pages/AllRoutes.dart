@@ -23,8 +23,13 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> initVariables() async {
+    print("REFRESHED");
     listOfAllRoutes = await getAllRoutes();
+<<<<<<< HEAD
 
+=======
+    listOfAllRoutes = await addLikedOrNotToListOfRoutes(listOfAllRoutes);
+>>>>>>> 23fa308ccf83c82807b153c8494653d69192f84c
     if (listOfFilteredRoutes.isEmpty) {
       print("list Is empty");
     } else {
@@ -72,7 +77,13 @@ class _HomeState extends State<Home> {
                   filterByDuration();
                 },
                 child: const Text("Duration")),
+<<<<<<< HEAD
             ElevatedButton(onPressed: () {}, child: const Text("Liked")),
+=======
+            ElevatedButton(onPressed: () {
+              //TODO filter by liked
+            }, child: const Text("Liked")),
+>>>>>>> 23fa308ccf83c82807b153c8494653d69192f84c
           ],
         ),
         Expanded(
@@ -129,17 +140,16 @@ class _HomeState extends State<Home> {
         onLongPress: () {
           openDialogLikedRoutes(routes);
         },
+    onTap: () {
+      addToLikedRoutes(routes);
+    },
+        trailing: routes.routeLiked! ? Icon(Icons.favorite):Icon(Icons.favorite_border),
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
         subtitle: Text(
             "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
       );
 
-  Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
-      .collection("Routes")
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 
   void openDialogLikedRoutes(Routes route) => showDialog(
       context: context,
