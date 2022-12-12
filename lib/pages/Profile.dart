@@ -50,7 +50,7 @@ class _ProfileState extends State<Profile> {
                 if (snapshot.hasData && snapshot.data != null) {
                   final user = snapshot.data.data();
                   return Column(
-                    children: [Text(user['lastname']), Text(user['firsname'])],
+                    children: [Text(user['lastname']), Text(user['firstname'])],
                   );
                 }
                 return const Material(

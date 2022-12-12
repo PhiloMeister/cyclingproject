@@ -80,26 +80,28 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             title: const Text('Verify Email'),
           ),
           body: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'A verification email has been sent!',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  addVerticalSpace(24),
-                  ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: canResendEmail ? sendVerificationEmail : null,
-                      icon: const Icon(Icons.email, size: 32),
-                      label: const Text(
-                        'Resent Email',
-                        style: TextStyle(fontSize: 24),
-                      ))
-                ],
-              )));
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'A verification email has been sent!',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                addVerticalSpace(24),
+                ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    onPressed: canResendEmail ? sendVerificationEmail : null,
+                    icon: const Icon(Icons.email, size: 32),
+                    label: const Text(
+                      'Resent Email',
+                      style: TextStyle(fontSize: 24),
+                    ))
+              ],
+            ),
+          ),
+        );
 }
