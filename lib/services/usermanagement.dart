@@ -1,3 +1,4 @@
+import 'package:cyclingproject/admin/AdminNav.dart';
 import 'package:cyclingproject/pages/VerifyEmailPage.dart';
 import 'package:cyclingproject/pages/AllRoutes.dart';
 import 'package:cyclingproject/pages/Navigation.dart';
@@ -33,8 +34,28 @@ class UserManagement {
     );
   }
 
-  authorizeAccess(role) {
-    globals.role = role;
+  authorizeAccess() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("Users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          final user = snapshot.data.data();
+          if (user['role'] == 'admin') {
+            return const AdminNav();
+          } else {
+            return const HomePage();
+          }
+        }
+        return const Material(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
   }
 
   signOut() {

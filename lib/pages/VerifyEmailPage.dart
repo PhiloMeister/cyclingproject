@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/admin/AdminNav.dart';
 import 'package:cyclingproject/pages/Navigation.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +74,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) => isEmailVerified
-      ? const HomePage()
+      ? UserManagement().authorizeAccess()
       : Scaffold(
           appBar: AppBar(
             title: const Text('Verify Email'),
