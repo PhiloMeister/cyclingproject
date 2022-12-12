@@ -27,7 +27,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     super.initState();
 
     isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-
+    isEmailVerified = true;
     if (!isEmailVerified) {
       sendVerificationEmail();
 

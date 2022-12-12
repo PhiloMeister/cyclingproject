@@ -11,7 +11,6 @@ OpenRouteService openrouteservice = OpenRouteService(
 
 class NewRoutePage extends StatelessWidget {
   const NewRoutePage({super.key, required this.canEdit});
-
   final bool canEdit;
 
   // This widget is the root of your application.

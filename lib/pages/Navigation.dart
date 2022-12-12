@@ -8,10 +8,10 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
 import 'AllRoutes.dart';
-import 'LikedRoutes.dart';
 import 'New_route_page.dart';
-import "MyCreatedRoutes.dart";
-import "Settings.dart";
+import 'MyCreatedRoutes.dart';
+import 'Settings.dart';
+import 'LikedRoutes.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -33,14 +33,15 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+
   int currentPage = 0;
 
   final List<Widget> _pages = const [
     Home(),
-    NewRoutePage( canEdit: false,),
-    LikedRoutes(),
+    NewRoutePage( canEdit: false),
     MyCreatedRoutes(),
-    NewRoutePage( canEdit: true,)
+    LikedRoutes(),
+    NewRoutePage( canEdit: true)
   ];
 
   void _navigateBottomBar(int index) {
@@ -48,7 +49,6 @@ class _RootPageState extends State<RootPage> {
       currentPage = index;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,8 +88,8 @@ class _RootPageState extends State<RootPage> {
               tabs: const [
                 GButton(icon: Icons.home, text: 'All routes'),
                 GButton(icon: Icons.map, text: 'Map'),
-                GButton(icon: Icons.favorite, text: 'Liked'),
                 GButton(icon: Icons.pedal_bike_outlined, text: 'My routes'),
+                GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 GButton(icon: Icons.settings, text: 'Settings'),
               ]),
         ),

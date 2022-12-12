@@ -14,6 +14,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
 
