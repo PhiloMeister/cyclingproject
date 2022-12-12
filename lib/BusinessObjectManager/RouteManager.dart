@@ -11,22 +11,18 @@ import 'package:flutter/services.dart';
 Future<List<Routes>> getAllRoutes() async {
   List<Routes> listOfRoutes = <Routes>[];
 
-  await FirebaseFirestore
-      .instance
+  await FirebaseFirestore.instance
       .collection("Routes")
       .get()
       .then((values) => values.docs.forEach((element) {
-        listOfRoutes.add(Routes.fromJson(element.data()));
-      }));
+            listOfRoutes.add(Routes.fromJson(element.data()));
+          }));
 
-return listOfRoutes;
+  return listOfRoutes;
 }
 
 Future<void> addRoute(Routes route) async {
-
-  await FirebaseFirestore
-      .instance
-      .collection("Routes").add(route.toJson());
+  await FirebaseFirestore.instance.collection("Routes").add(route.toJson());
 }
 
 Future<Routes?> getRouteByID(String idRouteInput) async {
@@ -88,20 +84,18 @@ Future<List<Routes>> getListOfLikedRoutes(List<String> listIds) async {
 }
 
 Future<void> addToLikedRoutes(Routes routeInput) async {
-
-    Map<String, dynamic> e = <String, dynamic>{};
-    var idOfgodamnRoute =
-        await getIdOfRouteByName(routeInput.routeName.toString());
-    print("addToLikedRoute id  : " + idOfgodamnRoute);
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("likedRoutes")
-        .doc(idOfgodamnRoute.toString())
-        .set(e);
-
+  Map<String, dynamic> e = <String, dynamic>{};
+  var idOfgodamnRoute =
+      await getIdOfRouteByName(routeInput.routeName.toString());
+  print("addToLikedRoute id  : " + idOfgodamnRoute);
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("likedRoutes")
+      .doc(idOfgodamnRoute.toString())
+      .set(e);
 }
-//not used atm
+/*//not used atm
 Future<bool> isAlreadyLiked(Routes routeInput) async {
   //get the id of the route based on the route name
   var idOfRoute = await getIdOfRouteByName(routeInput.routeName.toString());
@@ -121,7 +115,7 @@ Future<bool> isAlreadyLiked(Routes routeInput) async {
     print("ALREADY LIKED");
     return false;
   }
-}
+}*/
 
 Future<String> getIdOfRouteByName(String nameInput) async {
   var nameFound;
@@ -170,18 +164,34 @@ Future<List<Routes>> getCreatedRoutesOfUser() async {
   }
   return listOfRoutes;
 }
+
 Future<void> deleteCreatedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
   //delete from Routes collection
-  await FirebaseFirestore
-      .instance
-      .collection("Routes").doc(idOfRoute).delete();
+  await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).delete();
   //delete from the user likedRoutes collection
-  await FirebaseFirestore
-      .instance
+  await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
       .collection("likedRoutes")
-  .doc(idOfRoute).delete();
+      .doc(idOfRoute)
+      .delete();
+}
 
+Future<List<Routes>> addLikedOrNotToListOfRoutes(
+    List<Routes> listOfAllroutes) async {
+  List<Routes> listOfLikedRoutes = <Routes>[];
+  //get list of liked routes
+  var listOfIds = await getLikedIdsOfUser();
+  listOfLikedRoutes = await getListOfLikedRoutes(listOfIds);
+  //get list of all routes
+  listOfLikedRoutes.forEach((routeLiked) {
+    listOfAllroutes.forEach((route) {
+      if (routeLiked.routeName == route.routeName) {
+        route.routeLiked = true;
+      }
+    });
+  });
+
+  return listOfAllroutes;
 }

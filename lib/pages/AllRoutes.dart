@@ -25,15 +25,16 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> initVariables() async {
+    print("REFRESHED");
     listOfAllRoutes = await getAllRoutes();
-
-    if(listOfFilteredRoutes.isEmpty){
+    listOfAllRoutes = await addLikedOrNotToListOfRoutes(listOfAllRoutes);
+    if (listOfFilteredRoutes.isEmpty) {
       print("list Is empty");
-    }else{
+    } else {
       print("list Is NOT empty");
     }
 
-    if(listOfFilteredRoutes.isEmpty){
+    if (listOfFilteredRoutes.isEmpty) {
       if (checkTextField == null || checkTextField.toString().isEmpty) {
         listOfFilteredRoutes = listOfAllRoutes;
       }
@@ -69,10 +70,14 @@ class _HomeState extends State<Home> {
                   filterByLength();
                 },
                 child: const Text("Length")),
+            ElevatedButton(
+                onPressed: () {
+                  filterByDuration();
+                },
+                child: const Text("Duration")),
             ElevatedButton(onPressed: () {
-              filterByDuration();
-            }, child: const Text("Duration")),
-            ElevatedButton(onPressed: () {}, child: const Text("Liked")),
+              //TODO filter by liked
+            }, child: const Text("Liked")),
           ],
         ),
         Expanded(
@@ -129,16 +134,16 @@ class _HomeState extends State<Home> {
         onLongPress: () {
           openDialogLikedRoutes(routes);
         },
+    onTap: () {
+      addToLikedRoutes(routes);
+    },
+        trailing: routes.routeLiked! ? Icon(Icons.favorite):Icon(Icons.favorite_border),
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
-        subtitle: Text("length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
+        subtitle: Text(
+            "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
       );
 
-  Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
-      .collection("Routes")
-      .snapshots()
-      .map((snapshot) =>
-          snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 
   void openDialogLikedRoutes(Routes route) => showDialog(
       context: context,
@@ -184,37 +189,26 @@ class _HomeState extends State<Home> {
   }
 
   void filterByLength() {
-
     if (listOfFilteredRoutes.isNotEmpty) {
-
-   listOfFilteredRoutes.sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
-
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
 
       for (var element in listOfFilteredRoutes) {
-
         print("Element : ${element.routeLenght}");
       }
-      setState(() {
-
-      });
-
+      setState(() {});
     }
   }
 
   void filterByDuration() {
     if (listOfFilteredRoutes.isNotEmpty) {
-
-      listOfFilteredRoutes.sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
-
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
 
       for (var element in listOfFilteredRoutes) {
-
         print("Element : ${element.routeLenght}");
       }
-      setState(() {
-
-      });
-
+      setState(() {});
     }
   }
 }

@@ -14,6 +14,9 @@ class Routes {
   num? routeStartLat;
   num? routeStartLng;
 
+  // local variable
+  bool? routeLiked;
+
   String? id;
 
   Routes(
@@ -27,7 +30,7 @@ class Routes {
       this.routeEndLng,
       this.routeStartLat,
       this.routeStartLng}) {
-    //transferRawMarkersToMarkers(markersRaw, markers);
+    routeLiked = false;
   }
 
   Map<String, dynamic> toJson() => {
