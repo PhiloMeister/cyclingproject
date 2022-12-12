@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +25,13 @@ class _HomeState extends State<Home> {
   Future<String> initVariables() async {
     listOfAllRoutes = await getAllRoutes();
 
-    if(listOfFilteredRoutes.isEmpty){
+    if (listOfFilteredRoutes.isEmpty) {
       print("list Is empty");
-    }else{
+    } else {
       print("list Is NOT empty");
     }
 
-    if(listOfFilteredRoutes.isEmpty){
+    if (listOfFilteredRoutes.isEmpty) {
       if (checkTextField == null || checkTextField.toString().isEmpty) {
         listOfFilteredRoutes = listOfAllRoutes;
       }
@@ -69,9 +67,11 @@ class _HomeState extends State<Home> {
                   filterByLength();
                 },
                 child: const Text("Length")),
-            ElevatedButton(onPressed: () {
-              filterByDuration();
-            }, child: const Text("Duration")),
+            ElevatedButton(
+                onPressed: () {
+                  filterByDuration();
+                },
+                child: const Text("Duration")),
             ElevatedButton(onPressed: () {}, child: const Text("Liked")),
           ],
         ),
@@ -131,7 +131,8 @@ class _HomeState extends State<Home> {
         },
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
-        subtitle: Text("length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
+        subtitle: Text(
+            "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
       );
 
   Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
@@ -184,37 +185,26 @@ class _HomeState extends State<Home> {
   }
 
   void filterByLength() {
-
     if (listOfFilteredRoutes.isNotEmpty) {
-
-   listOfFilteredRoutes.sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
-
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
 
       for (var element in listOfFilteredRoutes) {
-
         print("Element : ${element.routeLenght}");
       }
-      setState(() {
-
-      });
-
+      setState(() {});
     }
   }
 
   void filterByDuration() {
     if (listOfFilteredRoutes.isNotEmpty) {
-
-      listOfFilteredRoutes.sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
-
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
 
       for (var element in listOfFilteredRoutes) {
-
         print("Element : ${element.routeLenght}");
       }
-      setState(() {
-
-      });
-
+      setState(() {});
     }
   }
 }

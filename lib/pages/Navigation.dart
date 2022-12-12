@@ -12,6 +12,7 @@ import 'New_route_page.dart';
 import 'MyCreatedRoutes.dart';
 import 'Settings.dart';
 import 'LikedRoutes.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -33,15 +34,12 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-
   int currentPage = 0;
 
   final List<Widget> _pages = const [
     Home(),
-    NewRoutePage( canEdit: false),
-    MyCreatedRoutes(),
-    LikedRoutes(),
-    NewRoutePage( canEdit: true)
+    NewRoutePage(canEdit: false),
+    LikedRoutes()
   ];
 
   void _navigateBottomBar(int index) {
@@ -49,6 +47,7 @@ class _RootPageState extends State<RootPage> {
       currentPage = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,26 +87,23 @@ class _RootPageState extends State<RootPage> {
               tabs: const [
                 GButton(icon: Icons.home, text: 'All routes'),
                 GButton(icon: Icons.map, text: 'Map'),
-                GButton(icon: Icons.pedal_bike_outlined, text: 'My routes'),
                 GButton(icon: Icons.heart_broken, text: 'Liked routes'),
-                GButton(icon: Icons.settings, text: 'Settings'),
               ]),
         ),
       ),
-      floatingActionButton:  SizedBox(
-              child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    currentPage = 3;
-                  });
-                },
-                backgroundColor: const Color(0XFF1f1f1f),
-                tooltip: 'Add',
-                elevation: 0,
-                child: const Icon(Icons.add),
-              ),
-            ),
-
+      floatingActionButton: SizedBox(
+        child: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              currentPage = 3;
+            });
+          },
+          backgroundColor: const Color(0XFF1f1f1f),
+          tooltip: 'Add',
+          elevation: 0,
+          child: const Icon(Icons.add),
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

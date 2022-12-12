@@ -31,15 +31,10 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
   final List<Widget> _pages = const [
-    Home(),
-    NewRoutePage(
-      canEdit: false,
-    ),
-    LikedRoutes(),
     MyCreatedRoutes(),
     NewRoutePage(
       canEdit: true,
-    )
+    ),
   ];
 
   void _navigateBottomBar(int index) {
@@ -85,7 +80,8 @@ class _RootPageState extends State<RootPage> {
               },
               padding: const EdgeInsets.all(12),
               tabs: const [
-                GButton(icon: Icons.home, text: 'All routes'),
+                GButton(icon: Icons.home, text: 'My routes'),
+                GButton(icon: Icons.home, text: 'Add route'),
               ]),
         ),
       ),
