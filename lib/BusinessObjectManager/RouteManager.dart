@@ -78,7 +78,7 @@ Future<List<Routes>> getListOfLikedRoutes(List<String> listIds) async {
       (DocumentSnapshot doc) {
         print("getListOfLikedRoutes element is : " + element);
         var data = doc.data() as Map<String, dynamic>;
-        listOfRoutes.add(Routes.fromDocSnap(doc));
+        listOfRoutes.add(Routes.fromJson(data));
         //  listOfRoutes.add(Routes.fromJson(data));
       },
       onError: (e) => print("Error completing: $e"),
