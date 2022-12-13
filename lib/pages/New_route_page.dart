@@ -202,11 +202,11 @@ class _NewRouteState extends State<NewRoute> {
 
   void addRouteFirestore(Routes myRoute) {
     myRoute.routeLenght = distanceTotal.toDouble();
-    myRoute.duration = durationTotal.toDouble();
-    myRoute.startLat = startLat.toDouble();
-    myRoute.startLng = startLng.toDouble();
-    myRoute.endLat = endLat.toDouble();
-    myRoute.endLng = endLng.toDouble();
+    myRoute.routeDuration = durationTotal.toDouble();
+    myRoute.routeStartLat = startLat.toDouble();
+    myRoute.routeStartLng = startLng.toDouble();
+    myRoute.routeEndLat = endLat.toDouble();
+    myRoute.routeEndLng = endLng.toDouble();
     myRoute.routeDifficulty = "Normal";
     myRoute.routeCreator = "Benjamin";
     addRoute(routes);

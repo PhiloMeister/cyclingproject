@@ -47,16 +47,16 @@ class Routes {
 
   static Routes fromJson(Map<String, dynamic> json) {
     return Routes(
-        id: json?['id'],
-        routeName: json?['name'],
-        routeLenght: json?['length'],
-        routeDifficulty: json?['difficulty'],
-        routeCreator: json?['creator'],
-        routeDuration: json?['duration'],
-        routeEndLat: json?['endLat'],
-        routeEndLng: json?['endLng'],
-        routeStartLat: json?['startLat'],
-        routeStartLng: json?['startLng']);
+        id: json['id'],
+        routeName: json['name'],
+        routeLenght: json['length'],
+        routeDifficulty: json['difficulty'],
+        routeCreator: json['creator'],
+        routeDuration: json['duration'],
+        routeEndLat: json['endLat'],
+        routeEndLng: json['endLng'],
+        routeStartLat: json['startLat'],
+        routeStartLng: json['startLng']);
   }
 
   //old do not use
