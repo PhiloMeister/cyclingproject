@@ -41,7 +41,26 @@ class _ProfileState extends State<Profile> {
         padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 35),
         child: Column(
           children: [
-            TextFormField(
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("Users")
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData && snapshot.data != null) {
+                  final user = snapshot.data.data();
+                  return Column(
+                    children: [Text(user['lastname']), Text(user['firstname'])],
+                  );
+                }
+                return const Material(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            ),
+            /*TextFormField(
               style: const TextStyle(color: Colors.white),
               controller: firstNameController,
               cursorColor: Colors.white,
@@ -109,7 +128,7 @@ class _ProfileState extends State<Profile> {
                 getUser();
                 //addUsername(user);
               },
-            ),
+            ),*/
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

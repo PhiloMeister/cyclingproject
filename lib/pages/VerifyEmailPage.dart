@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/admin/AdminNav.dart';
 import 'package:cyclingproject/pages/Navigation.dart';
+import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +27,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     super.initState();
 
     isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-
+    isEmailVerified = true;
     if (!isEmailVerified) {
       sendVerificationEmail();
 
@@ -71,32 +74,34 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
   @override
   Widget build(BuildContext context) => isEmailVerified
-      ? const HomePage()
+      ? UserManagement().authorizeAccess()
       : Scaffold(
           appBar: AppBar(
             title: const Text('Verify Email'),
           ),
           body: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'A verification email has been sent!',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  addVerticalSpace(24),
-                  ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: canResendEmail ? sendVerificationEmail : null,
-                      icon: const Icon(Icons.email, size: 32),
-                      label: const Text(
-                        'Resent Email',
-                        style: TextStyle(fontSize: 24),
-                      ))
-                ],
-              )));
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'A verification email has been sent!',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
+                ),
+                addVerticalSpace(24),
+                ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                    ),
+                    onPressed: canResendEmail ? sendVerificationEmail : null,
+                    icon: const Icon(Icons.email, size: 32),
+                    label: const Text(
+                      'Resent Email',
+                      style: TextStyle(fontSize: 24),
+                    ))
+              ],
+            ),
+          ),
+        );
 }

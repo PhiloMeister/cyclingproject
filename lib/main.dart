@@ -1,7 +1,4 @@
-import 'package:cyclingproject/pages/Navigation.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
-import 'package:cyclingproject/widgets/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'utils/snackbar.dart';
@@ -33,6 +30,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
@@ -61,4 +59,4 @@ class _RootPageState extends State<RootPage> {
       backgroundColor: Colors.grey.shade700,
     );
   }
-}
+}*/

@@ -1,20 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/pages/Profile.dart';
-import 'package:cyclingproject/pages/Settings.dart';
-import 'package:cyclingproject/services/usermanagement.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import '../globals.dart' as globals;
 
-import 'AllRoutes.dart';
-import 'New_route_page.dart';
-import 'MyCreatedRoutes.dart';
-import 'Settings.dart';
-import 'LikedRoutes.dart';
+import '../pages/AllRoutes.dart';
+import '../pages/LikedRoutes.dart';
+import '../pages/MyCreatedRoutes.dart';
+import '../pages/New_route_page.dart';
+import '../pages/Profile.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class AdminNav extends StatelessWidget {
+  const AdminNav({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +31,10 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
   final List<Widget> _pages = const [
-    Home(),
-    NewRoutePage(canEdit: false),
-    LikedRoutes()
+    MyCreatedRoutes(),
+    NewRoutePage(
+      canEdit: true,
+    ),
   ];
 
   void _navigateBottomBar(int index) {
@@ -85,9 +80,8 @@ class _RootPageState extends State<RootPage> {
               },
               padding: const EdgeInsets.all(12),
               tabs: const [
-                GButton(icon: Icons.home, text: 'All routes'),
-                GButton(icon: Icons.map, text: 'Map'),
-                GButton(icon: Icons.heart_broken, text: 'Liked routes'),
+                GButton(icon: Icons.home, text: 'My routes'),
+                GButton(icon: Icons.home, text: 'Add route'),
               ]),
         ),
       ),

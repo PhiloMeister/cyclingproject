@@ -4,59 +4,62 @@ import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:flutter/cupertino.dart';
 
 class Routes {
-  String? routeName;
-  double? routeLenght;
-  String? routeDifficulty;
   String? routeCreator;
-  String? id;
-  double? duration;
-  double? startLat;
-  double? startLng;
-  double? endLat;
-  double? endLng;
+  String? routeDifficulty;
+  num? routeDuration;
+  num? routeEndLat;
+  num? routeEndLng;
+  num? routeLenght;
+  String? routeName;
+  num? routeStartLat;
+  num? routeStartLng;
 
-  Routes({
-    this.id,
-    this.routeName,
-    this.routeDifficulty,
-    this.routeLenght,
-    this.routeCreator,
-    this.duration,
-    this.startLat,
-    this.startLng,
-    this.endLat,
-    this.endLng,
-  }) {
-    //transferRawMarkersToMarkers(markersRaw, markers);
+  // local variable
+  bool? routeLiked;
+
+  String? id;
+
+  Routes(
+      {this.id,
+      this.routeName,
+      this.routeDifficulty,
+      this.routeLenght,
+      this.routeCreator,
+      this.routeDuration,
+      this.routeEndLat,
+      this.routeEndLng,
+      this.routeStartLat,
+      this.routeStartLng}) {
+    routeLiked = false;
   }
 
   Map<String, dynamic> toJson() => {
-        "name": routeName,
-        "length": routeLenght,
-        "difficulty": routeDifficulty,
         "creator": routeCreator,
-        "duration": duration,
-        "startLat": startLat,
-        "startLng": startLng,
-        "endLat": endLat,
-        "endLng": endLng,
+        "difficulty": routeDifficulty,
+        "duration": routeDuration,
+        "endLat": routeEndLat,
+        "endLng": routeEndLng,
+        "length": routeLenght,
+        "name": routeName,
+        "startLat": routeStartLat,
+        "startLng": routeEndLng,
       };
 
   static Routes fromJson(Map<String, dynamic> json) {
     return Routes(
-        id: json['id'],
-        routeName: json['name'],
-        routeLenght: json['length'],
-        routeDifficulty: json['difficulty'],
-        routeCreator: json['routeCreator'],
-        duration: json['duration'],
-        startLat: json['startLat'],
-        startLng: json['startLng'],
-        endLat: json['endLat'],
-        endLng: json['endLng'],
-        );
+        id: json?['id'],
+        routeName: json?['name'],
+        routeLenght: json?['length'],
+        routeDifficulty: json?['difficulty'],
+        routeCreator: json?['creator'],
+        routeDuration: json?['duration'],
+        routeEndLat: json?['endLat'],
+        routeEndLng: json?['endLng'],
+        routeStartLat: json?['startLat'],
+        routeStartLng: json?['startLng']);
   }
 
+  //old do not use
   static Routes fromDocSnap(DocumentSnapshot doc) {
     return Routes(
         routeName:

@@ -14,16 +14,12 @@ class LikedRoutes extends StatefulWidget {
 class _LikedRoutesState extends State<LikedRoutes> {
   List<Routes> listOfLikedRoutes = <Routes>[];
   List<String> listOfIds = <String>[];
-  late List test;
-  var indexedd;
-
   @override
   initState() {
     super.initState();
   }
 
   Future<String> initVariables() async {
-    print("object");
     listOfIds = await getLikedIdsOfUser();
     for (var element in listOfIds) {
       print("initVariables list of id $element");
@@ -32,7 +28,6 @@ class _LikedRoutesState extends State<LikedRoutes> {
     for (var element in listOfLikedRoutes) {
       print("listOfLikedRoutes  ${element.routeName.toString()}");
     }
-    indexedd = 2;
     return "Ghandi was good";
   }
 
@@ -110,12 +105,12 @@ class _LikedRoutesState extends State<LikedRoutes> {
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    deleteLikedRoute(route);
+                      deleteLikedRoute(route);
+                      refresh();
                   },
                   child: Text("Unlike the route")),
               ElevatedButton(
                   onPressed: () {
-                    //TODO insert method to display route
                   },
                   child: const Text("Display route")),
               BackButton(
