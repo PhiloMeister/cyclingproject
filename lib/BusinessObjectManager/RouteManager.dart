@@ -20,6 +20,12 @@ Future<Routes?> getRouteByID(String idRouteInput) async {
   }
 }
 
+Future <void> addRoute(Routes route) async {
+  await FirebaseFirestore
+      .instance
+      .collection("Routes").add(route.toJson());
+}
+
 Future<List<String>> getLikedIdsOfUser() async {
   List<String> listIds = <String>[];
 
@@ -67,7 +73,6 @@ Future<List<Routes>> getListOfLikedRoutes(List<String> listIds) async {
 }
 
 Future<void> addToLikedRoutes(Routes routeInput) async {
-
     Map<String, dynamic> e = <String, dynamic>{};
     var idOfgodamnRoute =
         await getIdOfRouteByName(routeInput.routeName.toString());
@@ -149,6 +154,7 @@ Future<List<Routes>> getCreatedRoutesOfUser() async {
   }
   return listOfRoutes;
 }
+
 Future<void> deleteCreatedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
   //delete from Routes collection
