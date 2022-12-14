@@ -43,7 +43,7 @@ class UserManagement {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           final user = snapshot.data.data();
-          if (user['role'] == 'admin') {
+          if (user['creator'] == 'admin') {
             return const AdminNav();
           } else {
             return const HomePage();

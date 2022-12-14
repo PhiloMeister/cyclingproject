@@ -81,7 +81,7 @@ class _RootPageState extends State<RootPage> {
               padding: const EdgeInsets.all(12),
               tabs: const [
                 GButton(icon: Icons.home, text: 'My routes'),
-                GButton(icon: Icons.home, text: 'Add route'),
+                GButton(icon: Icons.route, text: 'Add route'),
               ]),
         ),
       ),
@@ -89,7 +89,7 @@ class _RootPageState extends State<RootPage> {
         child: FloatingActionButton(
           onPressed: () {
             setState(() {
-              currentPage = 3;
+              currentPage = 1;
             });
           },
           backgroundColor: const Color(0XFF1f1f1f),
