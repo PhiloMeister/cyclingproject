@@ -6,17 +6,17 @@ class UserModel {
   String? email;
   String? firstname;
   String? lastname;
-  String? role;
+  String? creator;
   String? id;
 
-  UserModel({this.id, this.email, this.lastname, this.firstname, this.role}) {
+  UserModel({this.id, this.email, this.lastname, this.firstname, this.creator}) {
     //transferRawMarkersToMarkers(markersRaw, markers);
   }
   Map<String, dynamic> toJson() => {
         "email": email,
         "firstname": firstname,
         "lastname": lastname,
-        "creator": role
+        "creator": creator
       };
 
   static UserModel fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class UserModel {
         email: json?['email'],
         firstname: json?['firstname'],
         lastname: json?['lastname'],
-        role: json?['routeCreator']);
+        creator: json?['creator']);
   }
 
   static UserModel fromDocSnap(DocumentSnapshot doc) {
@@ -37,8 +37,8 @@ class UserModel {
         lastname: doc.data().toString().contains('lastname')
             ? doc.get('difficulty')
             : "",
-        role: doc.data().toString().contains('routeCreator')
-            ? doc.get('routeCreator')
+        creator: doc.data().toString().contains('routeCreator')
+            ? doc.get('creator')
             : "");
   }
 }

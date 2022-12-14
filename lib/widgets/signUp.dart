@@ -153,7 +153,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 //    : null,
               ),
               addVerticalSpace(40),
-              Center(
+          /*    Center(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -173,7 +173,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   ),
                   const Text("User")
                 ],
-              )),
+              )),*/
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFB61818),
@@ -226,7 +226,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         firstname: firstNameController.text,
         lastname: lastNameController.text,
         email: emailController.text,
-        role: "biker",
+        creator: "biker",
       );
 
       addUsername(user);

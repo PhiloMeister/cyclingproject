@@ -21,10 +21,6 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
 
   Future<String> initVariables() async {
     listOfCreatedRoutes = await getCreatedRoutesOfUser();
-    for (var element in listOfCreatedRoutes) {
-      //print("listOfCreated  ${element.routeName.toString()}");
-    }
-
     return "Ghandi was good";
   }
 

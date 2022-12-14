@@ -1,7 +1,6 @@
-import 'dart:html';
-
 import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
@@ -235,15 +234,15 @@ class _NewRouteState extends State<NewRoute> {
                 )
               ]));
 
-  void addRouteFirestore(Routes myRoute) {
+  Future<void> addRouteFirestore(Routes myRoute) async {
     myRoute.routeLenght = distanceTotal.toDouble();
     myRoute.routeDuration = durationTotal.toDouble();
     myRoute.routeStartLat = startLat.toDouble();
     myRoute.routeStartLng = startLng.toDouble();
     myRoute.routeEndLat = endLat.toDouble();
     myRoute.routeEndLng = endLng.toDouble();
-    myRoute.routeDifficulty = "Normal";
-    myRoute.routeCreator = "Benjamin";
+    myRoute.routeDifficulty = distanceTotal > 1000? "Hard" : "Easy";
+    myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
     addRoute(routes);
   }
 
