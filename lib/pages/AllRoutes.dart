@@ -81,51 +81,52 @@ class _HomeState extends State<Home> {
           ],
         ),
         Expanded(
-            child: FutureBuilder<String>(
-          future: initVariables(),
-          builder: (context, snapshot) {
-            List<Widget> children;
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: listOfFilteredRoutes.length,
-                itemBuilder: (BuildContext context, int index) {
-                  // return  buildRoute(listOfLikedRoutes[index]);
-                  return buildRoutes(listOfFilteredRoutes[index]);
-                },
+          child: FutureBuilder<String>(
+            future: initVariables(),
+            builder: (context, snapshot) {
+              List<Widget> children;
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: listOfFilteredRoutes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // return  buildRoute(listOfLikedRoutes[index]);
+                    return buildRoutes(listOfFilteredRoutes[index]);
+                  },
+                );
+              } else if (snapshot.hasError) {
+                children = <Widget>[
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 60,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Text('Error: ${snapshot.error}'),
+                  ),
+                ];
+              } else {
+                children = const <Widget>[
+                  SizedBox(
+                    width: 60,
+                    height: 60,
+                    child: CircularProgressIndicator(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text('Awaiting result...'),
+                  ),
+                ];
+              }
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: children,
+                ),
               );
-            } else if (snapshot.hasError) {
-              children = <Widget>[
-                const Icon(
-                  Icons.error_outline,
-                  color: Colors.red,
-                  size: 60,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Text('Error: ${snapshot.error}'),
-                ),
-              ];
-            } else {
-              children = const <Widget>[
-                SizedBox(
-                  width: 60,
-                  height: 60,
-                  child: CircularProgressIndicator(),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text('Awaiting result...'),
-                ),
-              ];
-            }
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: children,
-              ),
-            );
-          },
-        ))
+            },
+          ),
+        )
       ],
     ));
   }

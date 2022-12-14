@@ -9,6 +9,7 @@ import '../main.dart';
 import '../utils/helper_widgets.dart';
 import '../utils/snackbar.dart';
 import '../BusinessObject/UserModel.dart';
+
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key, required this.onClickedSignIn});
 
@@ -25,7 +26,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   bool valueSwitch = true;
-
 
   @override
   void dispose() {
@@ -44,7 +44,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         child: Form(
             key: formKey,
             child:
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               addVerticalSpace(150),
               Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
               addVerticalSpace(75),
@@ -155,25 +155,25 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               addVerticalSpace(40),
               Center(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Admin"),
-                      Switch(
-                        activeColor: Colors.redAccent,
-                        inactiveThumbColor: Colors.redAccent,
-                        value: valueSwitch,
-                        onChanged: (value) {
-                          setState(() {
-                            valueSwitch = value;
-                            print("value is" + valueSwitch.toString());
-                            // isfalse = admin
-                            // istrue = user
-                          });
-                        },
-                      ),
-                      const Text("User")
-                    ],
-                  )),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Admin"),
+                  Switch(
+                    activeColor: Colors.redAccent,
+                    inactiveThumbColor: Colors.redAccent,
+                    value: valueSwitch,
+                    onChanged: (value) {
+                      setState(() {
+                        valueSwitch = value;
+                        print("value is" + valueSwitch.toString());
+                        // isfalse = admin
+                        // istrue = user
+                      });
+                    },
+                  ),
+                  const Text("User")
+                ],
+              )),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0XFFB61818),
@@ -223,10 +223,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       );
 
       final user = UserModel(
-          firstname: firstNameController.text,
-          lastname: lastNameController.text,
-          email: emailController.text,
-          role: await isAdminOrUser(valueSwitch)
+        firstname: firstNameController.text,
+        lastname: lastNameController.text,
+        email: emailController.text,
+        role: "biker",
       );
 
       addUsername(user);
@@ -247,6 +247,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     Utils.showSnackBar("save");
   }
 }
+
+/*
 Future<String> isAdminOrUser(bool valueSwitch) async {
   String roleGiven = "";
 
@@ -277,4 +279,4 @@ Future<String> isAdminOrUser(bool valueSwitch) async {
         }));
     return roleGiven;
   }
-}
+}*/
