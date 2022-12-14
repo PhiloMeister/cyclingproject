@@ -85,7 +85,7 @@ class _RootPageState extends State<RootPage> {
               ]),
         ),
       ),
-      floatingActionButton: SizedBox(
+      /*floatingActionButton: SizedBox(
         child: FloatingActionButton(
           onPressed: () {
             setState(() {
@@ -98,7 +98,7 @@ class _RootPageState extends State<RootPage> {
           child: const Icon(Icons.add),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,*/
     );
   }
 }

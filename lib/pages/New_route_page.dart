@@ -5,6 +5,7 @@ import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
@@ -123,7 +124,41 @@ class _NewRouteState extends State<NewRoute> {
           ],
         ],
       ),
-      floatingActionButton:
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        overlayOpacity: 0,
+        backgroundColor: const Color(0XFF1f1f1f),
+        spacing: 0,
+        spaceBetweenChildren: 12,
+        closeManually: true,
+        children: [
+          canEdit
+              ? SpeedDialChild(
+                  child: const Icon(Icons.arrow_back),
+                  label: "Remove",
+                  onTap: () => {removePoint()},
+                )
+              : SpeedDialChild(),
+          SpeedDialChild(
+            child: const Icon(Icons.location_searching),
+            label: "Current location",
+            onTap: () => {getCurrentLocation()},
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.map_outlined),
+            label: "Change map",
+            onTap: () => {changeMap()},
+          ),
+          canEdit
+              ? SpeedDialChild(
+                  child: const Icon(Icons.save),
+                  label: "Save",
+                  onTap: () => {saveRouteDialog(routes)},
+                )
+              : SpeedDialChild()
+        ],
+      ),
+      /*floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         if (canEdit) ...[
           FloatingActionButton(
@@ -163,7 +198,7 @@ class _NewRouteState extends State<NewRoute> {
           height: 70.0,
         ),
       ]),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,*/
     );
   }
 
