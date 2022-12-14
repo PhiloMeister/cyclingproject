@@ -165,6 +165,7 @@ Future<List<Routes>> getCreatedRoutesOfUser() async {
   return listOfRoutes;
 }
 
+
 Future<void> deleteCreatedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
   //delete from Routes collection

@@ -1,3 +1,7 @@
+import 'dart:html';
+
+import 'package:cyclingproject/BusinessObject/Routes.dart';
+import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
@@ -8,6 +12,8 @@ import 'package:open_route_service/open_route_service.dart';
 OpenRouteService openrouteservice = OpenRouteService(
     apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e',
     profile: ORSProfile.cyclingMountain);
+
+Routes routes = Routes();
 
 class NewRoutePage extends StatelessWidget {
   const NewRoutePage({super.key, required this.canEdit});
@@ -23,12 +29,10 @@ class NewRoutePage extends StatelessWidget {
       ),
     );
   }
-
-
 }
 
 class NewRoute extends StatefulWidget {
-  const NewRoute({super.key,required this.canEdit});
+  const NewRoute({super.key, required this.canEdit});
   final bool canEdit;
 
   @override
@@ -82,7 +86,7 @@ class _NewRouteState extends State<NewRoute> {
               options: MapOptions(
                 center: userLocation,
                 zoom: 15.0,
-                onTap: (tapPosition, point) => canEdit?addPoint(point):{},
+                onTap: (tapPosition, point) => canEdit ? addPoint(point) : {},
               ),
               mapController: _mapController,
               children: [
@@ -99,30 +103,39 @@ class _NewRouteState extends State<NewRoute> {
               ],
             ),
           ),
-          if (distanceTotal != 0.0)...[ColoredBox(
-            color: const Color.fromARGB(255, 217, 217, 217),
-            child:
-                Padding(padding: const EdgeInsets.all(4.0),
-                  child:Row(children: [
-                   Text("Distance: ${(distanceTotal/1000).toStringAsFixed(3)} km ",style: const TextStyle(fontSize: 20)),
-                    const SizedBox(width: 10),
-                    Text("Duration: ${(durationTotal/60).toStringAsFixed(2)} min",textAlign: TextAlign.right, style: const TextStyle(fontSize: 20)),
-          ]),),),],
-
+          if (distanceTotal != 0.0) ...[
+            ColoredBox(
+              color: const Color.fromARGB(255, 217, 217, 217),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Row(children: [
+                  Text(
+                      "Distance: ${(distanceTotal / 1000).toStringAsFixed(3)} km ",
+                      style: const TextStyle(fontSize: 20)),
+                  const SizedBox(width: 10),
+                  Text(
+                      "Duration: ${(durationTotal / 60).toStringAsFixed(2)} min",
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(fontSize: 20)),
+                ]),
+              ),
+            ),
+          ],
         ],
       ),
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-            if(canEdit)...[
-              FloatingActionButton(
-                onPressed: () => {removePoint()},
-                backgroundColor: const Color(0XFF1f1f1f),
-                tooltip: 'Cancel point',
-                child: const Icon(Icons.arrow_back_outlined),
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),],
+        if (canEdit) ...[
+          FloatingActionButton(
+            onPressed: () => {removePoint()},
+            backgroundColor: const Color(0XFF1f1f1f),
+            tooltip: 'Cancel point',
+            child: const Icon(Icons.arrow_back_outlined),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+        ],
         FloatingActionButton(
             backgroundColor: Colors.blueAccent,
             tooltip: 'Current location',
@@ -138,6 +151,15 @@ class _NewRouteState extends State<NewRoute> {
           child: const Icon(Icons.map_outlined),
         ),
         const SizedBox(
+          height: 20.0,
+        ),
+        FloatingActionButton(
+          onPressed: () => {saveRouteDialog(routes)},
+          backgroundColor: const Color(0XFF1f1f1f),
+          tooltip: 'Save route',
+          child: const Icon(Icons.save),
+        ),
+        const SizedBox(
           height: 70.0,
         ),
       ]),
@@ -145,6 +167,7 @@ class _NewRouteState extends State<NewRoute> {
     );
   }
 
+  // Switch between satellite and default map
   void changeMap() {
     if (currentMap == 0) {
       currentMap = 1;
@@ -154,20 +177,62 @@ class _NewRouteState extends State<NewRoute> {
     setState(() {});
   }
 
+  // After clicking on save button, shows a dialog view to enter the name of the route
+  void saveRouteDialog(Routes myRoute) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+              title: const Text("Enter a name for the route"),
+              content: TextField(
+                onChanged: (routeName) {
+                  setState(() {
+                    myRoute.routeName = routeName;
+                  });
+                },
+              ),
+              actions: [
+                FloatingActionButton(
+                  backgroundColor: Colors.red,
+                  onPressed: () {
+                    addRouteFirestore(routes);
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(Icons.save),
+                )
+              ]));
+
+  void addRouteFirestore(Routes myRoute) {
+    myRoute.routeLenght = distanceTotal.toDouble();
+    myRoute.routeDuration = durationTotal.toDouble();
+    myRoute.routeStartLat = startLat.toDouble();
+    myRoute.routeStartLng = startLng.toDouble();
+    myRoute.routeEndLat = endLat.toDouble();
+    myRoute.routeEndLng = endLng.toDouble();
+    myRoute.routeDifficulty = "Normal";
+    myRoute.routeCreator = "Benjamin";
+    addRoute(routes);
+  }
+
+  // Add a marker
+  Marker addMarker(LatLng point) {
+    Marker marker = Marker(
+      point: point,
+      builder: (context) => const Icon(
+        Icons.location_on_rounded,
+        color: Colors.red,
+        size: 25,
+      ),
+    );
+    return marker;
+  }
+
+  // Add a point on the map
   void addPoint(LatLng point) {
     if (points.isEmpty) {
-      Marker marker = Marker(
-        point: point,
-        builder: (context) => const Icon(
-          Icons.location_on_rounded,
-          color: Colors.red,
-          size: 25,
-        ),
-      );
+      Marker marker = addMarker(point);
       markers.add(marker);
       points.add(point);
     } else {
-      if (markers.length >= 3) {
+      if (markers.length >= 2) {
         markers.removeLast();
       }
       endLat = point.latitude;
@@ -175,30 +240,24 @@ class _NewRouteState extends State<NewRoute> {
       startLat = points[points.length - 1].latitude;
       startLng = points[points.length - 1].longitude;
       getCoordinate();
-      Marker marker = Marker(
-        point: point,
-        builder: (context) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 25,
-        ),
-      );
+      Marker marker = addMarker(point);
       markers.add(marker);
     }
   }
 
+  // Delete markers and points displayed
   void removePoint() {
-    // Remove  marker and point
+    // if (markers.length > 1) {
+    //   markers.removeLast();
+    //   points.removeRange(0, points.length - 1);
+    //   points.removeLast();
+    // }
+    // if (markers.length > 1) {
+    //   markers.removeLast();
+    // }
 
-    if (markers.length > 1) {
-      markers.removeLast();
-      points.removeRange(0, points.length - 1);
-      points.removeLast();
-    }
-    if (markers.length > 1) {
-      markers.removeLast();
-    }
-
+    points.removeRange(0, points.length);
+    markers.removeRange(0, markers.length);
     distanceTotal = 0.0;
     durationTotal = 0.0;
 
@@ -206,20 +265,7 @@ class _NewRouteState extends State<NewRoute> {
     setState(() {});
   }
 
-  void validateTrip(point) {
-    if (points.isEmpty) {
-      Marker marker = Marker(
-        point: point,
-        builder: (context) => const Icon(
-          Icons.location_on,
-          color: Colors.red,
-          size: 25,
-        ),
-      );
-      markers.add(marker);
-    }
-  }
-
+  // Get the current position of the user by clicking on the position button
   void getCurrentLocation() async {
     var position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -238,6 +284,7 @@ class _NewRouteState extends State<NewRoute> {
     markers.add(marker);
   }
 
+  // Get the duration and distance of a given route
   void getCoordinate() async {
     var start = ORSCoordinate(latitude: startLat, longitude: startLng);
     var end = ORSCoordinate(latitude: endLat, longitude: endLng);
@@ -270,4 +317,3 @@ class LineString {
   LineString(this.lineString);
   List<dynamic> lineString;
 }
-
