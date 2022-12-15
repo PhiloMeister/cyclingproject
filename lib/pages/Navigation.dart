@@ -39,7 +39,7 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> _pages = const [
     Home(),
     NewRoutePage(canEdit: false),
-    LikedRoutes()
+    //LikedRoutes()
   ];
 
   void _navigateBottomBar(int index) {
@@ -88,7 +88,7 @@ class _RootPageState extends State<RootPage> {
                 tabs: const [
                   GButton(icon: Icons.home, text: 'All routes'),
                   GButton(icon: Icons.map, text: 'Map'),
-                  GButton(icon: Icons.heart_broken, text: 'Liked routes'),
+                  //GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 ]),
           ),
         ));

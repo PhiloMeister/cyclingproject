@@ -16,6 +16,9 @@ class _HomeState extends State<Home> {
   var checkTextField;
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
+  bool lengthSwitch = false;
+  bool durationSwitch= false;
+  bool likedSwitch= false;
 
   @override
   initState() {
@@ -23,6 +26,7 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> initVariables() async {
+
     print("REFRESHED");
     listOfAllRoutes = await getAllRoutes();
     listOfAllRoutes = await addLikedOrNotToListOfRoutes(listOfAllRoutes);
@@ -38,8 +42,25 @@ class _HomeState extends State<Home> {
       }
     }
 
-    return "Ghandi was good";
+    return "Gandhi was good";
   }
+
+  Widget buildRoutes(Routes routes) => ListTile(
+    onLongPress: () {
+      openDialogLikedRoutes(routes);
+    },
+    onTap: () {
+      addToLikedRoutes(routes);
+      print("Pressed on LIKE");
+    },
+    trailing: routes.routeLiked!
+        ? const Icon(Icons.favorite)
+        : const Icon(Icons.favorite_border),
+    leading: const CircleAvatar(child: Text("test")),
+    title: Text(routes.routeName.toString()),
+    subtitle: Text(
+        "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -65,17 +86,29 @@ class _HomeState extends State<Home> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  filterByLength();
+                  if(lengthSwitch == false){
+                    filterByLengthASC();
+                    lengthSwitch = !lengthSwitch;
+                  }else{
+                    filterByLengthDES();
+                    lengthSwitch = !lengthSwitch;
+                  }
                 },
                 child: const Text("Length")),
             ElevatedButton(
                 onPressed: () {
-                  filterByDuration();
+                  if(durationSwitch == false){
+                    filterByDurationASC();
+                    durationSwitch = !durationSwitch;
+                  }else{
+                    filterByDurationDES();
+                    durationSwitch = !durationSwitch;
+                  }
                 },
                 child: const Text("Duration")),
             ElevatedButton(
                 onPressed: () {
-                  //TODO filter by liked
+                  filterByLiked();
                 },
                 child: const Text("Liked")),
           ],
@@ -131,32 +164,18 @@ class _HomeState extends State<Home> {
     ));
   }
 
-  Widget buildRoutes(Routes routes) => ListTile(
-        onLongPress: () {
-          openDialogLikedRoutes(routes);
-        },
-        onTap: () {
-          addToLikedRoutes(routes);
-        },
-        trailing: routes.routeLiked!
-            ? Icon(Icons.favorite)
-            : Icon(Icons.favorite_border),
-        leading: const CircleAvatar(child: Text("test")),
-        title: Text(routes.routeName.toString()),
-        subtitle: Text(
-            "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
-      );
+
 
   void openDialogLikedRoutes(Routes route) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
-            title: Text("Actions available"),
+            title: const Text("Actions available"),
             actions: [
               ElevatedButton(
                   onPressed: () {
                     addToLikedRoutes(route);
                   },
-                  child: Text("Like the route")),
+                  child: const Text("Like the route")),
               ElevatedButton(
                   onPressed: () {
                     //TODO insert method to display route
@@ -190,7 +209,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void filterByLength() {
+  void filterByLengthASC() {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
@@ -201,11 +220,10 @@ class _HomeState extends State<Home> {
       setState(() {});
     }
   }
-
-  void filterByDuration() {
+  void filterByLengthDES() {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
-          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
+          .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
 
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeLenght}");
@@ -213,4 +231,38 @@ class _HomeState extends State<Home> {
       setState(() {});
     }
   }
+
+  void filterByDurationASC() {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeDuration!.compareTo(b.routeDuration!));
+
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+      setState(() {});
+    }
+  }
+  void filterByDurationDES() {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => b.routeDuration!.compareTo(a.routeDuration!));
+
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+      setState(() {});
+    }
+  }
+  void filterByLiked() {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => b.routeLiked!.toString().compareTo(a.routeLiked!.toString()));
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+      setState(() {});
+    }
+  }
+
 }
