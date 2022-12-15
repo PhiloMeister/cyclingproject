@@ -1,4 +1,9 @@
+import 'dart:html';
+import 'dart:js';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/pages/New_route_page.dart';
+import 'package:cyclingproject/pages/map_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -45,13 +50,14 @@ class _HomeState extends State<Home> {
     return "Gandhi was good";
   }
 
-  Widget buildRoutes(Routes routes) => ListTile(
+  Widget buildRoutes(Routes routes, BuildContext context) => ListTile(
         onLongPress: () {
-          openDialogLikedRoutes(routes);
+          // openDialogLikedRoutes(routes);
         },
         onTap: () {
-          addToLikedRoutes(routes);
-          print("Pressed on LIKE");
+          displayRouteOnMap(routes, context);
+          // addToLikedRoutes(routes);
+          // print("Pressed on LIKE");
         },
         trailing: routes.routeLiked!
             ? const Icon(Icons.favorite)
@@ -76,7 +82,7 @@ class _HomeState extends State<Home> {
                 checkTextField = value.toString();
               },
               decoration: const InputDecoration(
-                  labelText: 'Search a route..',
+                  labelText: 'Search a route...',
                   suffixIcon: Icon(Icons.search)),
             )),
           ],
@@ -123,7 +129,7 @@ class _HomeState extends State<Home> {
                   itemCount: listOfFilteredRoutes.length,
                   itemBuilder: (BuildContext context, int index) {
                     // return  buildRoute(listOfLikedRoutes[index]);
-                    return buildRoutes(listOfFilteredRoutes[index]);
+                    return buildRoutes(listOfFilteredRoutes[index], context);
                   },
                 );
               } else if (snapshot.hasError) {
@@ -164,28 +170,35 @@ class _HomeState extends State<Home> {
     ));
   }
 
-  void openDialogLikedRoutes(Routes route) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: const Text("Actions available"),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    addToLikedRoutes(route);
-                  },
-                  child: const Text("Like the route")),
-              ElevatedButton(
-                  onPressed: () {
-                    //TODO insert method to display route
-                  },
-                  child: const Text("Display route")),
-              BackButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ));
+  void displayRouteOnMap(Routes myRoute, BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => map_page(myRoute: myRoute)));
+  }
+
+  // void openDialogLikedRoutes(Routes route) => showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //           title: const Text("Actions available"),
+  //           actions: [
+  //             ElevatedButton(
+  //                 onPressed: () {
+  //                   addToLikedRoutes(route);
+  //                 },
+  //                 child: const Text("Like the route")),
+  //             ElevatedButton(
+  //                 onPressed: () {
+  //                   //TODO insert method to display route
+  //                 },
+  //                 child: const Text("Display route")),
+  //             BackButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         ));
 
   void filterList(String value) {
     if (value.isEmpty) {
