@@ -57,7 +57,6 @@ class _HomeState extends State<Home> {
         onTap: () {
           displayRouteOnMap(routes, context);
           // addToLikedRoutes(routes);
-          // print("Pressed on LIKE");
         },
         trailing: routes.routeLiked!
             ? const Icon(Icons.favorite)

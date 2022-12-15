@@ -4,6 +4,8 @@ import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'map_page.dart';
+
 class MyCreatedRoutes extends StatefulWidget {
   const MyCreatedRoutes({super.key});
 
@@ -78,7 +80,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
         onTap: () {
-          print("route " + routes.routeName.toString() + " clicked");
+          displayRouteOnMap(routes, context);
         },
         onLongPress: () {
           openDialogCreatedRoute(routes);
@@ -89,6 +91,11 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
 
   void refresh() {
     setState(() {});
+  }
+
+  void displayRouteOnMap(Routes myRoute, BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => map_page(myRoute: myRoute)));
   }
 
   void openDialogCreatedRoute(Routes route) => showDialog(
@@ -107,11 +114,6 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                   onPressed: () {
                     //TODO insert method to display route
                   },
-                  child: const Text("Display route")),
-              ElevatedButton(
-                  onPressed: () {
-                    //TODO insert method to display route
-                  },
                   child: const Text("Modify route")),
               BackButton(
                 onPressed: () {
@@ -120,5 +122,4 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
               ),
             ],
           ));
-
 }

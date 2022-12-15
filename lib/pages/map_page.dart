@@ -145,15 +145,6 @@ class _MapPageState extends State<MapPage> {
         const SizedBox(
           height: 20.0,
         ),
-        FloatingActionButton(
-          onPressed: () => {Navigator.of(context).pop()},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Return to menu',
-          child: const Icon(Icons.home),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
       ]),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -172,8 +163,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void setMarkers(Routes myRoute) {
-
-    // Add a start marker 
+    // Add a start marker
     Marker markerStart = Marker(
       point: LatLng(myRoute.pointsLat?[0], myRoute.pointsLng?[0]),
       builder: (context) => const Icon(
@@ -195,12 +185,6 @@ class _MapPageState extends State<MapPage> {
       ),
     );
     markers.add(markerEnd);
-
-  }
-
-  // Call page to display the route
-  void returnToMenu() {
-    Navigator.of(context).pop();
   }
 
   // Get the duration and distance of a given route
