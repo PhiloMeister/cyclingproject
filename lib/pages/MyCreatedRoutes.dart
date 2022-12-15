@@ -84,7 +84,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
           openDialogCreatedRoute(routes);
         },
         subtitle: Text(
-            "length: ${routes.routeLenght} km  Difficulty : ${routes.routeDifficulty}"),
+            "Length: ${routes.routeLenght?.toStringAsFixed(2)} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
       );
 
   void refresh() {
