@@ -6,6 +6,7 @@ import 'package:cyclingproject/pages/New_route_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
@@ -121,11 +122,11 @@ class _MapPageState extends State<MapPage> {
                 padding: const EdgeInsets.all(4.0),
                 child: Row(children: [
                   Text(
-                      "Distance: ${(routeToDisplay.routeLenght! / 1000).toStringAsFixed(2)} mm ",
+                      "Distance: ${(routeToDisplay.routeLenght! / 1000).toStringAsFixed(2)} km ",
                       style: const TextStyle(fontSize: 20)),
                   const SizedBox(width: 10),
                   Text(
-                      "Duration: ${(routeToDisplay.routeDuration! / 60).toStringAsFixed(2)} min",
+                      "Duration: ${(routeToDisplay.routeDuration! / 60).toStringAsFixed(0)} min ${(routeToDisplay.routeDuration! % 60).toStringAsFixed(0)} sec",
                       textAlign: TextAlign.right,
                       style: const TextStyle(fontSize: 20)),
                 ]),
@@ -134,18 +135,26 @@ class _MapPageState extends State<MapPage> {
           ],
         ],
       ),
-      floatingActionButton:
-          Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        FloatingActionButton(
-          onPressed: () => {changeMap()},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Change map',
-          child: const Icon(Icons.map_outlined),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
-      ]),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        overlayOpacity: 0,
+        backgroundColor: const Color(0XFF1f1f1f),
+        spacing: 0,
+        spaceBetweenChildren: 12,
+        closeManually: false,
+        children: [
+          SpeedDialChild(
+            child: const Icon(Icons.location_searching),
+            label: "Current location",
+            onTap: () => {getCurrentLocation()},
+          ),
+          SpeedDialChild(
+            child: const Icon(Icons.map_outlined),
+            label: "Change map",
+            onTap: () => {changeMap()},
+          ),
+        ],
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -160,6 +169,24 @@ class _MapPageState extends State<MapPage> {
 
     // Refresh screen
     setState(() {});
+  }
+
+  void getCurrentLocation() async {
+    var position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
+    setState(() {
+      userLocation = LatLng(position.latitude, position.longitude);
+    });
+    var marker = Marker(
+      point: userLocation,
+      builder: (context) => const Icon(
+        Icons.location_on_rounded,
+        color: Colors.blueAccent,
+        size: 25,
+      ),
+    );
+    markers.add(marker);
   }
 
   void setMarkers(Routes myRoute) {

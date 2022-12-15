@@ -58,9 +58,11 @@ class _HomeState extends State<Home> {
           displayRouteOnMap(routes, context);
           // addToLikedRoutes(routes);
         },
-        trailing: routes.routeLiked!
+        trailing: 
+        IconButton(icon: routes.routeLiked!
             ? const Icon(Icons.favorite)
-            : const Icon(Icons.favorite_border),
+            : const Icon(Icons.favorite_border), 
+            onPressed: () { addToLikedRoutes(routes); },),
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
         subtitle: Text(
