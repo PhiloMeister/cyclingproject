@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "657219940481",
+    "project_id": "cycling-routes-app-3fa75",
+    "storage_bucket": "cycling-routes-app-3fa75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657219940481:android:be5c456a2cf61266235d80",
+        "android_client_info": {
+          "package_name": "com.alpha.cyclingproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657219940481-ud4a8mof5rldkt1lkb4nnhbi812o7ut7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0kszNLGQU6D0R7Xp1knu0CypHIQcF36E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657219940481-ud4a8mof5rldkt1lkb4nnhbi812o7ut7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "657219940481-4ism4ngek53pvd69r24jgd2ha91nlmr7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.alpha.cyclingproject"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
