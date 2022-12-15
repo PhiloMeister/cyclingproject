@@ -9,7 +9,8 @@ class Routes {
   num? routeDuration;
   num? routeLenght;
   String? routeName;
-  List? points;
+  List? pointsLat;
+  List? pointsLng;
 
   // local variable
   bool? routeLiked;
@@ -23,7 +24,8 @@ class Routes {
     this.routeLenght,
     this.routeCreator,
     this.routeDuration,
-    this.points,
+    this.pointsLat,
+    this.pointsLng,
   }) {
     routeLiked ??= false;
     routeDuration ??= 0;
@@ -36,7 +38,8 @@ class Routes {
         "duration": routeDuration,
         "length": routeLenght,
         "name": routeName,
-        "points": points,
+        "pointsLat": pointsLat,
+        "pointsLng": pointsLng,
       };
 
   static Routes fromJson(Map<String, dynamic> json) {
@@ -47,7 +50,8 @@ class Routes {
       routeDifficulty: json['difficulty'],
       routeCreator: json['creator'],
       routeDuration: json['duration'],
-      points: json['points'],
+      pointsLat: json['pointsLat'],
+      pointsLng: json['pointsLng'],
     );
   }
 

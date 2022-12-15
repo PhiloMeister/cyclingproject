@@ -13,6 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // ignore: prefer_typing_uninitialized_variables
   var checkTextField;
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
@@ -58,7 +59,7 @@ class _HomeState extends State<Home> {
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
         subtitle: Text(
-            "Length: ${routes.routeLenght.toString()} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
+            "Length: ${routes.routeLenght?.toStringAsFixed(2)} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
       );
 
   @override

@@ -43,7 +43,8 @@ class _NewRouteState extends State<NewRoute> {
   final bool canEdit;
   var points = <LatLng>[];
   var markers = <Marker>[];
-  var pointsList = <LatLng>[];
+  var pointsListLat = <double>[];
+  var pointsListLng = <double>[];
   var data;
 
   // Dummy Start and Destination Points
@@ -194,7 +195,8 @@ class _NewRouteState extends State<NewRoute> {
   Future<void> addRouteFirestore(Routes myRoute) async {
     myRoute.routeLenght = distanceTotal.toDouble();
     myRoute.routeDuration = durationTotal.toDouble();
-    myRoute.points = pointsList;
+    myRoute.pointsLat = pointsListLat;
+    myRoute.pointsLng = pointsListLng;
     // myRoute.routeStartLat = startLat.toDouble();
     // myRoute.routeStartLng = startLng.toDouble();
     // myRoute.routeEndLat = endLat.toDouble();
@@ -219,6 +221,10 @@ class _NewRouteState extends State<NewRoute> {
 
   // Add a point on the map
   void addPoint(LatLng point) {
+      // Add the points to list for database
+      pointsListLat.add(point.latitude);
+      pointsListLng.add(point.longitude);
+
     if (points.isEmpty) {
       Marker marker = addMarker(point);
       markers.add(marker);
@@ -227,12 +233,15 @@ class _NewRouteState extends State<NewRoute> {
       if (markers.length >= 2) {
         markers.removeLast();
       }
-      pointsList.add(point);
       endLat = point.latitude;
       endLng = point.longitude;
       startLat = points[points.length - 1].latitude;
       startLng = points[points.length - 1].longitude;
+
+      // Get the lines from the API
       getCoordinate();
+
+      // Place marker on the map
       Marker marker = addMarker(point);
       markers.add(marker);
     }
@@ -242,7 +251,8 @@ class _NewRouteState extends State<NewRoute> {
   void removePoint() {
     points.removeRange(0, points.length);
     markers.removeRange(0, markers.length);
-    pointsList.removeRange(0, pointsList.length);
+    pointsListLat.removeRange(0, pointsListLat.length);
+    pointsListLng.removeRange(0, pointsListLng.length);
     distanceTotal = 0.0;
     durationTotal = 0.0;
 
