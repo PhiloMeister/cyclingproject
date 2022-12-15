@@ -40,12 +40,10 @@ class NewRoute extends StatefulWidget {
 }
 
 class _NewRouteState extends State<NewRoute> {
-  // LatLng(46.28294058464128, 7.5387422133790745), bellevue
-  // LatLng(46.29273682028264, 7.5361982764216275), technopole
-
   final bool canEdit;
   var points = <LatLng>[];
   var markers = <Marker>[];
+  var pointsList = <LatLng>[];
   var data;
 
   // Dummy Start and Destination Points
@@ -157,47 +155,6 @@ class _NewRouteState extends State<NewRoute> {
               : SpeedDialChild()
         ],
       ),
-      /*floatingActionButton:
-          Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        if (canEdit) ...[
-          FloatingActionButton(
-            onPressed: () => {removePoint()},
-            backgroundColor: const Color(0XFF1f1f1f),
-            tooltip: 'Cancel point',
-            child: const Icon(Icons.arrow_back_outlined),
-          ),
-          const SizedBox(
-            height: 20.0,
-          ),
-        ],
-        FloatingActionButton(
-            backgroundColor: Colors.blueAccent,
-            tooltip: 'Current location',
-            onPressed: () => {getCurrentLocation()},
-            child: const Icon(Icons.location_searching)),
-        const SizedBox(
-          height: 20.0,
-        ),
-        FloatingActionButton(
-          onPressed: () => {changeMap()},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Change map',
-          child: const Icon(Icons.map_outlined),
-        ),
-        const SizedBox(
-          height: 20.0,
-        ),
-        FloatingActionButton(
-          onPressed: () => {saveRouteDialog(routes)},
-          backgroundColor: const Color(0XFF1f1f1f),
-          tooltip: 'Save route',
-          child: const Icon(Icons.save),
-        ),
-        const SizedBox(
-          height: 70.0,
-        ),
-      ]),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,*/
     );
   }
 
@@ -237,11 +194,12 @@ class _NewRouteState extends State<NewRoute> {
   Future<void> addRouteFirestore(Routes myRoute) async {
     myRoute.routeLenght = distanceTotal.toDouble();
     myRoute.routeDuration = durationTotal.toDouble();
-    myRoute.routeStartLat = startLat.toDouble();
-    myRoute.routeStartLng = startLng.toDouble();
-    myRoute.routeEndLat = endLat.toDouble();
-    myRoute.routeEndLng = endLng.toDouble();
-    myRoute.routeDifficulty = distanceTotal > 1000? "Hard" : "Easy";
+    myRoute.points = pointsList;
+    // myRoute.routeStartLat = startLat.toDouble();
+    // myRoute.routeStartLng = startLng.toDouble();
+    // myRoute.routeEndLat = endLat.toDouble();
+    // myRoute.routeEndLng = endLng.toDouble();
+    myRoute.routeDifficulty = distanceTotal > 1000 ? "Hard" : "Easy";
     myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
     addRoute(routes);
   }
@@ -269,6 +227,7 @@ class _NewRouteState extends State<NewRoute> {
       if (markers.length >= 2) {
         markers.removeLast();
       }
+      pointsList.add(point);
       endLat = point.latitude;
       endLng = point.longitude;
       startLat = points[points.length - 1].latitude;
@@ -281,17 +240,9 @@ class _NewRouteState extends State<NewRoute> {
 
   // Delete markers and points displayed
   void removePoint() {
-    // if (markers.length > 1) {
-    //   markers.removeLast();
-    //   points.removeRange(0, points.length - 1);
-    //   points.removeLast();
-    // }
-    // if (markers.length > 1) {
-    //   markers.removeLast();
-    // }
-
     points.removeRange(0, points.length);
     markers.removeRange(0, markers.length);
+    pointsList.removeRange(0, pointsList.length);
     distanceTotal = 0.0;
     durationTotal = 0.0;
 

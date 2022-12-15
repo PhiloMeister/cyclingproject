@@ -7,58 +7,48 @@ class Routes {
   String? routeCreator;
   String? routeDifficulty;
   num? routeDuration;
-  num? routeEndLat;
-  num? routeEndLng;
   num? routeLenght;
   String? routeName;
-  num? routeStartLat;
-  num? routeStartLng;
+  List? points;
 
   // local variable
   bool? routeLiked;
 
   String? id;
 
-  Routes(
-      {this.id,
-      this.routeName,
-      this.routeDifficulty,
-      this.routeLenght,
-      this.routeCreator,
-      this.routeDuration,
-      this.routeEndLat,
-      this.routeEndLng,
-      this.routeStartLat,
-      this.routeStartLng}) {
+  Routes({
+    this.id,
+    this.routeName,
+    this.routeDifficulty,
+    this.routeLenght,
+    this.routeCreator,
+    this.routeDuration,
+    this.points,
+  }) {
     routeLiked ??= false;
-    routeDuration ??=0;
-    routeLenght ??=0;
+    routeDuration ??= 0;
+    routeLenght ??= 0;
   }
 
   Map<String, dynamic> toJson() => {
         "creator": routeCreator,
         "difficulty": routeDifficulty,
         "duration": routeDuration,
-        "endLat": routeEndLat,
-        "endLng": routeEndLng,
         "length": routeLenght,
         "name": routeName,
-        "startLat": routeStartLat,
-        "startLng": routeEndLng,
+        "points": points,
       };
 
   static Routes fromJson(Map<String, dynamic> json) {
     return Routes(
-        id: json['id'],
-        routeName: json['name'],
-        routeLenght: json['length'],
-        routeDifficulty: json['difficulty'],
-        routeCreator: json['creator'],
-        routeDuration: json['duration'],
-        routeEndLat: json['endLat'],
-        routeEndLng: json['endLng'],
-        routeStartLat: json['startLat'],
-        routeStartLng: json['startLng']);
+      id: json['id'],
+      routeName: json['name'],
+      routeLenght: json['length'],
+      routeDifficulty: json['difficulty'],
+      routeCreator: json['creator'],
+      routeDuration: json['duration'],
+      points: json['points'],
+    );
   }
 
   //old do not use
