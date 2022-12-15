@@ -30,9 +30,17 @@ class Routes {
       this.routeEndLng,
       this.routeStartLat,
       this.routeStartLng}) {
+    id ??="";
     routeLiked ??= false;
     routeDuration ??=0;
-    routeLenght ??=0;
+    routeName ??="";
+    routeDifficulty ??="";
+    routeCreator ??="";
+    routeDuration ??=0;
+    routeEndLat ??=0;
+    routeEndLng ??=0;
+    routeStartLat ??=0;
+    routeStartLng ??=0;
   }
 
   Map<String, dynamic> toJson() => {

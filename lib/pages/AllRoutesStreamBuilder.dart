@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import '../../BusinessObject/Routes.dart';
 import '../../BusinessObjectManager/RouteManager.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class AllRoutesStreamBuilder extends StatefulWidget {
+  const AllRoutesStreamBuilder({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<AllRoutesStreamBuilder> createState() => _AllRoutesStreamBuilderState();
 }
 
-class _HomeState extends State<Home> {
+class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
   var checkTextField;
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
@@ -26,7 +26,6 @@ class _HomeState extends State<Home> {
   }
 
   Future<String> initVariables() async {
-
     print("REFRESHED");
     listOfAllRoutes = await getAllRoutes();
     listOfAllRoutes = await addLikedOrNotToListOfRoutes(listOfAllRoutes);
@@ -35,13 +34,11 @@ class _HomeState extends State<Home> {
     } else {
       print("list Is NOT empty");
     }
-
     if (listOfFilteredRoutes.isEmpty) {
       if (checkTextField == null || checkTextField.toString().isEmpty) {
         listOfFilteredRoutes = listOfAllRoutes;
       }
     }
-
     return "Gandhi was good";
   }
 
@@ -54,7 +51,7 @@ class _HomeState extends State<Home> {
       print("Pressed on LIKE");
     },
     trailing: routes.routeLiked!
-        ? const Icon(Icons.favorite)
+        ? const Icon(Icons.favorite,shadows: [Shadow(color: Colors.black26)],)
         : const Icon(Icons.favorite_border),
     leading: const CircleAvatar(child: Text("test")),
     title: Text(routes.routeName.toString()),
@@ -113,53 +110,6 @@ class _HomeState extends State<Home> {
                 child: const Text("Liked")),
           ],
         ),
-        Expanded(
-          child: FutureBuilder<String>(
-            future: initVariables(),
-            builder: (context, snapshot) {
-              List<Widget> children;
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: listOfFilteredRoutes.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // return  buildRoute(listOfLikedRoutes[index]);
-                    return buildRoutes(listOfFilteredRoutes[index]);
-                  },
-                );
-              } else if (snapshot.hasError) {
-                children = <Widget>[
-                  const Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 60,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Text('Error: ${snapshot.error}'),
-                  ),
-                ];
-              } else {
-                children = const <Widget>[
-                  SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: CircularProgressIndicator(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 16),
-                    child: Text('Awaiting result...'),
-                  ),
-                ];
-              }
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: children,
-                ),
-              );
-            },
-          ),
-        )
       ],
     ));
   }

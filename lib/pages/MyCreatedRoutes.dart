@@ -20,7 +20,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
   }
 
   Future<String> initVariables() async {
-    listOfCreatedRoutes = await getCreatedRoutesOfUser();
+    listOfCreatedRoutes = await getCreatedRoutesOfUserList();
     return "Ghandi was good";
   }
 
@@ -100,7 +100,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
             actions: [
               ElevatedButton(
                   onPressed: () {
-                    deleteCreatedRoute(route);
+                    deleteCreatedRouteOfUser(route);
                   },
                   child: const Text("Delete route")),
               ElevatedButton(

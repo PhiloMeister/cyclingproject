@@ -9,6 +9,7 @@ import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:flutter/services.dart';
 
 Future<List<Routes>> getAllRoutes() async {
+
   List<Routes> listOfRoutes = <Routes>[];
 
   await FirebaseFirestore.instance
@@ -16,8 +17,9 @@ Future<List<Routes>> getAllRoutes() async {
       .get()
       .then((values) => values.docs.forEach((element) {
             listOfRoutes.add(Routes.fromJson(element.data()));
+            Routes routes = Routes.fromJson(element.data());
+            print("route id${element.reference.id}");
           }));
-
   return listOfRoutes;
 }
 
@@ -71,11 +73,15 @@ Future<List<Routes>> getListOfLikedRoutes(List<String> listIds) async {
         .doc(element)
         .get()
         .then(
-      (DocumentSnapshot doc) {
-        print("getListOfLikedRoutes element is : " + element);
-        var data = doc.data() as Map<String, dynamic>;
-        listOfRoutes.add(Routes.fromJson(data));
-        //  listOfRoutes.add(Routes.fromJson(data));
+      (DocumentSnapshot doc) async {
+        if (doc.data() != null) {
+          var data = doc.data() as Map<String, dynamic>;
+          listOfRoutes.add(Routes.fromJson(data));
+        } else {
+          //remove that id from the likedRoute list of the user
+          // this is an id of a  route who does not exist anymore
+          await deleteIdFromLikedRouteList(element.toString());
+        }
       },
       onError: (e) => print("Error completing: $e"),
     );
@@ -95,27 +101,6 @@ Future<void> addToLikedRoutes(Routes routeInput) async {
       .doc(idOfgodamnRoute.toString())
       .set(e);
 }
-/*//not used atm
-Future<bool> isAlreadyLiked(Routes routeInput) async {
-  //get the id of the route based on the route name
-  var idOfRoute = await getIdOfRouteByName(routeInput.routeName.toString());
-  //do a query in the likedRoutes collection of the user
-  //if query is not empty => return false
-  var query = await FirebaseFirestore.instance
-      .collection("Users")
-      .doc(FirebaseAuth.instance.currentUser?.uid)
-      .collection("likedRoutes")
-      .where("id", isEqualTo: idOfRoute)
-      .get();
-
-  if (query == null) {
-    print("NOT LIKED");
-    return true;
-  } else {
-    print("ALREADY LIKED");
-    return false;
-  }
-}*/
 
 Future<String> getIdOfRouteByName(String nameInput) async {
   var nameFound;
@@ -131,18 +116,16 @@ Future<String> getIdOfRouteByName(String nameInput) async {
   return nameFound;
 }
 
-Future<void> deleteLikedRoute(Routes routes) async {
-  var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
-  print("id of route to delete => " + idOfRoute.toString());
+Future<void> deleteIdFromLikedRouteList(String idRoute) async {
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid.toString())
       .collection("likedRoutes")
-      .doc(idOfRoute.toString())
+      .doc(idRoute.toString())
       .delete();
 }
 
-Future<List<Routes>> getCreatedRoutesOfUser() async {
+Future<List<Routes>> getCreatedRoutesOfUserList() async {
   List<Routes> listOfRoutes = <Routes>[];
   await FirebaseFirestore.instance
       .collection("Routes")
@@ -165,8 +148,20 @@ Future<List<Routes>> getCreatedRoutesOfUser() async {
   return listOfRoutes;
 }
 
-
-Future<void> deleteCreatedRoute(Routes routes) async {
+Future<void> deleteCreatedRouteOfUser(Routes routes) async {
+  var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
+  //delete from Routes collection
+  await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).delete();
+  //delete from the user likedRoutes collection
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("likedRoutes")
+      .doc(idOfRoute)
+      .delete();
+}
+//deprecated but dont delete
+Future<void> deleteLikedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
   //delete from Routes collection
   await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).delete();

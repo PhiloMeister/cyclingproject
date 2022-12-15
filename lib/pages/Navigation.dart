@@ -8,6 +8,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
 import 'AllRoutes.dart';
+import 'AllRoutesStreamBuilder.dart';
 import 'New_route_page.dart';
 import 'MyCreatedRoutes.dart';
 import 'Settings.dart';
@@ -38,7 +39,9 @@ class _RootPageState extends State<RootPage> {
 
   final List<Widget> _pages = const [
     Home(),
+    AllRoutesStreamBuilder(),
     NewRoutePage(canEdit: false),
+
     //LikedRoutes()
   ];
 
@@ -87,6 +90,7 @@ class _RootPageState extends State<RootPage> {
                 padding: const EdgeInsets.all(12),
                 tabs: const [
                   GButton(icon: Icons.home, text: 'All routes'),
+                  GButton(icon: Icons.diamond_outlined, text: 'All routes stream'),
                   GButton(icon: Icons.map, text: 'Map'),
                   //GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 ]),
