@@ -51,12 +51,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildRoutes(Routes routes, BuildContext context) => ListTile(
-        onLongPress: () {
-          // openDialogLikedRoutes(routes);
-        },
         onTap: () {
           displayRouteOnMap(routes, context);
-          // addToLikedRoutes(routes);
         },
         trailing: 
         IconButton(icon: routes.routeLiked!

@@ -160,6 +160,13 @@ Future<void> deleteCreatedRouteOfUser(Routes routes) async {
       .doc(idOfRoute)
       .delete();
 }
+
+Future<void> editRoute(Routes routes, String newName) async {
+  var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
+  //Edit from Routes collection
+  await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).update({"name": newName});
+}
+
 //deprecated but dont delete
 Future<void> deleteLikedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
