@@ -198,17 +198,36 @@ class _NewRouteState extends State<NewRoute> {
     myRoute.pointsLng = pointsListLng;
     myRoute.routeDifficulty = distanceTotal > 1000 ? "Hard" : "Easy";
     myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
-    addRoute(routes);
 
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("Your route has been saved!"),
-      backgroundColor: Colors.red,
-      duration: Duration(milliseconds: 1500),
-    ));
+    // Test if the name already exists
+    var testOnName;
+    await getIdOfRouteByName(myRoute.routeName.toString())
+        .then((value) => setState(() {
+              testOnName = value;
+            }));
 
-    // Clear map to remove points after adding on the database
-    removePoint();
+    if (testOnName == null) {
+      // Add the route to the database
+      addRoute(routes);
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Your route has been saved!"),
+        backgroundColor: Colors.red,
+        duration: Duration(milliseconds: 1500),
+      ));
+
+      // Clear map to remove points after adding on the database
+      removePoint();
+      
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("A route with this name already exists :("),
+        backgroundColor: Colors.red,
+        duration: Duration(milliseconds: 1500),
+      ));
+    }
   }
 
   // Add a marker
@@ -260,7 +279,6 @@ class _NewRouteState extends State<NewRoute> {
     pointsListLng.removeRange(0, pointsListLng.length);
     distanceTotal = 0.0;
     durationTotal = 0.0;
-
 
     // Refresh screen
     setState(() {});
