@@ -30,7 +30,7 @@ class UserManagement {
           }
         },
       ),
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.white,
     );
   }
 

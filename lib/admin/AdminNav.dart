@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import '../pages/AllRoutes.dart';
 import '../pages/LikedRoutes.dart';
 import '../pages/MyCreatedRoutes.dart';
 import '../pages/New_route_page.dart';
-import '../pages/Profile.dart';
+import '../pages/ProfileMenu.dart';
 
 class AdminNav extends StatelessWidget {
   const AdminNav({super.key});
@@ -14,7 +15,11 @@ class AdminNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(
+          textTheme: GoogleFonts.montserratTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          useMaterial3: true),
       home: const RootPage(),
     );
   }

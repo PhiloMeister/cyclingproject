@@ -1,6 +1,7 @@
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'utils/snackbar.dart';
 import 'firebase_options.dart';
 
@@ -22,7 +23,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       scaffoldMessengerKey: Utils.scaffoldMessengerKey,
       navigatorKey: navigatorKey,
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        useMaterial3: true,
+      ),
       debugShowCheckedModeBanner: false,
       home: UserManagement().handleAuth(context),
       //home: const RootPage(),

@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/pages/Profile.dart';
-import 'package:cyclingproject/pages/Settings.dart';
+import 'package:cyclingproject/pages/Home.dart';
+import 'package:cyclingproject/pages/AppSettings.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import '../globals.dart' as globals;
 
@@ -11,7 +12,8 @@ import 'AllRoutes.dart';
 import 'AllRoutesStreamBuilder.dart';
 import 'New_route_page.dart';
 import 'MyCreatedRoutes.dart';
-import 'Settings.dart';
+import 'ProfileMenu.dart';
+import 'AppSettings.dart';
 import 'LikedRoutes.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,7 +23,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true),
+      theme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(
+          Theme.of(context).textTheme,
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        useMaterial3: true,
+      ),
       home: const RootPage(),
     );
   }
@@ -39,9 +47,10 @@ class _RootPageState extends State<RootPage> {
 
   final List<Widget> _pages = const [
     Home(),
+    AllRoutes(),
     AllRoutesStreamBuilder(),
     NewRoutePage(canEdit: false),
-
+    Profile()
     //LikedRoutes()
   ];
 
@@ -54,44 +63,34 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey.shade200,
-        appBar: AppBar(
-          backgroundColor: const Color(0XFFD9D9D9),
-          title: SizedBox(
-              width: 120,
-              child: Image.asset("assets/images/logo-bikevs-cropped.png")),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Profile()),
-                  );
-                },
-                icon: const Icon(Icons.account_circle_rounded))
-          ],
-        ),
+        /*appBar: AppBar(
+          backgroundColor: kPrimaryColor,
+        ),*/
+        resizeToAvoidBottomInset: false,
         body: _pages[currentPage],
         bottomNavigationBar: Container(
           color: const Color(0XFF1f1f1f),
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             child: GNav(
                 backgroundColor: const Color(0xFF1F1F1F),
                 color: Colors.white,
                 activeColor: const Color(0XFFB61818),
                 tabBackgroundColor: Colors.grey.shade200,
-                tabBorderRadius: 15,
+                tabBorderRadius: 4,
                 gap: 8,
                 onTabChange: (index) {
                   _navigateBottomBar(index);
                 },
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(6),
                 tabs: const [
                   GButton(icon: Icons.home, text: 'All routes'),
-                  GButton(icon: Icons.diamond_outlined, text: 'All routes stream'),
+                  GButton(icon: Icons.home, text: 'All routes'),
+                  GButton(
+                      icon: Icons.diamond_outlined, text: 'All routes stream'),
                   GButton(icon: Icons.map, text: 'Map'),
+                  GButton(icon: Icons.person_off_outlined, text: 'Profile'),
                   //GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 ]),
           ),
