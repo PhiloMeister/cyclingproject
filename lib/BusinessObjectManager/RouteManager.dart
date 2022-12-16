@@ -109,9 +109,13 @@ Future<String> getIdOfRouteByName(String nameInput) async {
       .get()
       .then((value) {
     //routeSearched = Routes.fromJson(value.docs.first.data());
-    nameFound = value.docs.first.reference.id;
+    try {
+      nameFound = value.docs.first.reference.id;
+    }
+    catch (e){
+      nameFound = null;
+    }
   });
-  print("nameFound  " + nameFound);
   return nameFound;
 }
 

@@ -1,6 +1,3 @@
-import 'dart:html';
-import 'dart:js';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/pages/New_route_page.dart';
 import 'package:cyclingproject/pages/map_page.dart';

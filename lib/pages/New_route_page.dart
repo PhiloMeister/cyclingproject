@@ -177,6 +177,7 @@ class _NewRouteState extends State<NewRoute> {
                 onChanged: (routeName) {
                   setState(() {
                     myRoute.routeName = routeName;
+                    print("the name route2 $routeName");
                   });
                 },
               ),
@@ -196,7 +197,7 @@ class _NewRouteState extends State<NewRoute> {
     myRoute.routeDuration = durationTotal.toDouble();
     myRoute.pointsLat = pointsListLat;
     myRoute.pointsLng = pointsListLng;
-    myRoute.routeDifficulty = distanceTotal > 1000 ? "Hard" : "Easy";
+    myRoute.routeDifficulty = distanceTotal > 10000 ? "Hard" : distanceTotal > 5000 ? "Medium" : "Easy" ;
     myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
 
     // Test if the name already exists
