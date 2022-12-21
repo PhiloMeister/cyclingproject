@@ -1,20 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/pages/Home.dart';
-import 'package:cyclingproject/pages/AppSettings.dart';
-import 'package:cyclingproject/services/usermanagement.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import '../globals.dart' as globals;
-
-import 'AllRoutes.dart';
 import 'AllRoutesStreamBuilder.dart';
 import 'New_route_page.dart';
-import 'MyCreatedRoutes.dart';
 import 'ProfileMenu.dart';
-import 'AppSettings.dart';
-import 'LikedRoutes.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -24,7 +14,7 @@ class HomePage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(
+        textTheme: GoogleFonts.soraTextTheme(
           Theme.of(context).textTheme,
         ),
         scaffoldBackgroundColor: Colors.white,
@@ -46,7 +36,7 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
   final List<Widget> _pages = const [
-    Home(),
+    //Home(),
     AllRoutes(),
     AllRoutesStreamBuilder(),
     NewRoutePage(canEdit: false),
@@ -85,11 +75,11 @@ class _RootPageState extends State<RootPage> {
                 },
                 padding: const EdgeInsets.all(6),
                 tabs: const [
-                  GButton(icon: Icons.home, text: 'All routes'),
+                  //GButton(icon: Icons.home, text: 'All routes'),
                   GButton(icon: Icons.home, text: 'All routes'),
                   GButton(
                       icon: Icons.diamond_outlined, text: 'All routes stream'),
-                  GButton(icon: Icons.map, text: 'Map'),
+                  //GButton(icon: Icons.map, text: 'Map'),
                   GButton(icon: Icons.person_off_outlined, text: 'Profile'),
                   //GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 ]),

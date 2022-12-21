@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: Utils.scaffoldMessengerKey,
       navigatorKey: navigatorKey,
       theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(
+        textTheme: GoogleFonts.soraTextTheme(
           Theme.of(context).textTheme,
         ),
         scaffoldBackgroundColor: Colors.white,

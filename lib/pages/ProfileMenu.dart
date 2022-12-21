@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/pages/AppSettings.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/widgets/my_account.dart';
+import 'package:cyclingproject/widgets/report_bug.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../globals.dart' as globals;
@@ -81,7 +82,14 @@ class _ProfileState extends State<Profile> {
               ProfileList(
                 text: "Report bug",
                 icon: Icons.bug_report,
-                press: () {},
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReportBug(),
+                    ),
+                  );
+                },
               ),
               ProfileList(
                 text: "Log Out",
@@ -93,15 +101,5 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
-  }
-
-  Future getUser() async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    Map<String, dynamic>? docData = userDoc.data() as Map<String, dynamic>?;
-    var userName = docData!['lastname'];
-    debugPrint(userName);
   }
 }

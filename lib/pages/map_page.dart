@@ -1,7 +1,5 @@
 import 'package:cyclingproject/BusinessObject/Routes.dart';
-import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
-import 'package:cyclingproject/pages/AllRoutes.dart';
-import 'package:cyclingproject/pages/New_route_page.dart';
+import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
@@ -9,6 +7,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+import '../theme/constants.dart';
 
 OpenRouteService openrouteservice = OpenRouteService(
     apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e',
@@ -24,21 +25,38 @@ class map_page extends StatelessWidget {
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: const Color(0XFFD9D9D9),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        titleSpacing: 0,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_sharp,
+                  color: kTextColor,
+                  size: 18,
+                )),
+          ),
         ),
-        title: Text("Route: ${myRoute.routeName}"),
+        /*title: const Text(
+          "My Account",
+          style: TextStyle(color: kTextColor),
+        ),*/
         centerTitle: true,
       ),
       body: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true),
-        home: MapPage(
-          routeToDisplay: myRoute,
-        ),
+        home: MapPage(routeToDisplay: myRoute),
       ),
     );
   }
@@ -61,6 +79,9 @@ class _MapPageState extends State<MapPage> {
   final Routes routeToDisplay;
   var distanceTotal = 0.0;
   var durationTotal = 0.0;
+  final panelController = PanelController();
+  static const double fabHeightClosed = 110.0;
+  double fabHeight = fabHeightClosed;
 
   // 2 types of map that can be switched
   var maps = [
@@ -90,31 +111,102 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    final panelHeightClosed = MediaQuery.of(context).size.height * 0.09;
+    final panelHeightOpen = MediaQuery.of(context).size.height * 0.2;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          SizedBox(
-            child: FlutterMap(
-              options: MapOptions(
-                center: userLocation,
-                zoom: 15.0,
-              ),
-              mapController: _mapController,
-              children: [
-                TileLayer(
-                  urlTemplate: maps[currentMap],
-                ),
-                MarkerLayer(markers: markers),
-                PolylineLayer(
-                  polylines: [
-                    Polyline(
-                        points: points, strokeWidth: 5.0, color: Colors.red),
-                  ],
-                ),
-              ],
+        body: Stack(
+      children: [
+        SizedBox(
+          child: FlutterMap(
+            options: MapOptions(
+              center: userLocation,
+              zoom: 15.0,
             ),
+            mapController: _mapController,
+            children: [
+              TileLayer(
+                urlTemplate: maps[currentMap],
+              ),
+              MarkerLayer(markers: markers),
+              PolylineLayer(
+                polylines: [
+                  Polyline(points: points, strokeWidth: 5.0, color: Colors.red),
+                ],
+              ),
+            ],
           ),
-          if (routeToDisplay.routeLenght != 0.0) ...[
+        ),
+        Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            /*Positioned(
+              top: 60,
+              left: 10,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new_sharp,
+                      color: kTextColor,
+                      size: 18,
+                    )),
+              ),
+            ),*/
+            Positioned(
+              top: 60,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  "Route: ${routeToDisplay.routeName}",
+                  style: const TextStyle(
+                      color: kTextColor,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            SlidingUpPanel(
+              color: kPrimaryLightColor,
+              controller: panelController,
+              maxHeight: panelHeightOpen,
+              minHeight: panelHeightClosed,
+              panelBuilder: (controller) => PanelWidget(
+                  controller: controller,
+                  panelController: panelController,
+                  routeToDisplay: routeToDisplay),
+              parallaxEnabled: true,
+              parallaxOffset: .5,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18),
+              ),
+              onPanelSlide: ((position) => setState(() {
+                    final panelMaxScrollExtent =
+                        panelHeightOpen - panelHeightClosed;
+
+                    fabHeight =
+                        position * panelMaxScrollExtent + fabHeightClosed;
+                  })),
+            ),
+            Positioned(
+              right: 20,
+              bottom: fabHeight,
+              child: buildFAB(context),
+            ),
+          ],
+        ),
+        /*if (routeToDisplay.routeLenght != 0.0) ...[
             ColoredBox(
               color: const Color.fromARGB(255, 217, 217, 217),
               child: Padding(
@@ -131,10 +223,12 @@ class _MapPageState extends State<MapPage> {
                 ]),
               ),
             ),
-          ],
-        ],
-      ),
-      floatingActionButton: SpeedDial(
+          ],*/
+      ],
+    ));
+  }
+
+  Widget buildFAB(BuildContext context) => SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         overlayOpacity: 0,
         backgroundColor: const Color(0XFF1f1f1f),
@@ -153,10 +247,7 @@ class _MapPageState extends State<MapPage> {
             onTap: () => {changeMap()},
           ),
         ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-    );
-  }
+      );
 
   // Switch between satellite and default map
   void changeMap() {
@@ -171,8 +262,8 @@ class _MapPageState extends State<MapPage> {
   }
 
   void getCurrentLocation() async {
-    var position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
     setState(() {
       userLocation = LatLng(position.latitude, position.longitude);
@@ -243,6 +334,130 @@ class _MapPageState extends State<MapPage> {
     // Refresh screen
     setState(() {});
   }
+}
+
+class PanelWidget extends StatelessWidget {
+  final ScrollController controller;
+  final PanelController panelController;
+  final Routes routeToDisplay;
+
+  const PanelWidget(
+      {Key? key,
+      required this.controller,
+      required this.panelController,
+      required this.routeToDisplay})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => ListView(
+        padding: EdgeInsets.zero,
+        controller: controller,
+        children: <Widget>[
+          addVerticalSpace(12),
+          buildDragHandle(),
+          addVerticalSpace(18),
+          buildAboutText(),
+          addVerticalSpace(24)
+        ],
+      );
+
+  Widget buildAboutText() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Text("Informations",
+                  style: TextStyle(
+                      color: kTitleColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600)),
+            ),
+            addVerticalSpace(30),
+            if (routeToDisplay.routeLenght != 0.0) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    /*decoration: BoxDecoration(
+                      border: Border.all(color: kSecondaryColor),
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    )*/
+                    child: Column(children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Distance:",
+                              textAlign: TextAlign.center,
+                              style:
+                                  TextStyle(color: kPrimaryColor, fontSize: 12),
+                            ),
+                            Text(
+                              "${(routeToDisplay.routeLenght! / 1000).toStringAsFixed(2)} km ",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+                  ),
+                  Column(children: [
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      /*decoration: const BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),*/
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Time:",
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: kPrimaryColor, fontSize: 12),
+                          ),
+                          Text(
+                            "${(routeToDisplay.routeDuration! / 60).toStringAsFixed(2)} min",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    )
+                  ]),
+                ],
+              ),
+            ],
+          ],
+        ),
+      );
+
+  Widget buildDragHandle() => GestureDetector(
+        onTap: togglePanel,
+        child: Center(
+          child: Container(
+            width: 30,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      );
+
+  void togglePanel() => panelController.isPanelOpen
+      ? panelController.close()
+      : panelController.open();
 }
 
 class LineString {

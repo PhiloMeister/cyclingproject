@@ -1,4 +1,3 @@
-import 'package:cyclingproject/pages/ProfileMenu.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +91,7 @@ class _AllRoutesState extends State<AllRoutes> {
             RouteOfTheDayBanner(),
             addVerticalSpace(30),
             Padding(
-              padding: const EdgeInsets.only(left: 25.0),
+              padding: const EdgeInsets.only(left: 25.0, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -168,6 +167,7 @@ class _AllRoutesState extends State<AllRoutes> {
 
   PopupMenuButton<Menu> PopUpMenu() {
     return PopupMenuButton<Menu>(
+      icon: const Icon(Icons.filter_list),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
         PopupMenuItem<Menu>(
           onTap: () {

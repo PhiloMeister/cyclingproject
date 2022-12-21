@@ -1,10 +1,41 @@
-import 'package:cyclingproject/theme/constants.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class ProfilePic extends StatelessWidget {
-  const ProfilePic({
-    Key? key,
-  }) : super(key: key);
+import 'package:cyclingproject/theme/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+class ProfilePic extends StatefulWidget {
+  const ProfilePic({super.key});
+
+  @override
+  State<ProfilePic> createState() => _ProfilePicState();
+}
+
+class _ProfilePicState extends State<ProfilePic> {
+  String imageUrl = " ";
+
+  void pickUploadImage() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 115,
+      maxHeight: 115,
+      imageQuality: 75,
+    );
+
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child("${FirebaseAuth.instance.currentUser?.uid}/profilepic.jpg");
+
+    await ref.putFile(File(image!.path));
+
+    ref.getDownloadURL().then((value) {
+      setState(() {
+        imageUrl = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +47,15 @@ class ProfilePic extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/profile.jpg"),
+                image: imageUrl == " "
+                    ? const AssetImage("assets/images/profile.jpg")
+                        as ImageProvider
+                    : NetworkImage(imageUrl),
                 fit: BoxFit.fill,
               ),
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(5),
               ),
               shape: BoxShape.rectangle,
@@ -42,7 +76,9 @@ class ProfilePic extends StatelessWidget {
                   ),
                   backgroundColor: kPrimaryColor,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  pickUploadImage();
+                },
                 child: const Icon(Icons.camera_alt_outlined),
               ),
             ),

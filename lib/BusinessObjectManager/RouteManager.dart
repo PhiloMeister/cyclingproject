@@ -1,12 +1,8 @@
 import 'dart:core';
-import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/BusinessObject/Marker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:cyclingproject/BusinessObject/Routes.dart';
-import 'package:flutter/services.dart';
 
 // Return a list of all routes
 Future<List<Routes>> getAllRoutes() async {
@@ -111,8 +107,7 @@ Future<String> getIdOfRouteByName(String nameInput) async {
     //routeSearched = Routes.fromJson(value.docs.first.data());
     try {
       nameFound = value.docs.first.reference.id;
-    }
-    catch (e){
+    } catch (e) {
       nameFound = null;
     }
   });

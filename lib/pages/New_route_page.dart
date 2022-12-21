@@ -197,7 +197,11 @@ class _NewRouteState extends State<NewRoute> {
     myRoute.routeDuration = durationTotal.toDouble();
     myRoute.pointsLat = pointsListLat;
     myRoute.pointsLng = pointsListLng;
-    myRoute.routeDifficulty = distanceTotal > 10000 ? "Hard" : distanceTotal > 5000 ? "Medium" : "Easy" ;
+    myRoute.routeDifficulty = distanceTotal > 10000
+        ? "Hard"
+        : distanceTotal > 5000
+            ? "Medium"
+            : "Easy";
     myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
 
     // Test if the name already exists
@@ -220,7 +224,6 @@ class _NewRouteState extends State<NewRoute> {
 
       // Clear map to remove points after adding on the database
       removePoint();
-      
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -287,8 +290,8 @@ class _NewRouteState extends State<NewRoute> {
 
   // Get the current position of the user by clicking on the position button
   void getCurrentLocation() async {
-    var position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
     setState(() {
       userLocation = LatLng(position.latitude, position.longitude);

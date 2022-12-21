@@ -123,7 +123,9 @@ class _MyAccountState extends State<MyAccount> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0))),
                           icon: const Icon(
-                              color: kPrimaryLightColor, Icons.login, size: 24),
+                              color: kPrimaryLightColor,
+                              Icons.send_sharp,
+                              size: 24),
                           label: const Text(
                             'Change',
                             style: TextStyle(

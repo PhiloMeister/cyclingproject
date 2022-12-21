@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../pages/AllRoutes.dart';
-import '../pages/LikedRoutes.dart';
 import '../pages/MyCreatedRoutes.dart';
 import '../pages/New_route_page.dart';
 import '../pages/ProfileMenu.dart';
@@ -16,7 +14,7 @@ class AdminNav extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          textTheme: GoogleFonts.montserratTextTheme(
+          textTheme: GoogleFonts.soraTextTheme(
             Theme.of(context).textTheme,
           ),
           useMaterial3: true),
