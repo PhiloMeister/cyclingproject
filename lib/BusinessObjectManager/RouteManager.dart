@@ -102,6 +102,18 @@ Future<void> addToLikedRoutes(Routes routeInput) async {
       .set(e);
 }
 
+Future<void> removeToLikedRoutes(Routes routeInput) async {
+  Map<String, dynamic> e = <String, dynamic>{};
+  var idOfgodamnRoute = await getIdOfRouteByName(routeInput.routeName.toString());
+  print("addToLikedRoute id  : " + idOfgodamnRoute);
+  await FirebaseFirestore.instance
+      .collection("Users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("likedRoutes")
+      .doc(idOfgodamnRoute.toString())
+      .delete();
+}
+
 Future<String> getIdOfRouteByName(String nameInput) async {
   var nameFound;
   await FirebaseFirestore.instance
@@ -174,8 +186,7 @@ Future<void> deleteLikedRoute(Routes routes) async {
       .delete();
 }
 
-Future<List<Routes>> addLikedOrNotToListOfRoutes(
-    List<Routes> listOfAllroutes) async {
+Future<List<Routes>> addLikedOrNotToListOfRoutes(List<Routes> listOfAllroutes) async {
   List<Routes> listOfLikedRoutes = <Routes>[];
   //get list of liked routes
   var listOfIds = await getLikedIdsOfUser();
@@ -191,3 +202,20 @@ Future<List<Routes>> addLikedOrNotToListOfRoutes(
 
   return listOfAllroutes;
 }
+Future<Routes> addLikedOrNotToListOfRoutesButForOneRoute(Routes route) async {
+  List<Routes> listOfLikedRoutes = <Routes>[];
+  //get list of liked routes
+  var listOfIds = await getLikedIdsOfUser();
+  listOfLikedRoutes = await getListOfLikedRoutes(listOfIds);
+  //get list of all routes
+  listOfLikedRoutes.forEach((routeLiked) {
+
+      if (routeLiked.routeName == route.routeName) {
+        route.routeLiked = true;
+      }
+
+  });
+
+  return route;
+}
+
