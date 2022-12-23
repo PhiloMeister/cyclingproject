@@ -167,7 +167,7 @@ class _AllRoutesState extends State<AllRoutes> {
 
   PopupMenuButton<Menu> PopUpMenu() {
     return PopupMenuButton<Menu>(
-      icon: const Icon(Icons.filter_list),
+      icon: const Icon(Icons.filter_alt),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
         PopupMenuItem<Menu>(
           onTap: () {
