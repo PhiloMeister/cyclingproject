@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/pages/New_route_page.dart';
 import 'package:cyclingproject/services/usermanagement.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../BusinessObject/Routes.dart';
@@ -17,12 +20,12 @@ class AllRoutes extends StatefulWidget {
 }
 
 class _AllRoutesState extends State<AllRoutes> {
-  var checkTextField;
+  var checkTextField = "";
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
-  bool lengthSwitch = false;
-  bool durationSwitch = false;
-  bool likedSwitch = false;
+  var lengthSwitch = "null";
+  var durationSwitch = "null";
+  var likedSwitch = "null";
 
   @override
   initState() {
@@ -38,13 +41,11 @@ class _AllRoutesState extends State<AllRoutes> {
     } else {
       print("list Is NOT empty");
     }
-
     if (listOfFilteredRoutes.isEmpty) {
       if (checkTextField == null || checkTextField.toString().isEmpty) {
         listOfFilteredRoutes = listOfAllRoutes;
       }
     }
-
     return "Gandhi was good";
   }
 
@@ -61,8 +62,15 @@ class _AllRoutesState extends State<AllRoutes> {
           icon: routes.routeLiked!
               ? const Icon(Icons.favorite)
               : const Icon(Icons.favorite_border),
-          onPressed: () {
-            addToLikedRoutes(routes);
+          onPressed: () async {
+            if (routes.routeLiked == false) {
+              await addToLikedRoutes(routes);
+              setState(() {});
+            } else {
+              await removeToLikedRoutes(routes);
+              setState(() {});
+            }
+            print("Pressed on LIKE");
           },
         ),
         leading: CircleAvatar(
@@ -77,7 +85,7 @@ class _AllRoutesState extends State<AllRoutes> {
         subtitle: Text(
             "Length: ${routes.routeLenght?.toStringAsFixed(2)} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
       );
-
+  List<Routes> items = [];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -105,17 +113,83 @@ class _AllRoutesState extends State<AllRoutes> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0, vertical: 20),
-                  child: FutureBuilder<String>(
-                    future: initVariables(),
-                    builder: (context, snapshot) {
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("Routes")
+                        .snapshots()
+                        .asyncMap(
+                      (snapshot) async {
+                        //test
+                        // Perform asynchronous data manipulation here
+                        List<Routes> routes = snapshot.docs.map((document) {
+                          print("get data");
+                          Map<String, dynamic> e =
+                              document.data() as Map<String, dynamic>;
+                          return Routes.fromJson(e);
+                        }).toList();
+                        routes = await addLikedOrNotToListOfRoutes(routes);
+// TODO extract all thoses switch's into a method
+
+                        if (checkTextField.isEmpty) {
+                        } else {
+                          routes = routes
+                              .where((route) => route.routeName
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(checkTextField.toLowerCase()))
+                              .toList();
+                          routes.forEach((element) {
+                            print(element.routeName.toString());
+                          });
+                        }
+
+                        switch (lengthSwitch) {
+                          case "ASC":
+                            print("ASC");
+                            routes = filterByLengthASCV2(routes);
+                            break;
+                          case "DESC":
+                            print("DESC");
+                            routes = filterByLengthDESV2(routes);
+                            break;
+                          default:
+                            print("DEFAULT");
+                            break;
+                        }
+                        switch (durationSwitch) {
+                          case "ASC":
+                            print("ASC");
+                            routes = filterByDurationASCV2(routes);
+                            break;
+                          case "DESC":
+                            print("DESC");
+                            routes = filterByDurationDESV2(routes);
+                            break;
+                          default:
+                            print("DEFAULT");
+                            break;
+                        }
+                        switch (likedSwitch) {
+                          case "YES":
+                            print("LIKED FILTER ON");
+                            routes = filterByLikedV2(routes);
+                            break;
+                          default:
+                            print("DEFAULT");
+                            break;
+                        }
+                        return routes;
+                      },
+                    ),
+                    builder: (context, AsyncSnapshot<List<Routes>> snapshot) {
                       List<Widget> children;
                       if (snapshot.hasData) {
                         return ListView.separated(
                           shrinkWrap: true,
-                          itemCount: listOfFilteredRoutes.length,
+                          itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             // return  buildRoute(listOfLikedRoutes[index]);
-                            return buildRoutes(listOfFilteredRoutes[index]);
+                            return buildRoutes(snapshot.data![index]);
                           },
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
@@ -171,13 +245,15 @@ class _AllRoutesState extends State<AllRoutes> {
       itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
         PopupMenuItem<Menu>(
           onTap: () {
-            if (lengthSwitch == false) {
-              filterByLengthASC();
-              lengthSwitch = !lengthSwitch;
+            if (lengthSwitch == "null" || lengthSwitch == "DESC") {
+              lengthSwitch = "ASC";
             } else {
-              filterByLengthDES();
-              lengthSwitch = !lengthSwitch;
+              lengthSwitch = "DESC";
             }
+            //reset the others
+            durationSwitch = "null";
+            likedSwitch = "null";
+            setState(() {});
           },
           child: const ListTile(
             leading: Icon(Icons.social_distance), // your icon
@@ -186,13 +262,15 @@ class _AllRoutesState extends State<AllRoutes> {
         ),
         PopupMenuItem<Menu>(
           onTap: () {
-            if (durationSwitch == false) {
-              filterByDurationASC();
-              durationSwitch = !durationSwitch;
+            if (durationSwitch == "null" || durationSwitch == "DESC") {
+              durationSwitch = "ASC";
             } else {
-              filterByDurationDES();
-              durationSwitch = !durationSwitch;
+              durationSwitch = "DESC";
             }
+            //reset the others
+            lengthSwitch = "null";
+            likedSwitch = "null";
+            setState(() {});
           },
           child: const ListTile(
             leading: Icon(Icons.timelapse), // your icon
@@ -204,7 +282,15 @@ class _AllRoutesState extends State<AllRoutes> {
         ),
         PopupMenuItem<Menu>(
           onTap: () {
-            filterByLiked();
+            if (likedSwitch == "null") {
+              likedSwitch = "YES";
+            } else {
+              likedSwitch = "null";
+            }
+            //reset the others
+            lengthSwitch = "null";
+            durationSwitch = "null";
+            setState(() {});
           },
           child: const ListTile(
             leading: Icon(Icons.heart_broken), // your icon
@@ -342,6 +428,12 @@ class _AllRoutesState extends State<AllRoutes> {
           ));
   */
 
+  Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
+      .collection("Routes")
+      .snapshots()
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
+
   void filterList(String value) {
     if (value.isEmpty) {
       setState(() {
@@ -362,19 +454,29 @@ class _AllRoutesState extends State<AllRoutes> {
     }
   }
 
-  void filterByLengthASC() {
+  List<Routes> filterByLengthASCV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
-
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeLenght}");
       }
-      setState(() {});
     }
+    return listOfFilteredRoutes;
   }
 
-  void filterByLengthDES() {
+  List<Routes> filterByLengthDESV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeLenght}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
+
+/*  void filterByLengthDES() {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
@@ -384,9 +486,9 @@ class _AllRoutesState extends State<AllRoutes> {
       }
       setState(() {});
     }
-  }
+  }*/
 
-  void filterByDurationASC() {
+  List<Routes> filterByDurationASCV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => a.routeDuration!.compareTo(b.routeDuration!));
@@ -394,11 +496,11 @@ class _AllRoutesState extends State<AllRoutes> {
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeDuration}");
       }
-      setState(() {});
     }
+    return listOfFilteredRoutes;
   }
 
-  void filterByDurationDES() {
+  List<Routes> filterByDurationDESV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => b.routeDuration!.compareTo(a.routeDuration!));
@@ -406,19 +508,19 @@ class _AllRoutesState extends State<AllRoutes> {
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeDuration}");
       }
-      setState(() {});
     }
+    return listOfFilteredRoutes;
   }
 
-  void filterByLiked() {
+  List<Routes> filterByLikedV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes.sort((a, b) =>
           b.routeLiked!.toString().compareTo(a.routeLiked!.toString()));
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeDuration}");
       }
-      setState(() {});
     }
+    return listOfFilteredRoutes;
   }
 }
 

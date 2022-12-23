@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../BusinessObject/Routes.dart';
 import '../../BusinessObjectManager/RouteManager.dart';
+import '../theme/constants.dart';
 
 class AllRoutesStreamBuilder extends StatefulWidget {
   const AllRoutesStreamBuilder({super.key});
@@ -79,8 +80,7 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
                 child: TextField(
               onChanged: (value) {
                 checkTextField = value.toString();
-                setState(() {
-                });
+                setState(() {});
               },
               decoration: const InputDecoration(
                   labelText: 'Search a route..',
@@ -137,80 +137,100 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
             stream: FirebaseFirestore.instance
                 .collection("Routes")
                 .snapshots()
-                .asyncMap((snapshot) async {
-                  //test
-              // Perform asynchronous data manipulation here
-              List<Routes> routes = snapshot.docs.map((document) {
-                print("get data");
-                Map<String, dynamic> e =
-                    document.data() as Map<String, dynamic>;
-                return Routes.fromJson(e);
-              }).toList();
-              routes = await addLikedOrNotToListOfRoutes(routes);
+                .asyncMap(
+              (snapshot) async {
+                //test
+                // Perform asynchronous data manipulation here
+                List<Routes> routes = snapshot.docs.map((document) {
+                  print("get data");
+                  Map<String, dynamic> e =
+                      document.data() as Map<String, dynamic>;
+                  return Routes.fromJson(e);
+                }).toList();
+                routes = await addLikedOrNotToListOfRoutes(routes);
 // TODO extract all thoses switch's into a method
 
-              if (checkTextField.isEmpty) {
-
-              } else {
+                if (checkTextField.isEmpty) {
+                } else {
                   routes = routes
                       .where((route) => route.routeName
-                      .toString()
-                      .toLowerCase()
-                      .contains(checkTextField.toLowerCase()))
+                          .toString()
+                          .toLowerCase()
+                          .contains(checkTextField.toLowerCase()))
                       .toList();
                   routes.forEach((element) {
                     print(element.routeName.toString());
                   });
-              }
+                }
 
-              switch (lengthSwitch) {
-                case "ASC":
-                  print("ASC");
-                  routes = filterByLengthASCV2(routes);
-                  break;
-                case "DESC":
-                  print("DESC");
-                  routes = filterByLengthDESV2(routes);
-                  break;
-                default:
-                  print("DEFAULT");
-                  break;
-              }
-              switch (durationSwitch) {
-                case "ASC":
-                  print("ASC");
-                  routes = filterByDurationASCV2(routes);
-                  break;
-                case "DESC":
-                  print("DESC");
-                  routes = filterByDurationDESV2(routes);
-                  break;
-                default:
-                  print("DEFAULT");
-                  break;
-              }
-              switch (likedSwitch) {
-                case "YES":
-                  print("LIKED FILTER ON");
-                  routes = filterByLikedV2(routes);
-                  break;
-                default:
-                  print("DEFAULT");
-                  break;
-              }
-              return routes;
-            }),
+                switch (lengthSwitch) {
+                  case "ASC":
+                    print("ASC");
+                    routes = filterByLengthASCV2(routes);
+                    break;
+                  case "DESC":
+                    print("DESC");
+                    routes = filterByLengthDESV2(routes);
+                    break;
+                  default:
+                    print("DEFAULT");
+                    break;
+                }
+                switch (durationSwitch) {
+                  case "ASC":
+                    print("ASC");
+                    routes = filterByDurationASCV2(routes);
+                    break;
+                  case "DESC":
+                    print("DESC");
+                    routes = filterByDurationDESV2(routes);
+                    break;
+                  default:
+                    print("DEFAULT");
+                    break;
+                }
+                switch (likedSwitch) {
+                  case "YES":
+                    print("LIKED FILTER ON");
+                    routes = filterByLikedV2(routes);
+                    break;
+                  default:
+                    print("DEFAULT");
+                    break;
+                }
+                return routes;
+              },
+            ),
             builder: (context, AsyncSnapshot<List<Routes>> snapshot) {
               if (snapshot.error != null) {
                 return Center(child: Text(snapshot.error.toString()));
               }
               if (snapshot.data == null) {
-                return const CircularProgressIndicator();
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Awaiting result...'),
+                      ),
+                    ],
+                  ),
+                );
               }
               return ListView(
-                children: snapshot.data!.map((route) {
-                  return buildRoutes(route);
-                }).toList(),
+                children: snapshot.data!.map(
+                  (route) {
+                    return buildRoutes(route);
+                  },
+                ).toList(),
               );
             },
           ),
@@ -257,7 +277,7 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
       .map((snapshot) =>
           snapshot.docs.map((doc) => Routes.fromJson(doc.data())).toList());
 
-void filterList(String value) {
+  void filterList(String value) {
     if (value.isEmpty) {
       setState(() {
         listOfFilteredRoutes.clear();
