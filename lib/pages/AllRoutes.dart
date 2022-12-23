@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/pages/New_route_page.dart';
+import 'package:cyclingproject/pages/map_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -45,17 +47,15 @@ class _HomeState extends State<Home> {
     return "Gandhi was good";
   }
 
-  Widget buildRoutes(Routes routes) => ListTile(
-        onLongPress: () {
-          openDialogLikedRoutes(routes);
-        },
+  Widget buildRoutes(Routes routes, BuildContext context) => ListTile(
         onTap: () {
-          addToLikedRoutes(routes);
-          print("Pressed on LIKE");
+          displayRouteOnMap(routes, context);
         },
-        trailing: routes.routeLiked!
+        trailing: 
+        IconButton(icon: routes.routeLiked!
             ? const Icon(Icons.favorite)
-            : const Icon(Icons.favorite_border),
+            : const Icon(Icons.favorite_border), 
+            onPressed: () { addToLikedRoutes(routes); },),
         leading: const CircleAvatar(child: Text("test")),
         title: Text(routes.routeName.toString()),
         subtitle: Text(
@@ -76,7 +76,7 @@ class _HomeState extends State<Home> {
                 checkTextField = value.toString();
               },
               decoration: const InputDecoration(
-                  labelText: 'Search a route..',
+                  labelText: 'Search a route...',
                   suffixIcon: Icon(Icons.search)),
             )),
           ],
@@ -123,7 +123,7 @@ class _HomeState extends State<Home> {
                   itemCount: listOfFilteredRoutes.length,
                   itemBuilder: (BuildContext context, int index) {
                     // return  buildRoute(listOfLikedRoutes[index]);
-                    return buildRoutes(listOfFilteredRoutes[index]);
+                    return buildRoutes(listOfFilteredRoutes[index], context);
                   },
                 );
               } else if (snapshot.hasError) {
@@ -164,28 +164,35 @@ class _HomeState extends State<Home> {
     ));
   }
 
-  void openDialogLikedRoutes(Routes route) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: const Text("Actions available"),
-            actions: [
-              ElevatedButton(
-                  onPressed: () {
-                    addToLikedRoutes(route);
-                  },
-                  child: const Text("Like the route")),
-              ElevatedButton(
-                  onPressed: () {
-                    //TODO insert method to display route
-                  },
-                  child: const Text("Display route")),
-              BackButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ));
+  void displayRouteOnMap(Routes myRoute, BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => map_page(myRoute: myRoute)));
+  }
+
+  // void openDialogLikedRoutes(Routes route) => showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //           title: const Text("Actions available"),
+  //           actions: [
+  //             ElevatedButton(
+  //                 onPressed: () {
+  //                   addToLikedRoutes(route);
+  //                 },
+  //                 child: const Text("Like the route")),
+  //             ElevatedButton(
+  //                 onPressed: () {
+  //                   //TODO insert method to display route
+  //                 },
+  //                 child: const Text("Display route")),
+  //             BackButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //             ),
+  //           ],
+  //         ));
 
   void filterList(String value) {
     if (value.isEmpty) {

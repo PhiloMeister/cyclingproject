@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:flutter/services.dart';
 
+// Return a list of all routes
 Future<List<Routes>> getAllRoutes() async {
 
   List<Routes> listOfRoutes = <Routes>[];
@@ -23,6 +24,7 @@ Future<List<Routes>> getAllRoutes() async {
   return listOfRoutes;
 }
 
+// Add a route to the database
 Future<void> addRoute(Routes route) async {
   await FirebaseFirestore.instance.collection("Routes").add(route.toJson());
 }
@@ -122,7 +124,11 @@ Future<String> getIdOfRouteByName(String nameInput) async {
       .get()
       .then((value) {
     //routeSearched = Routes.fromJson(value.docs.first.data());
-    nameFound = value.docs.first.reference.id;
+    try {
+      nameFound = value.docs.first.reference.id;
+    } catch (e) {
+      nameFound = null;
+    }
   });
   print("nameFound  " + nameFound);
   return nameFound;
@@ -162,9 +168,9 @@ Future<List<Routes>> getCreatedRoutesOfUserList() async {
 
 Future<void> deleteCreatedRouteOfUser(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
-  //delete from Routes collection
+  // Delete from Routes collection
   await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).delete();
-  //delete from the user likedRoutes collection
+  // Delete from the user likedRoutes collection
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -172,12 +178,23 @@ Future<void> deleteCreatedRouteOfUser(Routes routes) async {
       .doc(idOfRoute)
       .delete();
 }
-//deprecated but dont delete
+
+// Edit the route by updating its name
+Future<void> editRoute(Routes routes, String newName) async {
+  var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
+  //Edit from Routes collection
+  await FirebaseFirestore.instance
+      .collection("Routes")
+      .doc(idOfRoute)
+      .update({"name": newName});
+}
+
+// Deprecated but dont delete
 Future<void> deleteLikedRoute(Routes routes) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
-  //delete from Routes collection
+  // Delete from Routes collection
   await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).delete();
-  //delete from the user likedRoutes collection
+  // Delete from the user likedRoutes collection
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid)

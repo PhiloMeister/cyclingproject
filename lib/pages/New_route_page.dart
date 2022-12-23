@@ -68,7 +68,6 @@ class _NewRouteState extends State<NewRoute> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getCurrentLocation();
     _mapController = MapController();
@@ -128,7 +127,7 @@ class _NewRouteState extends State<NewRoute> {
         backgroundColor: const Color(0XFF1f1f1f),
         spacing: 0,
         spaceBetweenChildren: 12,
-        closeManually: true,
+        closeManually: false,
         children: [
           canEdit
               ? SpeedDialChild(
@@ -147,7 +146,7 @@ class _NewRouteState extends State<NewRoute> {
             label: "Change map",
             onTap: () => {changeMap()},
           ),
-          canEdit
+          points.length >= 2
               ? SpeedDialChild(
                   child: const Icon(Icons.save),
                   label: "Save",
@@ -178,6 +177,7 @@ class _NewRouteState extends State<NewRoute> {
                 onChanged: (routeName) {
                   setState(() {
                     myRoute.routeName = routeName;
+                    print("the name route2 $routeName");
                   });
                 },
               ),
@@ -197,13 +197,41 @@ class _NewRouteState extends State<NewRoute> {
     myRoute.routeDuration = durationTotal.toDouble();
     myRoute.pointsLat = pointsListLat;
     myRoute.pointsLng = pointsListLng;
-    // myRoute.routeStartLat = startLat.toDouble();
-    // myRoute.routeStartLng = startLng.toDouble();
-    // myRoute.routeEndLat = endLat.toDouble();
-    // myRoute.routeEndLng = endLng.toDouble();
-    myRoute.routeDifficulty = distanceTotal > 1000 ? "Hard" : "Easy";
+    myRoute.routeDifficulty = distanceTotal > 10000
+        ? "Hard"
+        : distanceTotal > 5000
+            ? "Medium"
+            : "Easy";
     myRoute.routeCreator = await FirebaseAuth.instance.currentUser?.uid;
-    addRoute(routes);
+
+    // Test if the name already exists
+    var testOnName;
+    await getIdOfRouteByName(myRoute.routeName.toString())
+        .then((value) => setState(() {
+              testOnName = value;
+            }));
+
+    if (testOnName == null) {
+      // Add the route to the database
+      addRoute(routes);
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Your route has been saved!"),
+        backgroundColor: Colors.red,
+        duration: Duration(milliseconds: 1500),
+      ));
+
+      // Clear map to remove points after adding on the database
+      removePoint();
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("A route with this name already exists :("),
+        backgroundColor: Colors.red,
+        duration: Duration(milliseconds: 1500),
+      ));
+    }
   }
 
   // Add a marker
@@ -221,9 +249,9 @@ class _NewRouteState extends State<NewRoute> {
 
   // Add a point on the map
   void addPoint(LatLng point) {
-      // Add the points to list for database
-      pointsListLat.add(point.latitude);
-      pointsListLng.add(point.longitude);
+    // Add the points to list for database
+    pointsListLat.add(point.latitude);
+    pointsListLng.add(point.longitude);
 
     if (points.isEmpty) {
       Marker marker = addMarker(point);
@@ -262,8 +290,8 @@ class _NewRouteState extends State<NewRoute> {
 
   // Get the current position of the user by clicking on the position button
   void getCurrentLocation() async {
-    var position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
     setState(() {
       userLocation = LatLng(position.latitude, position.longitude);
@@ -301,9 +329,7 @@ class _NewRouteState extends State<NewRoute> {
     var durations = await openrouteservice.matrixPost(locations: locations);
     durationTotal += durations.durations[0][1];
 
-    print("$distanceTotal m");
-    print("$durationTotal sec");
-
+    // Refresh screen
     setState(() {});
   }
 }
