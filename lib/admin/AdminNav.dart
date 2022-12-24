@@ -1,3 +1,4 @@
+import 'package:cyclingproject/pages/MyCreatedRoutesStreamBuilder.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -34,7 +35,7 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
   final List<Widget> _pages = const [
-    MyCreatedRoutes(),
+    MyCreatedRoutesStreamBuilder(),
     NewRoutePage(
       canEdit: true,
     ),

@@ -38,8 +38,8 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> _pages = const [
     //Home(),
     AllRoutes(),
-    AllRoutesStreamBuilder(),
-    NewRoutePage(canEdit: false),
+    //AllRoutesStreamBuilder(),
+    //NewRoutePage(canEdit: false),
     Profile()
     //LikedRoutes()
   ];

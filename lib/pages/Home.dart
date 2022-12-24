@@ -32,6 +32,7 @@ class _AllRoutesState extends State<AllRoutes> {
     super.initState();
   }
 
+/*
   Future<String> initVariables() async {
     print("REFRESHED");
     listOfAllRoutes = await getAllRoutes();
@@ -48,6 +49,7 @@ class _AllRoutesState extends State<AllRoutes> {
     }
     return "Gandhi was good";
   }
+*/
 
   Widget buildRoutes(Routes routes) => ListTile(
         shape: RoundedRectangleBorder(
@@ -129,7 +131,6 @@ class _AllRoutesState extends State<AllRoutes> {
                         }).toList();
                         routes = await addLikedOrNotToListOfRoutes(routes);
 // TODO extract all thoses switch's into a method
-
                         if (checkTextField.isEmpty) {
                         } else {
                           routes = routes

@@ -27,22 +27,6 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
     super.initState();
   }
 
-  Future<String> initVariables() async {
-    print("REFRESHED");
-    listOfAllRoutes = await getAllRoutes();
-    listOfAllRoutes = await addLikedOrNotToListOfRoutes(listOfAllRoutes);
-    if (listOfFilteredRoutes.isEmpty) {
-      print("list Is empty");
-    } else {
-      print("list Is NOT empty");
-    }
-    if (listOfFilteredRoutes.isEmpty) {
-      if (checkTextField == null || checkTextField.toString().isEmpty) {
-        listOfFilteredRoutes = listOfAllRoutes;
-      }
-    }
-    return "Gandhi was good";
-  }
 
   Widget buildRoutes(Routes routes) => ListTile(
         onLongPress: () {
@@ -148,8 +132,6 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
                   return Routes.fromJson(e);
                 }).toList();
                 routes = await addLikedOrNotToListOfRoutes(routes);
-// TODO extract all thoses switch's into a method
-
                 if (checkTextField.isEmpty) {
                 } else {
                   routes = routes
@@ -319,17 +301,6 @@ class _AllRoutesStreamBuilderState extends State<AllRoutesStreamBuilder> {
     return listOfFilteredRoutes;
   }
 
-/*  void filterByLengthDES() {
-    if (listOfFilteredRoutes.isNotEmpty) {
-      listOfFilteredRoutes
-          .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
-
-      for (var element in listOfFilteredRoutes) {
-        print("Element : ${element.routeLenght}");
-      }
-      setState(() {});
-    }
-  }*/
 
   List<Routes> filterByDurationASCV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {

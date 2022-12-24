@@ -123,7 +123,6 @@ Future<String> getIdOfRouteByName(String nameInput) async {
       .where("name", isEqualTo: nameInput)
       .get()
       .then((value) {
-    //routeSearched = Routes.fromJson(value.docs.first.data());
     try {
       nameFound = value.docs.first.reference.id;
     } catch (e) {
