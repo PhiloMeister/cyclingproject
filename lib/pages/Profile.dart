@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/pages/AppSettings.dart';
-import 'package:cyclingproject/services/usermanagement.dart';
+import 'package:cyclingproject/services/UserManagement.dart';
 import 'package:cyclingproject/widgets/my_account.dart';
 import 'package:cyclingproject/widgets/report_bug.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,7 +1,6 @@
 import 'package:cyclingproject/admin/AdminNav.dart';
 import 'package:cyclingproject/pages/VerifyEmailPage.dart';
-import 'package:cyclingproject/pages/AllRoutes.dart';
-import 'package:cyclingproject/pages/Navigation.dart';
+import 'package:cyclingproject/pages/NavigationBiker.dart';
 import 'package:cyclingproject/widgets/auth.dart';
 import 'package:cyclingproject/widgets/login.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +45,7 @@ class UserManagement {
           if (user['creator'] == 'admin') {
             return const AdminNav();
           } else {
-            return const HomePage();
+            return const NavigationBiker();
           }
         }
         return const Material(

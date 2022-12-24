@@ -1,13 +1,12 @@
-import 'package:cyclingproject/pages/Home.dart';
+import 'package:cyclingproject/pages/AllRoutes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'AllRoutesStreamBuilder.dart';
 import 'New_route_page.dart';
-import 'ProfileMenu.dart';
+import 'Profile.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class NavigationBiker extends StatelessWidget {
+  const NavigationBiker({super.key});
 
   @override
   Widget build(BuildContext context) {

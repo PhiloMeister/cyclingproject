@@ -16,8 +16,8 @@ OpenRouteService openrouteservice = OpenRouteService(
     profile: ORSProfile.cyclingMountain);
 
 // ignore: camel_case_types
-class map_page extends StatelessWidget {
-  const map_page({super.key, required this.myRoute});
+class Map_Page extends StatelessWidget {
+  const Map_Page({super.key, required this.myRoute});
   final Routes myRoute;
 
   // This widget is the root of your application.

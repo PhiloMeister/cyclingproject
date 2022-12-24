@@ -1,11 +1,10 @@
-import 'package:cyclingproject/pages/MyCreatedRoutesStreamBuilder.dart';
+import 'package:cyclingproject/pages/MyCreatedRoutes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../pages/MyCreatedRoutes.dart';
 import '../pages/New_route_page.dart';
-import '../pages/ProfileMenu.dart';
+import '../pages/Profile.dart';
 
 class AdminNav extends StatelessWidget {
   const AdminNav({super.key});
@@ -35,7 +34,7 @@ class _RootPageState extends State<RootPage> {
   int currentPage = 0;
 
   final List<Widget> _pages = const [
-    MyCreatedRoutesStreamBuilder(),
+    MyCreatedRoutes(),
     NewRoutePage(
       canEdit: true,
     ),

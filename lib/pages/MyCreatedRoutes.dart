@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/BusinessObject/Routes.dart';
-import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
-import 'package:cyclingproject/pages/New_route_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:flutter/services.dart';
 
-import 'map_page.dart';
+import '../../BusinessObject/Routes.dart';
+import '../../BusinessObjectManager/RouteManager.dart';
+import '../theme/constants.dart';
 
 class MyCreatedRoutes extends StatefulWidget {
   const MyCreatedRoutes({super.key});
@@ -15,160 +13,272 @@ class MyCreatedRoutes extends StatefulWidget {
   @override
   State<MyCreatedRoutes> createState() => _MyCreatedRoutesState();
 }
-
 class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
-  List<Routes> listOfCreatedRoutes = <Routes>[];
-  var newName = "";
+  var checkTextField = "";
+  List<Routes> listOfAllRoutes = <Routes>[];
+  List<Routes> listOfFilteredRoutes = <Routes>[];
+  var lengthSwitch = "null";
+  var durationSwitch = "null";
+  var likedSwitch = "null";
 
   @override
   initState() {
     super.initState();
   }
 
-  Future<String> initVariables() async {
-    listOfCreatedRoutes = await getCreatedRoutesOfUserList();
-    return "Ghandi was good";
-  }
+  Widget buildRoutes(Routes routes) => ListTile(
+    onLongPress: () {
+      openDialogLikedRoutes(routes);
+    },
+    onTap: ()  {
 
+    },
+    leading: const CircleAvatar(child: Text("test")),
+    title: Text(routes.routeName.toString()),
+    subtitle: Text(
+        "length: ${routes.routeLenght.toString()} km / Duration: ${routes.routeDuration.toString()}"),
+  );
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: initVariables(),
-      builder: (context, snapshot) {
-        List<Widget> children;
-        if (snapshot.hasData) {
-          return Scaffold(
-            body: ListView.builder(
-              itemCount: listOfCreatedRoutes.length,
-              itemBuilder: (BuildContext context, int index) {
-                // return  buildRoute(listOfLikedRoutes[index]);
-                return buildRoute(listOfCreatedRoutes[index]);
-              },
+    return Scaffold(
+        body: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                    child: TextField(
+                      onChanged: (value) {
+                        checkTextField = value.toString();
+                        setState(() {});
+                      },
+                      decoration: const InputDecoration(
+                          labelText: 'Search your routes..',
+                          suffixIcon: Icon(Icons.search)),
+                    )),
+              ],
             ),
-          );
-        } else if (snapshot.hasError) {
-          children = <Widget>[
-            const Icon(
-              Icons.error_outline,
-              color: Colors.red,
-              size: 60,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      if (lengthSwitch == "null" || lengthSwitch == "DESC") {
+                        lengthSwitch = "ASC";
+                      } else {
+                        lengthSwitch = "DESC";
+                      }
+                      //reset the others
+                      durationSwitch = "null";
+                      likedSwitch = "null";
+                      setState(() {});
+                    },
+                    child: const Text("Length")),
+                ElevatedButton(
+                    onPressed: () {
+                      if (durationSwitch == "null" || durationSwitch == "DESC") {
+                        durationSwitch = "ASC";
+                      } else {
+                        durationSwitch = "DESC";
+                      }
+                      //reset the others
+                      lengthSwitch = "null";
+                      likedSwitch = "null";
+                      setState(() {});
+                    },
+                    child: const Text("Duration")),
+                ElevatedButton(
+                    onPressed: () {
+                      if (likedSwitch == "null") {
+                        likedSwitch = "YES";
+                      } else {
+                        likedSwitch = "null";
+                      }
+                      //reset the others
+                      lengthSwitch = "null";
+                      durationSwitch = "null";
+                      setState(() {});
+                    },
+                    child: const Text("Liked")),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text('Error: ${snapshot.error}'),
-            ),
-          ];
-        } else {
-          children = const <Widget>[
-            SizedBox(
-              width: 60,
-              height: 60,
-              child: CircularProgressIndicator(),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text('Awaiting result...'),
-            ),
-          ];
-        }
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: children,
-          ),
-        );
-      },
-    );
-  }
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("Routes")
+                    .where("creator", isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                    .snapshots()
+                    .asyncMap(
+                      (snapshot) async {
+                    //test
+                    // Perform asynchronous data manipulation here
+                    List<Routes> routes = snapshot.docs.map((document) {
+                      print("get data");
+                      Map<String, dynamic> e = document.data() as Map<String, dynamic>;
+                      return Routes.fromJson(e);
+                    }).toList();
+                    //routes = await addLikedOrNotToListOfRoutes(routes);
+                    if (checkTextField.isEmpty) {
+                    } else {
+                      routes = routes
+                          .where((route) => route.routeName
+                          .toString()
+                          .toLowerCase()
+                          .contains(checkTextField.toLowerCase()))
+                          .toList();
+                      routes.forEach((element) {
+                        print(element.routeName.toString());
+                      });
+                    }
 
-  Widget buildRoute(Routes routes) => ListTile(
-        onTap: () {
-          displayRouteOnMap(routes, context);
-        },
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 1,
-              child: ElevatedButton.icon(
-                  icon: const Icon(Icons.edit),
-                  label: const Text("Edit"),
-                  onPressed: () => {editRouteDialog(routes)}),
-            ),
-            PopupMenuItem(
-              value: 2,
-              child: ElevatedButton.icon(
-                  icon: const Icon(Icons.delete),
-                  label: const Text("Delete"),
-                  onPressed: () => {deleteCreatedRouteOfUser(routes)}),
-            )
-          ],
-        ),
-        leading: const CircleAvatar(child: Text("test")),
-        title: Text(routes.routeName.toString()),
-        subtitle: Text(
-            "Length: ${routes.routeLenght?.toStringAsFixed(2)} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
-      );
-
-  void refresh() {
-    setState(() {});
-  }
-
-  void displayRouteOnMap(Routes myRoute, BuildContext context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => map_page(myRoute: myRoute)));
-  }
-
-  // After clicking on save button, shows a dialog view to enter the name of the route
-  void editRouteDialog(Routes myRoute) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-              title: const Text("Enter a name for the route"),
-              content: TextField(
-                controller: TextEditingController(text: myRoute.routeName),
-                onChanged: (routeName) {
-                  setState(() {
-                    newName = routeName;
-                  });
+                    switch (lengthSwitch) {
+                      case "ASC":
+                        print("ASC");
+                        routes = filterByLengthASCV2(routes);
+                        break;
+                      case "DESC":
+                        print("DESC");
+                        routes = filterByLengthDESV2(routes);
+                        break;
+                      default:
+                        print("DEFAULT");
+                        break;
+                    }
+                    switch (durationSwitch) {
+                      case "ASC":
+                        print("ASC");
+                        routes = filterByDurationASCV2(routes);
+                        break;
+                      case "DESC":
+                        print("DESC");
+                        routes = filterByDurationDESV2(routes);
+                        break;
+                      default:
+                        print("DEFAULT");
+                        break;
+                    }
+                    switch (likedSwitch) {
+                      case "YES":
+                        print("LIKED FILTER ON");
+                        routes = filterByLikedV2(routes);
+                        break;
+                      default:
+                        print("DEFAULT");
+                        break;
+                    }
+                    return routes;
+                  },
+                ),
+                builder: (context, AsyncSnapshot<List<Routes>> snapshot) {
+                  if (snapshot.error != null) {
+                    return Center(child: Text(snapshot.error.toString()));
+                  }
+                  if (snapshot.data == null) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 16),
+                            child: Text('Awaiting result...'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return ListView(
+                    children: snapshot.data!.map(
+                          (route) {
+                        return buildRoutes(route);
+                      },
+                    ).toList(),
+                  );
                 },
               ),
-              actions: [
-                FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  onPressed: () {
-                    editRoute(myRoute, newName);
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Your route has been saved!"),
-                      backgroundColor: Colors.red,
-                      duration: Duration(milliseconds: 1500),
-                    ));
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.save),
-                )
-              ]));
+            )
+          ],
+        ));
+  }
 
-  // void openDialogCreatedRoute(Routes route) => showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //           contentPadding: EdgeInsets.all(50),
-  //           titlePadding: EdgeInsets.all(10),
-  //           title: Center(child: Text("Actions available")),
-  //           actions: [
-  //             ElevatedButton(
-  //                 onPressed: () {
-  //                   deleteCreatedRouteOfUser(route);
-  //                 },
-  //                 child: const Text("Delete route")),
-  //             ElevatedButton(
-  //                 onPressed: () {
-  //                   //TODO insert method to display route
-  //                 },
-  //                 child: const Text("Modify route")),
-  //             BackButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //               },
-  //             ),
-  //           ],
-  //         ));
+  void openDialogLikedRoutes(Routes route) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Actions available"),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                deleteCreatedRouteOfUser(route);
+                Navigator.pop(context);
+              }, child: const Text("delete route")),
+          BackButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ));
+
+  List<Routes> filterByLengthASCV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeLenght}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
+
+  List<Routes> filterByLengthDESV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeLenght}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
+
+  List<Routes> filterByDurationASCV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => a.routeDuration!.compareTo(b.routeDuration!));
+
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
+
+  List<Routes> filterByDurationDESV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes
+          .sort((a, b) => b.routeDuration!.compareTo(a.routeDuration!));
+
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
+
+  List<Routes> filterByLikedV2(List<Routes> listOfFilteredRoutes) {
+    if (listOfFilteredRoutes.isNotEmpty) {
+      listOfFilteredRoutes.sort((a, b) =>
+          b.routeLiked!.toString().compareTo(a.routeLiked!.toString()));
+      for (var element in listOfFilteredRoutes) {
+        print("Element : ${element.routeDuration}");
+      }
+    }
+    return listOfFilteredRoutes;
+  }
 }
