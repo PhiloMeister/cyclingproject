@@ -129,7 +129,6 @@ Future<String> getIdOfRouteByName(String nameInput) async {
       nameFound = null;
     }
   });
-  print("nameFound  " + nameFound);
   return nameFound;
 }
 
