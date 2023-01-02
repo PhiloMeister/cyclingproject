@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/pages/New_route_page.dart';
 import 'package:cyclingproject/services/UserManagement.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../BusinessObject/Routes.dart';
 import '../BusinessObjectManager/RouteManager.dart';
@@ -37,10 +36,10 @@ class _AllRoutesState extends State<AllRoutes> {
           borderRadius: BorderRadius.circular(4),
         ),
         tileColor: kPrimaryColor.withOpacity(0.1),
-        onTap: () {
+        /*onTap: () {
           displayRouteOnMap(routes, context);
           //print("Pressed on LIKE");
-        },
+        },*/
         trailing: IconButton(
           icon: routes.routeLiked!
               ? const Icon(Icons.favorite)
@@ -61,19 +60,26 @@ class _AllRoutesState extends State<AllRoutes> {
           child: Text(
             (routes.routeName.toString()[0] + routes.routeName.toString()[1])
                 .toUpperCase(),
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(fontSize: 12, color: Colors.white),
           ),
         ),
-        title: Text(routes.routeName.toString()),
+        title: Text(
+          routes.routeName.toString(),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(
-            "Length: ${routes.routeLenght?.toStringAsFixed(2)} meters / Duration: ${routes.routeDuration?.toStringAsFixed(2)} min"),
+          "${(routes.routeLenght! / 1000).toStringAsFixed(2)} km | ${(routes.routeDuration! / 60).toStringAsFixed(2)} min",
+          style: const TextStyle(fontSize: 10),
+        ),
       );
+
   List<Routes> items = [];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: SingleChildScrollView(
+        primary: false,
         child: Column(
           children: [
             addVerticalSpace(20),
@@ -167,11 +173,25 @@ class _AllRoutesState extends State<AllRoutes> {
                       List<Widget> children;
                       if (snapshot.hasData) {
                         return ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             // return  buildRoute(listOfLikedRoutes[index]);
-                            return buildRoutes(snapshot.data![index]);
+                            return Slidable(
+                                startActionPane: ActionPane(
+                                  motion: const StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                        backgroundColor: Colors.green,
+                                        icon: Icons.map_sharp,
+                                        label: "Show route",
+                                        onPressed: (context) =>
+                                            displayRouteOnMap(
+                                                snapshot.data![index], context))
+                                  ],
+                                ),
+                                child: buildRoutes(snapshot.data![index]));
                           },
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
@@ -238,8 +258,14 @@ class _AllRoutesState extends State<AllRoutes> {
             setState(() {});
           },
           child: const ListTile(
-            leading: Icon(Icons.social_distance), // your icon
-            title: Text("Length"),
+            leading: Icon(
+              Icons.social_distance_sharp,
+              size: 20,
+            ), // your icon
+            title: Text(
+              "Length",
+              style: TextStyle(fontSize: 11, color: kTextColor),
+            ),
           ),
         ),
         PopupMenuItem<Menu>(
@@ -255,10 +281,13 @@ class _AllRoutesState extends State<AllRoutes> {
             setState(() {});
           },
           child: const ListTile(
-            leading: Icon(Icons.timelapse), // your icon
+            leading: Icon(
+              Icons.timelapse,
+              size: 20,
+            ), // your icon
             title: Text(
               "Duration",
-              style: TextStyle(color: kTextColor),
+              style: TextStyle(fontSize: 11, color: kTextColor),
             ),
           ),
         ),
@@ -384,7 +413,6 @@ class _AllRoutesState extends State<AllRoutes> {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => Map_Page(myRoute: myRoute)));
   }
-
 
   Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
       .collection("Routes")

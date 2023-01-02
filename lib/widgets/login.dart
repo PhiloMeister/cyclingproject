@@ -60,7 +60,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   gapPadding: 10,
                 ),
               ),
-              style: const TextStyle(color: kTextColor),
+              style: const TextStyle(color: kTextColor, fontSize: 14),
               cursorColor: kTextColor,
               controller: emailController,
               textInputAction: TextInputAction.next,
@@ -86,7 +86,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   gapPadding: 10,
                 ),
               ),
-              style: const TextStyle(color: kTextColor),
+              style: const TextStyle(color: kTextColor, fontSize: 14),
               cursorColor: kTextColor,
               controller: passwordController,
               textInputAction: TextInputAction.done,
@@ -103,7 +103,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   const Icon(color: kPrimaryLightColor, Icons.login, size: 24),
               label: const Text(
                 'Sign in',
-                style: TextStyle(color: kPrimaryLightColor, fontSize: 24),
+                style: TextStyle(color: kPrimaryLightColor, fontSize: 18),
               ),
               onPressed: signIn,
             ),
@@ -113,7 +113,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 "Forgot Password",
                 style: TextStyle(
                   color: kTextColor,
-                  fontSize: 15,
+                  fontSize: 11,
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -126,7 +126,10 @@ class _LoginWidgetState extends State<LoginWidget> {
             addVerticalSpace(20),
             RichText(
               text: TextSpan(
-                  style: const TextStyle(color: kTextColor),
+                  style: const TextStyle(
+                    color: kTextColor,
+                    fontSize: 12,
+                  ),
                   text: "No Account?  ",
                   children: [
                     TextSpan(
@@ -135,6 +138,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         text: "Sign Up",
                         style: const TextStyle(
                           decoration: TextDecoration.underline,
+                          fontSize: 12,
                           color: kPrimaryColor,
                         ))
                   ]),

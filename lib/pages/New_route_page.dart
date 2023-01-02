@@ -1,5 +1,6 @@
 import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
+import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
@@ -8,6 +9,8 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
+
+import '../theme/constants.dart';
 
 OpenRouteService openrouteservice = OpenRouteService(
     apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e',
@@ -77,13 +80,17 @@ class _NewRouteState extends State<NewRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
       body: Stack(
+        alignment: Alignment.topCenter,
         children: [
           SizedBox(
             child: FlutterMap(
               options: MapOptions(
                 center: userLocation,
                 zoom: 15.0,
+                maxZoom: 18,
                 onTap: (tapPosition, point) => canEdit ? addPoint(point) : {},
               ),
               mapController: _mapController,
@@ -102,13 +109,85 @@ class _NewRouteState extends State<NewRoute> {
             ),
           ),
           if (distanceTotal != 0.0) ...[
-            ColoredBox(
+            Positioned(
+              top: 60,
+              child: Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: kPrimaryColor,
+                          offset: Offset(10, 10),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.social_distance_sharp,
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                        addHorizontalSpace(5),
+                        Text(
+                          "Distance: ${(distanceTotal / 1000).toStringAsFixed(3)} km",
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  addHorizontalSpace(10),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: kPrimaryColor,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: kPrimaryColor,
+                          offset: Offset(10, 10),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.timer,
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                        addHorizontalSpace(5),
+                        Text(
+                          "Duration: ${(durationTotal / 60).toStringAsFixed(2)} min",
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            /*ColoredBox(
               color: const Color.fromARGB(255, 217, 217, 217),
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Row(children: [
                   Text(
-                      "Distance: ${(distanceTotal / 1000).toStringAsFixed(3)} km ",
+                      "Distance: ${(distanceTotal / 1000).toStringAsFixed(3)} km",
                       style: const TextStyle(fontSize: 20)),
                   const SizedBox(width: 10),
                   Text(
@@ -117,7 +196,7 @@ class _NewRouteState extends State<NewRoute> {
                       style: const TextStyle(fontSize: 20)),
                 ]),
               ),
-            ),
+            ),*/
           ],
         ],
       ),
@@ -170,27 +249,54 @@ class _NewRouteState extends State<NewRoute> {
 
   // After clicking on save button, shows a dialog view to enter the name of the route
   void saveRouteDialog(Routes myRoute) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-              title: const Text("Enter a name for the route"),
-              content: TextField(
-                onChanged: (routeName) {
-                  setState(() {
-                    myRoute.routeName = routeName;
-                    print("the name route2 $routeName");
-                  });
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(
+            "Enter a name for the route",
+            style: TextStyle(fontSize: 13),
+          ),
+          content: TextField(
+            decoration: InputDecoration(
+              hintText: "Routename",
+              hintStyle: const TextStyle(color: kTextColor),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: const BorderSide(color: kTextColor),
+              ),
+            ),
+            style: const TextStyle(
+              color: kTextColor,
+              fontSize: 13,
+            ),
+            onChanged: (routeName) {
+              setState(() {
+                myRoute.routeName = routeName;
+                print("the name route2 $routeName");
+              });
+            },
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+                icon: const Icon(
+                    color: kPrimaryLightColor, Icons.save_sharp, size: 13),
+                label: const Text(
+                  'Save route',
+                  style: TextStyle(color: kPrimaryLightColor, fontSize: 13),
+                ),
+                onPressed: () {
+                  addRouteFirestore(routes);
+                  Navigator.pop(context);
                 },
               ),
-              actions: [
-                FloatingActionButton(
-                  backgroundColor: Colors.red,
-                  onPressed: () {
-                    addRouteFirestore(routes);
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.save),
-                )
-              ]));
+            ),
+          ],
+        ),
+      );
 
   Future<void> addRouteFirestore(Routes myRoute) async {
     myRoute.routeLenght = distanceTotal.toDouble();

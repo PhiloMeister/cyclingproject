@@ -69,7 +69,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     gapPadding: 10,
                   ),
                 ),
-                style: const TextStyle(color: kTextColor),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
                 cursorColor: kTextColor,
                 controller: firstNameController,
                 textInputAction: TextInputAction.next,
@@ -95,7 +98,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     gapPadding: 10,
                   ),
                 ),
-                style: const TextStyle(color: kTextColor),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
                 cursorColor: kTextColor,
                 controller: lastNameController,
                 textInputAction: TextInputAction.next,
@@ -121,7 +127,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     gapPadding: 10,
                   ),
                 ),
-                style: const TextStyle(color: kTextColor),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
                 cursorColor: kTextColor,
                 controller: emailController,
                 textInputAction: TextInputAction.next,
@@ -152,7 +161,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     gapPadding: 10,
                   ),
                 ),
-                style: const TextStyle(color: kTextColor),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
                 cursorColor: kTextColor,
                 controller: passwordController,
                 textInputAction: TextInputAction.done,
@@ -194,14 +206,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     color: kPrimaryLightColor, Icons.login, size: 24),
                 label: const Text(
                   'Sign up',
-                  style: TextStyle(color: kPrimaryLightColor, fontSize: 24),
+                  style: TextStyle(color: kPrimaryLightColor, fontSize: 18),
                 ),
                 onPressed: signUp,
               ),
               addVerticalSpace(20),
               RichText(
                 text: TextSpan(
-                    style: TextStyle(color: Colors.grey[600]!),
+                    style: TextStyle(
+                      color: Colors.grey[600]!,
+                      fontSize: 12,
+                    ),
                     text: "Already have an account?  ",
                     children: [
                       TextSpan(
@@ -209,6 +224,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ..onTap = widget.onClickedSignIn,
                           text: "Sign In",
                           style: const TextStyle(
+                            fontSize: 12,
                             decoration: TextDecoration.underline,
                             color: Color(0XFFB61818),
                           ))

@@ -13,12 +13,11 @@ class NavigationBiker extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.soraTextTheme(
-          Theme.of(context).textTheme,
-        ),
-        scaffoldBackgroundColor: Colors.white,
-        useMaterial3: true,
-      ),
+          textTheme: GoogleFonts.soraTextTheme(
+            Theme.of(context).textTheme,
+          ),
+          scaffoldBackgroundColor: Colors.white,
+          useMaterial3: true),
       home: const RootPage(),
     );
   }
@@ -78,7 +77,7 @@ class _RootPageState extends State<RootPage> {
                   GButton(icon: Icons.home, text: 'All routes'),
                   //GButton(icon: Icons.diamond_outlined, text: 'All routes stream'),
                   //GButton(icon: Icons.map, text: 'Map'),
-                  GButton(icon: Icons.person_off_outlined, text: 'Profile'),
+                  GButton(icon: Icons.person, text: 'Profile'),
                   //GButton(icon: Icons.heart_broken, text: 'Liked routes'),
                 ]),
           ),

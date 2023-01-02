@@ -31,20 +31,21 @@ class Map_Page extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(4),
             ),
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: const Icon(
-                  Icons.arrow_back_ios_new_sharp,
-                  color: kTextColor,
-                  size: 18,
-                )),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_sharp,
+                color: kTextColor,
+                size: 18,
+              ),
+            ),
           ),
         ),
         /*title: const Text(
@@ -111,8 +112,8 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    final panelHeightClosed = MediaQuery.of(context).size.height * 0.09;
-    final panelHeightOpen = MediaQuery.of(context).size.height * 0.2;
+    final panelHeightClosed = MediaQuery.of(context).size.height * 0.1;
+    final panelHeightOpen = MediaQuery.of(context).size.height * 0.25;
 
     return Scaffold(
         body: Stack(
@@ -122,6 +123,7 @@ class _MapPageState extends State<MapPage> {
             options: MapOptions(
               center: userLocation,
               zoom: 15.0,
+              maxZoom: 18,
             ),
             mapController: _mapController,
             children: [
@@ -172,7 +174,7 @@ class _MapPageState extends State<MapPage> {
                   "Route: ${routeToDisplay.routeName}",
                   style: const TextStyle(
                       color: kTextColor,
-                      fontSize: 15,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600),
                 ),
               ),
