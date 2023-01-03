@@ -121,7 +121,8 @@ class _MapPageState extends State<MapPage> {
         SizedBox(
           child: FlutterMap(
             options: MapOptions(
-              center: userLocation,
+              center: LatLng(routeToDisplay.pointsLat?.first,
+                  routeToDisplay.pointsLng?.first),
               zoom: 15.0,
               maxZoom: 18,
             ),
