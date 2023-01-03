@@ -257,7 +257,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
       addUsername(user);
     } on FirebaseAuthException catch (e) {
-      Utils.showSnackBar(e.message);
+      Utils.showSnackBar(e.message, true);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
@@ -270,7 +270,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
     await docUser.set(user.toJson());
 
-    Utils.showSnackBar("save");
+    Utils.showSnackBar("save", false);
   }
 }
 

@@ -239,7 +239,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
             ), // your icon
             title: Text(
               "Length",
-              style: TextStyle(fontSize: 11, color: kTextColor),
+              style: TextStyle(fontSize: 15, color: kTextColor),
             ),
           ),
         ),
@@ -262,25 +262,8 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
             ), // your icon
             title: Text(
               "Duration",
-              style: TextStyle(fontSize: 11, color: kTextColor),
+              style: TextStyle(fontSize: 15, color: kTextColor),
             ),
-          ),
-        ),
-        PopupMenuItem<Menu>(
-          onTap: () {
-            if (likedSwitch == "null") {
-              likedSwitch = "YES";
-            } else {
-              likedSwitch = "null";
-            }
-            //reset the others
-            lengthSwitch = "null";
-            durationSwitch = "null";
-            setState(() {});
-          },
-          child: const ListTile(
-            leading: Icon(Icons.heart_broken), // your icon
-            title: Text("Liked"),
           ),
         ),
       ],

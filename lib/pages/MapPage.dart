@@ -167,13 +167,20 @@ class _MapPageState extends State<MapPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: kPrimaryColor,
                   borderRadius: BorderRadius.circular(4),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: kPrimaryColor,
+                      offset: Offset(10, 10),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
                 child: Text(
                   "Route: ${routeToDisplay.routeName}",
                   style: const TextStyle(
-                      color: kTextColor,
+                      color: Colors.white,
                       fontSize: 12,
                       fontWeight: FontWeight.w600),
                 ),

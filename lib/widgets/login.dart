@@ -161,7 +161,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      Utils.showSnackBar(e.message);
+      Utils.showSnackBar(e.message, true);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

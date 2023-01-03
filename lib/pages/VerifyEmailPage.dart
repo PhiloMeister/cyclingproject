@@ -68,7 +68,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         canResendEmail = true;
       });
     } catch (e) {
-      Utils.showSnackBar(e.toString());
+      Utils.showSnackBar(e.toString(), true);
     }
   }
 

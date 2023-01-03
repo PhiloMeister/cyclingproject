@@ -11,6 +11,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:open_route_service/open_route_service.dart';
 
 import '../theme/constants.dart';
+import '../utils/snackbar.dart';
 
 OpenRouteService openrouteservice = OpenRouteService(
     apiKey: '5b3ce3597851110001cf62485afeed71f08b4739924b681a09925e6e',
@@ -63,6 +64,7 @@ class _NewRouteState extends State<NewRoute> {
     "https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg",
     "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg"
   ];
+
   var currentMap = 0;
   var userLocation = LatLng(46.28732243981999, 7.535148068628832);
   late MapController _mapController;
@@ -321,22 +323,13 @@ class _NewRouteState extends State<NewRoute> {
       // Add the route to the database
       addRoute(routes);
 
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Your route has been saved!"),
-        backgroundColor: Colors.red,
-        duration: Duration(milliseconds: 1500),
-      ));
+      Utils.showSnackBar("Your route has been saved!", false);
 
       // Clear map to remove points after adding on the database
       removePoint();
     } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("A route with this name already exists :("),
-        backgroundColor: Colors.red,
-        duration: Duration(milliseconds: 1500),
-      ));
+      Utils.showSnackBar("A route with this name already exists :(", true);
+      ;
     }
   }
 

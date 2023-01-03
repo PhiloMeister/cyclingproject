@@ -12,6 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/widgets.dart';
 
+import '../utils/snackbar.dart';
+
 class UserManagement {
   Widget handleAuth(BuildContext context) {
     return Scaffold(
@@ -58,6 +60,8 @@ class UserManagement {
   }
 
   signOut() {
-    FirebaseAuth.instance.signOut().then((value) => globals.role = "");
+    FirebaseAuth.instance
+        .signOut()
+        .then(Utils.showSnackBar("You are logged out.", false));
   }
 }

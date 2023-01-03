@@ -264,7 +264,7 @@ class _AllRoutesState extends State<AllRoutes> {
             ), // your icon
             title: Text(
               "Length",
-              style: TextStyle(fontSize: 11, color: kTextColor),
+              style: TextStyle(fontSize: 15, color: kTextColor),
             ),
           ),
         ),
@@ -287,7 +287,7 @@ class _AllRoutesState extends State<AllRoutes> {
             ), // your icon
             title: Text(
               "Duration",
-              style: TextStyle(fontSize: 11, color: kTextColor),
+              style: TextStyle(fontSize: 15, color: kTextColor),
             ),
           ),
         ),
@@ -304,8 +304,11 @@ class _AllRoutesState extends State<AllRoutes> {
             setState(() {});
           },
           child: const ListTile(
-            leading: Icon(Icons.heart_broken), // your icon
-            title: Text("Liked"),
+            leading: Icon(Icons.favorite), // your icon
+            title: Text(
+              "Liked",
+              style: TextStyle(fontSize: 15, color: kTextColor),
+            ),
           ),
         ),
       ],

@@ -38,9 +38,9 @@ class _ReportBugState extends State<ReportBug> {
 
     try {
       await FlutterEmailSender.send(email);
-      Utils.showSnackBar("success");
+      Utils.showSnackBar("success", false);
     } catch (error) {
-      Utils.showSnackBar(error.toString());
+      Utils.showSnackBar(error.toString(), true);
     }
 
     if (!mounted) return;

@@ -30,7 +30,7 @@ class AppSettings extends StatelessWidget {
                 tiles: <SettingsTile>[
                   SettingsTile.navigation(
                     onPressed: (value) {
-                      Utils.showSnackBar("English");
+                      Utils.showSnackBar("English", false);
                     },
                     leading: const Icon(Icons.language),
                     title: const Text('Language'),
@@ -38,7 +38,7 @@ class AppSettings extends StatelessWidget {
                   ),
                   SettingsTile.switchTile(
                     onToggle: (value) {
-                      Utils.showSnackBar("Test");
+                      Utils.showSnackBar("Test", false);
                     },
                     initialValue: true,
                     leading: const Icon(Icons.format_paint),
