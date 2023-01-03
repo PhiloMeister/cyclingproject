@@ -66,6 +66,7 @@ class _ReportBugState extends State<ReportBug> {
           ),
           centerTitle: true,
         ),
+        backgroundColor: Colors.white,
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
@@ -182,7 +183,7 @@ class _ReportBugState extends State<ReportBug> {
                             label: const Text(
                               'Submit',
                               style: TextStyle(
-                                  color: kPrimaryLightColor, fontSize: 24),
+                                  color: kPrimaryLightColor, fontSize: 18),
                             ),
                             onPressed: send,
                           ),

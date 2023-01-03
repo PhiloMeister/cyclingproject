@@ -14,7 +14,10 @@ class ProfilePic extends StatefulWidget {
 }
 
 class _ProfilePicState extends State<ProfilePic> {
-  String imageUrl = " ";
+  String imageUrl = "";
+  final Reference storageRef = FirebaseStorage.instance
+      .ref()
+      .child("${FirebaseAuth.instance.currentUser?.uid}/profilepic.jpg");
 
   void pickUploadImage() async {
     final image = await ImagePicker().pickImage(
@@ -24,13 +27,9 @@ class _ProfilePicState extends State<ProfilePic> {
       imageQuality: 75,
     );
 
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child("${FirebaseAuth.instance.currentUser?.uid}/profilepic.jpg");
+    await storageRef.putFile(File(image!.path));
 
-    await ref.putFile(File(image!.path));
-
-    ref.getDownloadURL().then((value) {
+    storageRef.getDownloadURL().then((value) {
       setState(() {
         imageUrl = value;
       });
@@ -49,7 +48,7 @@ class _ProfilePicState extends State<ProfilePic> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: imageUrl == " "
+                image: imageUrl == ""
                     ? const AssetImage("assets/images/profile.jpg")
                         as ImageProvider
                     : NetworkImage(imageUrl),
