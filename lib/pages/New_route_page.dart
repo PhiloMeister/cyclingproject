@@ -392,9 +392,11 @@ class _NewRouteState extends State<NewRoute> {
     var position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     _mapController.move(LatLng(position.latitude, position.longitude), 16.0);
-    setState(() {
-      userLocation = LatLng(position.latitude, position.longitude);
-    });
+    setState(
+      () {
+        userLocation = LatLng(position.latitude, position.longitude);
+      },
+    );
     var marker = Marker(
       point: userLocation,
       builder: (context) => const Icon(

@@ -53,6 +53,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   flutter_slidable: ^2.0.0
   awesome_snackbar_content: ^0.1.0
+  flutter_native_splash: ^2.2.16
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,20 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_native_splash:
+  color: "#1f1f1f"
+  image: assets/images/logobikevs_splashscreen.png
+  color_dark: "#1f1f1f"
+  image_dark: assets/images/logobikevs_splashscreen.png
+
+  android_12:
+    image: assets/images/logobikevs_splashscreen.png
+    icon_background_color: "#1f1f1f"
+    image_dark: assets/images/logobikevs_splashscreen.png
+    icon_background_color_dark: "#1f1f1f"
+
+  web: false
 
 # The following section is specific to Flutter packages.
 flutter:
