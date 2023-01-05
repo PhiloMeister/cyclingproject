@@ -187,7 +187,8 @@ Future<void> editRoute(Routes routes, String newName) async {
   await FirebaseFirestore.instance
       .collection("Routes")
       .doc(idOfRoute)
-      .update({"name": newName});
+      .update({"name": newName})
+      .then(Utils.showSnackBar("You change the name", false));
 }
 
 // Deprecated but dont delete
