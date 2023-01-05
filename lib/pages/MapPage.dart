@@ -1,5 +1,8 @@
 import 'package:cyclingproject/BusinessObject/Routes.dart';
+import 'package:cyclingproject/pages/MyCreatedRoutes.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
+import 'package:cyclingproject/widgets/my_account.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
@@ -75,8 +78,11 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   var points = <LatLng>[];
   var markers = <Marker>[];
+  var dangerMarkers = <Marker>[];
   var pointsListLat = <double>[];
   var pointsListLng = <double>[];
+  var dangerpointsListLat = <double>[];
+  var dangerpointsListLng = <double>[];
   final Routes routeToDisplay;
   var distanceTotal = 0.0;
   var durationTotal = 0.0;
@@ -102,6 +108,9 @@ class _MapPageState extends State<MapPage> {
 
     // Add markers at start and end positions
     setMarkers(routeToDisplay);
+
+    // Add danger markers
+    setDangerMarkers(routeToDisplay);
 
     // Display the polylines
     getCoordinate(routeToDisplay);
@@ -132,6 +141,7 @@ class _MapPageState extends State<MapPage> {
                 urlTemplate: maps[currentMap],
               ),
               MarkerLayer(markers: markers),
+              MarkerLayer(markers: dangerMarkers),
               PolylineLayer(
                 polylines: [
                   Polyline(points: points, strokeWidth: 5.0, color: Colors.red),
@@ -143,25 +153,6 @@ class _MapPageState extends State<MapPage> {
         Stack(
           alignment: Alignment.topCenter,
           children: [
-            /*Positioned(
-              top: 60,
-              left: 10,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new_sharp,
-                      color: kTextColor,
-                      size: 18,
-                    )),
-              ),
-            ),*/
             Positioned(
               top: 60,
               child: Container(
@@ -293,25 +284,51 @@ class _MapPageState extends State<MapPage> {
     // Add a start marker
     Marker markerStart = Marker(
       point: LatLng(myRoute.pointsLat?[0], myRoute.pointsLng?[0]),
-      builder: (context) => const Icon(
-        Icons.location_on_rounded,
-        color: Colors.red,
-        size: 25,
-      ),
+      anchorPos: AnchorPos.exactly(Anchor(1, 0)),
+      builder: (context) => const CircleAvatar(
+          radius: 28,
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.flag_circle_rounded,
+            color: Colors.green,
+            size: 25,
+          )),
     );
+    markers.add(markerStart);
 
     // Add an end marker
-    markers.add(markerStart);
     Marker markerEnd = Marker(
       point: LatLng(myRoute.pointsLat?[myRoute.pointsLat!.length - 1],
           myRoute.pointsLng?[myRoute.pointsLng!.length - 1]),
-      builder: (context) => const Icon(
-        Icons.location_on_rounded,
-        color: Colors.red,
-        size: 25,
-      ),
+      anchorPos: AnchorPos.exactly(Anchor(1, 0)),
+      builder: (context) => const CircleAvatar(
+          radius: 28,
+          backgroundColor: Colors.white,
+          child: Icon(
+            Icons.flag_circle_outlined,
+            color: Colors.red,
+            size: 25,
+          )),
     );
     markers.add(markerEnd);
+
+    // Refresh screen
+    setState(() {});
+  }
+
+  void setDangerMarkers(Routes myRoute) {
+    int? length = myRoute.dangerPointsLat?.length;
+    for (var i = 0; i < length!; i++) {
+      Marker marker = Marker(
+        point: LatLng(myRoute.dangerPointsLat?[i], myRoute.dangerPointsLng?[i]),
+        builder: (context) => const Icon(
+          CupertinoIcons.exclamationmark_octagon_fill,
+          color: Colors.yellowAccent,
+          size: 25,
+        ),
+      );
+      dangerMarkers.add(marker);
+    }
   }
 
   // Get the duration and distance of a given route
