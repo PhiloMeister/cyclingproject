@@ -154,24 +154,30 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                           itemBuilder: (BuildContext context, int index) {
                             // return  buildRoute(listOfLikedRoutes[index]);
                             return Slidable(
-                                endActionPane: ActionPane(
-                                  motion: const StretchMotion(),
+                                startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
                                   children: [
-
                                     SlidableAction(
-                                        backgroundColor: Colors.green,
-                                        icon: Icons.map_sharp,
-                                        label: "Show route",
-                                        onPressed: (context) =>
-                                            displayRouteOnMap(
-                                                snapshot.data![index], context)),
+                                      backgroundColor: Colors.green,
+                                      icon: Icons.map_sharp,
+                                      //label: "Show route",
+                                      onPressed: (context) => displayRouteOnMap(
+                                          snapshot.data![index], context),
+                                    ),
                                     SlidableAction(
-                                        backgroundColor: Colors.deepOrange,
-                                        icon: Icons.edit,
-                                        label: "Edit route",
-                                        onPressed: (context) =>
-                                        {editRouteDialog(snapshot.data![index])
-                                        }),
+                                      backgroundColor: Colors.orangeAccent,
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.edit,
+                                      //label: "Edit route",
+                                      onPressed: (context) => {
+                                        editRouteDialog(snapshot.data![index])
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                endActionPane: ActionPane(
+                                  motion: const BehindMotion(),
+                                  children: [
                                     SlidableAction(
                                       backgroundColor: Colors.red,
                                       icon: Icons.delete_sharp,
@@ -389,11 +395,26 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
   }
 
   void editRouteDialog(Routes myRoute) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-          title: const Text("Enter a name for the route"),
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(
+            "Enter a new name for the route",
+            style: TextStyle(fontSize: 13),
+          ),
           content: TextField(
             controller: TextEditingController(text: myRoute.routeName),
+            decoration: InputDecoration(
+              hintText: "Routename",
+              hintStyle: const TextStyle(color: kTextColor),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: const BorderSide(color: kTextColor),
+              ),
+            ),
+            style: const TextStyle(
+              color: kTextColor,
+              fontSize: 13,
+            ),
             onChanged: (routeName) {
               setState(() {
                 newName = routeName;
@@ -401,6 +422,24 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
             },
           ),
           actions: [
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+                icon: const Icon(
+                    color: kPrimaryLightColor, Icons.save_sharp, size: 13),
+                label: const Text(
+                  'Save route',
+                  style: TextStyle(color: kPrimaryLightColor, fontSize: 13),
+                ),
+                onPressed: () {
+                  editRoute(myRoute, newName);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
             // FloatingActionButton(
             //   backgroundColor: Colors.red,
             //   onPressed: () {
@@ -410,7 +449,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
             //   },
             //   child: const Icon(Icons.save),
             // ),
-            InkWell(
+            /*InkWell(
               onTap: () {
                 editRoute(myRoute, newName);
                 Navigator.pop(context);
@@ -425,8 +464,10 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                 ),
                 child: const Icon(Icons.save),
               ),
-            ),
-          ]));
+            ),*/
+          ],
+        ),
+      );
 
   Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
       .collection("Routes")

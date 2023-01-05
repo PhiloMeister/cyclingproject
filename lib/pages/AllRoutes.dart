@@ -92,7 +92,7 @@ class _AllRoutesState extends State<AllRoutes> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Title(text: "All Routes"),
+                  const Title(text: "All routes"),
                   PopUpMenu(),
                 ],
               ),
