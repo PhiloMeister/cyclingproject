@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyclingproject/services/UserManagement.dart';
 import 'package:cyclingproject/utils/snackbar.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 import '../theme/constants.dart';
 import '../utils/helper_widgets.dart';
@@ -19,185 +22,215 @@ class ReportBug extends StatefulWidget {
 }
 
 class _ReportBugState extends State<ReportBug> {
-  final _recipientController = TextEditingController(
-    text: 'testtest@byom.de',
-  );
+  final _mailController = TextEditingController();
+  final _subjectController = TextEditingController();
+  final _bodyController = TextEditingController();
+  final _roleController = TextEditingController();
 
-  final _subjectController = TextEditingController(text: 'The subject');
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  AndroidDeviceInfo? androidInfo;
 
-  final _bodyController = TextEditingController(
-    text: 'Mail body.',
-  );
+  Future<AndroidDeviceInfo> getAndroidDeviceInfo() async {
+    return await deviceInfo.androidInfo;
+  }
 
-  Future<void> send() async {
-    final Email email = Email(
-      body: _bodyController.text,
-      subject: _subjectController.text,
-      recipients: [_recipientController.text],
+  // ignore: prefer_typing_uninitialized_variables
+  var dataJson;
+
+  Future sendEmail({
+    required String email,
+    required String subject,
+    required String message,
+    required var deviceInfos,
+    required String role,
+  }) async {
+    const serviceId = 'service_z3yxdc6';
+    const templateId = 'template_s42tuxl';
+    const userId = 'WQGARultyA7nxMQ6D';
+
+    var dataDeviceInfos = jsonDecode(deviceInfos);
+
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(
+      url,
+      headers: {
+        'origin': 'http://localhost',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userId,
+          'template_params': {
+            'user_mail': email,
+            'user_role': role,
+            'user_subject': subject,
+            'user_model': dataDeviceInfos["model"],
+            'user_security_patch': dataDeviceInfos["security-patch"],
+            'user_hardware': dataDeviceInfos["hardware"],
+            'user_version': dataDeviceInfos["version"],
+            'user_sdk': dataDeviceInfos["sdk"],
+            'user_manufacturer': dataDeviceInfos["manufacturer"],
+            'user_message': message,
+          },
+        },
+      ),
     );
-
-    try {
-      await FlutterEmailSender.send(email);
-      Utils.showSnackBar("success", false);
-    } catch (error) {
-      Utils.showSnackBar(error.toString(), true);
-    }
-
-    if (!mounted) return;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new_sharp,
-              color: kTextColor,
-              size: 15,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new_sharp,
+            color: kTextColor,
+            size: 15,
           ),
-          title: const Text(
-            "Report bug",
-            style: TextStyle(color: kTextColor),
-          ),
-          centerTitle: true,
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        backgroundColor: Colors.white,
-        body: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
-            child: Column(
-              children: [
-                StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("Users")
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData && snapshot.data != null) {
-                      final user = snapshot.data.data();
-                      return Column(
-                        children: [
-                          TextFormField(
-                            readOnly: true,
-                            initialValue: user['email'],
-                            decoration: InputDecoration(
-                              labelStyle: const TextStyle(color: kTextColor),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              labelText: "Email",
-                              hintStyle: const TextStyle(color: kTextColor),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
+        title: const Text(
+          "Report bug",
+          style: TextStyle(color: kTextColor),
+        ),
+        centerTitle: true,
+      ),
+      backgroundColor: Colors.white,
+      body: FutureBuilder<AndroidDeviceInfo>(
+        future: getAndroidDeviceInfo(),
+        builder: (context, snapshot) {
+          final data = snapshot.data!;
+          var deviceInfos = {
+            'model': data.model,
+            'security-patch': data.version.securityPatch,
+            'hardware': data.hardware,
+            'version': data.version.release,
+            'sdk': data.version.sdkInt,
+            'manufacturer': data.manufacturer
+          };
+
+          dataJson = jsonEncode(deviceInfos);
+          return Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+              child: Column(
+                children: [
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("Users")
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData && snapshot.data != null) {
+                        final user = snapshot.data.data();
+                        _mailController.text = user['email'];
+                        _roleController.text = user['creator'];
+                        return Column(
+                          children: [
+                            TextFormField(
+                              readOnly: false,
+                              controller: _subjectController,
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(color: kTextColor),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 20),
+                                labelText: "Bug Title",
+                                hintText: "Enter a title for the bug",
+                                hintStyle: const TextStyle(color: kTextColor),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide:
+                                      const BorderSide(color: kTextColor),
+                                  gapPadding: 10,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide:
+                                      const BorderSide(color: kTextColor),
+                                  gapPadding: 10,
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
-                              ),
+                              style: const TextStyle(color: kTextColor),
+                              cursorColor: kTextColor,
+                              //controller: lastNameController,
+                              textInputAction: TextInputAction.next,
                             ),
-                            style: const TextStyle(color: kTextColor),
-                            cursorColor: kTextColor,
-                            //controller: firstNameController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                          addVerticalSpace(30),
-                          TextFormField(
-                            readOnly: false,
-                            controller: _subjectController,
-                            decoration: InputDecoration(
-                              labelStyle: const TextStyle(color: kTextColor),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              labelText: "Bug Title",
-                              hintText: "Enter a title for the bug",
-                              hintStyle: const TextStyle(color: kTextColor),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
+                            addVerticalSpace(30),
+                            TextFormField(
+                              maxLines: 10,
+                              controller: _bodyController,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                labelStyle: const TextStyle(color: kTextColor),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 20),
+                                labelText: "Bug Description",
+                                hintText: "Enter a description for the bug",
+                                hintStyle: const TextStyle(color: kTextColor),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.always,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide:
+                                      const BorderSide(color: kTextColor),
+                                  gapPadding: 10,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide:
+                                      const BorderSide(color: kTextColor),
+                                  gapPadding: 10,
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
-                              ),
+                              style: const TextStyle(color: kTextColor),
+                              cursorColor: kTextColor,
                             ),
-                            style: const TextStyle(color: kTextColor),
-                            cursorColor: kTextColor,
-                            //controller: lastNameController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                          addVerticalSpace(30),
-                          TextFormField(
-                            controller: _bodyController,
-                            readOnly: false,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              labelStyle: const TextStyle(color: kTextColor),
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              labelText: "Bug Description",
-                              hintText: "Enter a description for the bug",
-                              hintStyle: const TextStyle(color: kTextColor),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
+                            addVerticalSpace(40),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: kPrimaryColor,
+                                  minimumSize: const Size.fromHeight(50),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(5.0))),
+                              icon: const Icon(
+                                  color: kPrimaryLightColor,
+                                  Icons.send_sharp,
+                                  size: 24),
+                              label: const Text(
+                                'Submit',
+                                style: TextStyle(
+                                    color: kPrimaryLightColor, fontSize: 18),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide: const BorderSide(color: kTextColor),
-                                gapPadding: 10,
-                              ),
+                              onPressed: () {
+                                sendEmail(
+                                    role: _roleController.text,
+                                    email: _mailController.text,
+                                    subject: _subjectController.text,
+                                    message: _bodyController.text,
+                                    deviceInfos: dataJson);
+                                Utils.showSnackBar(
+                                    "Bug was send to the BikeVS-Team. Thank you!",
+                                    false);
+                              },
                             ),
-                            style: const TextStyle(color: kTextColor),
-                            cursorColor: kTextColor,
-                            //controller: lastNameController,
-                            textInputAction: TextInputAction.next,
-                          ),
-                          addVerticalSpace(40),
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: kPrimaryColor,
-                                minimumSize: const Size.fromHeight(50),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0))),
-                            icon: const Icon(
-                                color: kPrimaryLightColor,
-                                Icons.send_sharp,
-                                size: 24),
-                            label: const Text(
-                              'Submit',
-                              style: TextStyle(
-                                  color: kPrimaryLightColor, fontSize: 18),
-                            ),
-                            onPressed: send,
-                          ),
-                        ],
+                          ],
+                        );
+                      }
+                      return const Material(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
-                    }
-                    return const Material(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  },
-                ),
-                /*TextFormField(
+                    },
+                  ),
+                  /*TextFormField(
                 style: const TextStyle(color: Colors.white),
                 controller: firstNameController,
                 cursorColor: Colors.white,
@@ -266,10 +299,13 @@ class _ReportBugState extends State<ReportBug> {
                   //addUsername(user);
                 },
               ),*/
-              ],
+                ],
+              ),
             ),
-          ),
-        ));
+          );
+        },
+      ),
+    );
   }
 
   Future getUser() async {
