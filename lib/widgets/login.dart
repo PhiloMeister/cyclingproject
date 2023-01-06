@@ -1,3 +1,4 @@
+import 'package:cyclingproject/theme/constants.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -30,102 +31,122 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 8),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          addVerticalSpace(150),
-          Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
-          addVerticalSpace(120),
-          TextFormField(
-            style: const TextStyle(color: Colors.white),
-            controller: emailController,
-            cursorColor: Colors.white,
-            textInputAction: TextInputAction.next,
-            decoration: InputDecoration(
-              labelStyle: const TextStyle(color: Colors.white),
-              contentPadding: const EdgeInsets.all(25.0),
-              labelText: "Email",
-              filled: true,
-              fillColor: const Color(0XFF1f1f1f),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0),
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                  width: 2,
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            addVerticalSpace(100),
+            Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
+            addVerticalSpace(75),
+            TextFormField(
+              decoration: InputDecoration(
+                labelStyle: const TextStyle(color: kTextColor),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                labelText: "Email",
+                hintText: "Enter your email",
+                hintStyle: const TextStyle(color: kTextColor),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: const BorderSide(color: kTextColor),
+                  gapPadding: 10,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: const BorderSide(color: kTextColor),
+                  gapPadding: 10,
                 ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
+              style: const TextStyle(color: kTextColor, fontSize: 14),
+              cursorColor: kTextColor,
+              controller: emailController,
+              textInputAction: TextInputAction.next,
             ),
-          ),
-          addVerticalSpace(20),
-          TextFormField(
-            style: const TextStyle(color: Colors.white),
-            controller: passwordController,
-            textInputAction: TextInputAction.done,
-            decoration: InputDecoration(
-              labelStyle: const TextStyle(color: Colors.white),
-              contentPadding: const EdgeInsets.all(25.0),
-              labelText: "Password",
-              filled: true,
-              fillColor: const Color(0XFF1f1f1f),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(
-                  color: Colors.white,
-                  width: 2,
+            addVerticalSpace(30),
+            TextFormField(
+              decoration: InputDecoration(
+                labelStyle: const TextStyle(color: kTextColor),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                labelText: "Password",
+                hintText: "Enter your password",
+                hintStyle: const TextStyle(color: kTextColor),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: const BorderSide(color: kTextColor),
+                  gapPadding: 10,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  borderSide: const BorderSide(color: kTextColor),
+                  gapPadding: 10,
                 ),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+              style: const TextStyle(color: kTextColor, fontSize: 14),
+              cursorColor: kTextColor,
+              controller: passwordController,
+              textInputAction: TextInputAction.done,
+              obscureText: true,
+            ),
+            addVerticalSpace(40),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: kPrimaryColor,
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0))),
+              icon:
+                  const Icon(color: kPrimaryLightColor, Icons.login, size: 24),
+              label: const Text(
+                'Sign in',
+                style: TextStyle(color: kPrimaryLightColor, fontSize: 18),
+              ),
+              onPressed: signIn,
+            ),
+            addVerticalSpace(20),
+            GestureDetector(
+              child: const Text(
+                "Forgot Password",
+                style: TextStyle(
+                  color: kTextColor,
+                  fontSize: 11,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ForgotPasswordPage(),
+                ),
               ),
             ),
-            obscureText: true,
-          ),
-          addVerticalSpace(40),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFFB61818),
-                minimumSize: const Size.fromHeight(70),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0))),
-            icon: Icon(color: Colors.grey[200]!, Icons.login, size: 24),
-            label: Text(
-              'Sign in',
-              style: TextStyle(color: Colors.grey[200]!, fontSize: 24),
-            ),
-            onPressed: signIn,
-          ),
-          addVerticalSpace(20),
-          GestureDetector(
-            child: Text(
-              "Forgot Password",
-              style: TextStyle(color: Colors.grey[600]!, fontSize: 15),
-            ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const ForgotPasswordPage(),
-              ),
-            ),
-          ),
-          addVerticalSpace(20),
-          RichText(
-            text: TextSpan(
-                style: TextStyle(color: Colors.grey[600]!),
-                text: "No Account?  ",
-                children: [
-                  TextSpan(
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = widget.onClickedSignUp,
-                      text: "Sign Up",
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0XFFB61818),
-                      ))
-                ]),
-          )
-        ]));
+            addVerticalSpace(20),
+            RichText(
+              text: TextSpan(
+                  style: const TextStyle(
+                    color: kTextColor,
+                    fontSize: 12,
+                  ),
+                  text: "No Account?  ",
+                  children: [
+                    TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = widget.onClickedSignUp,
+                        text: "Sign Up",
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: 12,
+                          color: kPrimaryColor,
+                        ))
+                  ]),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Future signIn() async {
@@ -140,7 +161,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         password: passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      Utils.showSnackBar(e.message);
+      Utils.showSnackBar(e.message, true);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);

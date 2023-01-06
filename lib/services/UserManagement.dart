@@ -1,7 +1,6 @@
 import 'package:cyclingproject/admin/AdminNav.dart';
 import 'package:cyclingproject/pages/VerifyEmailPage.dart';
-import 'package:cyclingproject/pages/AllRoutes.dart';
-import 'package:cyclingproject/pages/Navigation.dart';
+import 'package:cyclingproject/pages/NavigationBiker.dart';
 import 'package:cyclingproject/widgets/auth.dart';
 import 'package:cyclingproject/widgets/login.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/widgets.dart';
+
+import '../utils/snackbar.dart';
 
 class UserManagement {
   Widget handleAuth(BuildContext context) {
@@ -30,7 +31,7 @@ class UserManagement {
           }
         },
       ),
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.white,
     );
   }
 
@@ -46,7 +47,7 @@ class UserManagement {
           if (user['creator'] == 'admin') {
             return const AdminNav();
           } else {
-            return const HomePage();
+            return const NavigationBiker();
           }
         }
         return const Material(
@@ -59,6 +60,8 @@ class UserManagement {
   }
 
   signOut() {
-    FirebaseAuth.instance.signOut().then((value) => globals.role = "");
+    FirebaseAuth.instance
+        .signOut()
+        .then(Utils.showSnackBar("You are logged out.", false));
   }
 }

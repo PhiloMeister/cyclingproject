@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/services/usermanagement.dart';
+import 'package:cyclingproject/pages/AppSettings.dart';
+import 'package:cyclingproject/services/UserManagement.dart';
+import 'package:cyclingproject/widgets/my_account.dart';
+import 'package:cyclingproject/widgets/report_bug.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../globals.dart' as globals;
 
 import '../main.dart';
+import '../theme/constants.dart';
+import '../widgets/profile_item.dart';
+import '../widgets/profile_picture.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -29,129 +35,71 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0XFFD9D9D9),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
+        elevation: 0,
+        title: const Text(
+          "Profile",
+          style: TextStyle(color: kTextColor),
         ),
-        title: const Text("Profile"),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 35),
-        child: Column(
-          children: [
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("Users")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .snapshots(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  final user = snapshot.data.data();
-                  return Column(
-                    children: [Text(user['lastname']), Text(user['firstname'])],
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Column(
+            children: [
+              const ProfilePic(),
+              const SizedBox(height: 40),
+              ProfileList(
+                text: "My Account",
+                icon: Icons.admin_panel_settings,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyAccount(),
+                    ),
                   );
-                }
-                return const Material(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              },
-            ),
-            /*TextFormField(
-              style: const TextStyle(color: Colors.white),
-              controller: firstNameController,
-              cursorColor: Colors.white,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelStyle: const TextStyle(color: Colors.white),
-                contentPadding: const EdgeInsets.all(25.0),
-                labelText: "Firstname",
-                filled: true,
-                fillColor: const Color(0XFF1f1f1f),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                  borderSide: const BorderSide(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              style: const TextStyle(color: Colors.white),
-              controller: lastNameController,
-              cursorColor: Colors.white,
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                labelStyle: const TextStyle(color: Colors.white),
-                contentPadding: const EdgeInsets.all(25.0),
-                labelText: "Lastname",
-                filled: true,
-                fillColor: const Color(0XFF1f1f1f),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                  borderSide: const BorderSide(
-                    color: Colors.white,
-                    width: 2,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
+              /*ProfileMenu(
+                text: "Notifications",
+                icon: Icons.notifications,
+                press: () {},
+              ),*/
+              ProfileList(
+                text: "Settings",
+                icon: Icons.settings,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AppSettings(),
+                    ),
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0XFFB61818),
-                  minimumSize: const Size.fromHeight(70),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0))),
-              icon: Icon(
-                  color: Colors.grey[200]!, Icons.app_registration, size: 24),
-              label: Text(
-                'Add',
-                style: TextStyle(color: Colors.grey[200]!, fontSize: 24),
+              ProfileList(
+                text: "Report bug",
+                icon: Icons.bug_report,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ReportBug(),
+                    ),
+                  );
+                },
               ),
-              onPressed: () {
-                //final user = User(
-                //  firstname: firstNameController.text,
-                //  lastname: lastNameController.text,
-                //);
-                getUser();
-                //addUsername(user);
-              },
-            ),*/
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      UserManagement().signOut();
-                    },
-                    child: const Text("sign out"))
-              ],
-            ),
-          ],
+              ProfileList(
+                text: "Log Out",
+                icon: Icons.logout_outlined,
+                press: () => UserManagement().signOut(),
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  Future getUser() async {
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    Map<String, dynamic>? docData = userDoc.data() as Map<String, dynamic>?;
-    var userName = docData!['lastname'];
-    debugPrint(userName);
   }
 }

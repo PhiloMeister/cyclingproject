@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
+import '../theme/constants.dart';
 import '../utils/helper_widgets.dart';
 import '../utils/snackbar.dart';
 import '../BusinessObject/UserModel.dart';
@@ -45,107 +46,128 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             key: formKey,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              addVerticalSpace(150),
+              addVerticalSpace(100),
               Image.asset("assets/images/logo-bikevs-cropped.png", height: 100),
               addVerticalSpace(75),
               TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: firstNameController,
-                cursorColor: Colors.white,
-                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  labelStyle: const TextStyle(color: Colors.white),
-                  contentPadding: const EdgeInsets.all(25.0),
+                  labelStyle: const TextStyle(color: kTextColor),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   labelText: "Firstname",
-                  filled: true,
-                  fillColor: const Color(0XFF1f1f1f),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                  ),
+                  hintText: "Enter your firstname",
+                  hintStyle: const TextStyle(color: kTextColor),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
                   ),
                 ),
-              ),
-              addVerticalSpace(20),
-              TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: lastNameController,
-                cursorColor: Colors.white,
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
+                cursorColor: kTextColor,
+                controller: firstNameController,
                 textInputAction: TextInputAction.next,
+              ),
+              addVerticalSpace(30),
+              TextFormField(
                 decoration: InputDecoration(
-                  labelStyle: const TextStyle(color: Colors.white),
-                  contentPadding: const EdgeInsets.all(25.0),
+                  labelStyle: const TextStyle(color: kTextColor),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   labelText: "Lastname",
-                  filled: true,
-                  fillColor: const Color(0XFF1f1f1f),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                  ),
+                  hintText: "Enter your lastname",
+                  hintStyle: const TextStyle(color: kTextColor),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
                   ),
                 ),
-              ),
-              addVerticalSpace(20),
-              TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: emailController,
-                cursorColor: Colors.white,
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
+                cursorColor: kTextColor,
+                controller: lastNameController,
                 textInputAction: TextInputAction.next,
+              ),
+              addVerticalSpace(30),
+              TextFormField(
                 decoration: InputDecoration(
-                  labelStyle: const TextStyle(color: Colors.white),
-                  contentPadding: const EdgeInsets.all(25.0),
+                  labelStyle: const TextStyle(color: kTextColor),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   labelText: "Email",
-                  filled: true,
-                  fillColor: const Color(0XFF1f1f1f),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                  ),
+                  hintText: "Enter your email",
+                  hintStyle: const TextStyle(color: kTextColor),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
                   ),
                 ),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
+                cursorColor: kTextColor,
+                controller: emailController,
+                textInputAction: TextInputAction.next,
                 //autovalidateMode: AutovalidateMode.onUserInteraction,
                 //validator: (email) =>
                 //    email != null && !EmailValidator.validate(email)
                 //        ? 'Enter a valid email'
                 //        : null,
               ),
-              addVerticalSpace(20),
+              addVerticalSpace(30),
               TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: passwordController,
-                textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
-                  labelStyle: const TextStyle(color: Colors.white),
-                  contentPadding: const EdgeInsets.all(25.0),
+                  labelStyle: const TextStyle(color: kTextColor),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   labelText: "Password",
-                  filled: true,
-                  fillColor: const Color(0XFF1f1f1f),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                  ),
+                  hintText: "Enter your password",
+                  hintStyle: const TextStyle(color: kTextColor),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: const BorderSide(color: kTextColor),
+                    gapPadding: 10,
                   ),
                 ),
+                style: const TextStyle(
+                  color: kTextColor,
+                  fontSize: 14,
+                ),
+                cursorColor: kTextColor,
+                controller: passwordController,
+                textInputAction: TextInputAction.done,
                 obscureText: true,
                 //autovalidateMode: AutovalidateMode.onUserInteraction,
                 //validator: (value) => value != null && value.length < 6
@@ -153,7 +175,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 //    : null,
               ),
               addVerticalSpace(40),
-          /*    Center(
+              /*    Center(
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -176,22 +198,25 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               )),*/
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0XFFB61818),
-                    minimumSize: const Size.fromHeight(70),
+                    backgroundColor: kPrimaryColor,
+                    minimumSize: const Size.fromHeight(50),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0))),
-                icon: Icon(
-                    color: Colors.grey[200]!, Icons.app_registration, size: 24),
-                label: Text(
+                        borderRadius: BorderRadius.circular(5.0))),
+                icon: const Icon(
+                    color: kPrimaryLightColor, Icons.login, size: 24),
+                label: const Text(
                   'Sign up',
-                  style: TextStyle(color: Colors.grey[200]!, fontSize: 24),
+                  style: TextStyle(color: kPrimaryLightColor, fontSize: 18),
                 ),
                 onPressed: signUp,
               ),
               addVerticalSpace(20),
               RichText(
                 text: TextSpan(
-                    style: TextStyle(color: Colors.grey[600]!),
+                    style: TextStyle(
+                      color: Colors.grey[600]!,
+                      fontSize: 12,
+                    ),
                     text: "Already have an account?  ",
                     children: [
                       TextSpan(
@@ -199,6 +224,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                             ..onTap = widget.onClickedSignIn,
                           text: "Sign In",
                           style: const TextStyle(
+                            fontSize: 12,
                             decoration: TextDecoration.underline,
                             color: Color(0XFFB61818),
                           ))
@@ -231,7 +257,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
       addUsername(user);
     } on FirebaseAuthException catch (e) {
-      Utils.showSnackBar(e.message);
+      Utils.showSnackBar(e.message, true);
     }
 
     navigatorKey.currentState!.popUntil((route) => route.isFirst);
@@ -244,7 +270,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
     await docUser.set(user.toJson());
 
-    Utils.showSnackBar("save");
+    Utils.showSnackBar("save", false);
   }
 }
 
