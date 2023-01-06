@@ -36,10 +36,10 @@ class _AllRoutesState extends State<AllRoutes> {
           borderRadius: BorderRadius.circular(4),
         ),
         tileColor: kPrimaryColor.withOpacity(0.1),
-        /*onTap: () {
+        onTap: () {
           displayRouteOnMap(routes, context);
           //print("Pressed on LIKE");
-        },*/
+        },
         trailing: IconButton(
           icon: routes.routeLiked!
               ? const Icon(Icons.favorite)
@@ -178,20 +178,21 @@ class _AllRoutesState extends State<AllRoutes> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             // return  buildRoute(listOfLikedRoutes[index]);
-                            return Slidable(
-                                startActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                        backgroundColor: Colors.green,
-                                        icon: Icons.map_sharp,
-                                        label: "Show route",
-                                        onPressed: (context) =>
-                                            displayRouteOnMap(
-                                                snapshot.data![index], context))
-                                  ],
-                                ),
-                                child: buildRoutes(snapshot.data![index]));
+                            return buildRoutes(snapshot.data![index]);
+                            /*return Slidable(
+                              startActionPane: ActionPane(
+                                motion: const StretchMotion(),
+                                children: [
+                                  SlidableAction(
+                                      backgroundColor: Colors.green,
+                                      icon: Icons.map_sharp,
+                                      label: "Show route",
+                                      onPressed: (context) => displayRouteOnMap(
+                                          snapshot.data![index], context))
+                                ],
+                              ),
+                              child: buildRoutes(snapshot.data![index]),
+                            );*/
                           },
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
