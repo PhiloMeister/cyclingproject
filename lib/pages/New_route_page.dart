@@ -2,6 +2,7 @@ import 'package:cyclingproject/BusinessObject/Routes.dart';
 import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart'; // Suitable for most situations
 import 'package:flutter_map/plugin_api.dart'; // Only import if required functionality is not exposed by default
@@ -45,10 +46,20 @@ class NewRoute extends StatefulWidget {
 
 class _NewRouteState extends State<NewRoute> {
   final bool canEdit;
-  var points = <LatLng>[];
+
+  // Normal markers
   var markers = <Marker>[];
+  var points = <LatLng>[];
   var pointsListLat = <double>[];
   var pointsListLng = <double>[];
+
+  // Danger Markers
+  var dangerMarkers = <Marker>[];
+  var dangerPoints = <LatLng>[];
+  var dangerpointsListLat = <double>[];
+  var dangerpointsListLng = <double>[];
+  var isDanger = false;
+
   var data;
 
   // Dummy Start and Destination Points
@@ -101,6 +112,7 @@ class _NewRouteState extends State<NewRoute> {
                   urlTemplate: maps[currentMap],
                 ),
                 MarkerLayer(markers: markers),
+                MarkerLayer(markers: dangerMarkers),
                 PolylineLayer(
                   polylines: [
                     Polyline(
@@ -183,22 +195,6 @@ class _NewRouteState extends State<NewRoute> {
                 ],
               ),
             ),
-            /*ColoredBox(
-              color: const Color.fromARGB(255, 217, 217, 217),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(children: [
-                  Text(
-                      "Distance: ${(distanceTotal / 1000).toStringAsFixed(3)} km",
-                      style: const TextStyle(fontSize: 20)),
-                  const SizedBox(width: 10),
-                  Text(
-                      "Duration: ${(durationTotal / 60).toStringAsFixed(2)} min",
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(fontSize: 20)),
-                ]),
-              ),
-            ),*/
           ],
         ],
       ),
@@ -210,6 +206,13 @@ class _NewRouteState extends State<NewRoute> {
         spaceBetweenChildren: 12,
         closeManually: false,
         children: [
+          SpeedDialChild(
+            child: const Icon(
+              CupertinoIcons.exclamationmark_octagon_fill,
+            ),
+            label: "Danger",
+            onTap: () => {toggleDanger()},
+          ),
           canEdit
               ? SpeedDialChild(
                   child: const Icon(Icons.arrow_back),
@@ -237,6 +240,15 @@ class _NewRouteState extends State<NewRoute> {
         ],
       ),
     );
+  }
+
+// Switch isDanger boolean
+  void toggleDanger() {
+    if (!isDanger) {
+      isDanger = true;
+    } else {
+      isDanger = false;
+    }
   }
 
   // Switch between satellite and default map
@@ -305,6 +317,8 @@ class _NewRouteState extends State<NewRoute> {
     myRoute.routeDuration = durationTotal.toDouble();
     myRoute.pointsLat = pointsListLat;
     myRoute.pointsLng = pointsListLng;
+    myRoute.dangerPointsLat = dangerpointsListLat;
+    myRoute.dangerPointsLng = dangerpointsListLng;
     myRoute.routeDifficulty = distanceTotal > 10000
         ? "Hard"
         : distanceTotal > 5000
@@ -346,40 +360,76 @@ class _NewRouteState extends State<NewRoute> {
     return marker;
   }
 
+  // Add a danger marker meaning avoiding a zone
+  Marker addDangerMarker(LatLng point) {
+    Marker marker = Marker(
+      point: point,
+      builder: (context) => const Icon(
+        CupertinoIcons.exclamationmark_octagon_fill,
+        color: Colors.yellowAccent,
+        size: 25,
+      ),
+    );
+    return marker;
+  }
+
   // Add a point on the map
   void addPoint(LatLng point) {
-    // Add the points to list for database
-    pointsListLat.add(point.latitude);
-    pointsListLng.add(point.longitude);
+    if (!isDanger) {
+      // Add the points to list for database
+      pointsListLat.add(point.latitude);
+      pointsListLng.add(point.longitude);
 
-    if (points.isEmpty) {
-      Marker marker = addMarker(point);
-      markers.add(marker);
-      points.add(point);
-    } else {
-      if (markers.length >= 2) {
-        markers.removeLast();
+      if (points.isEmpty) {
+        Marker marker = addMarker(point);
+        markers.add(marker);
+        points.add(point);
+      } else {
+        if (markers.length >= 2) {
+          markers.removeLast();
+        }
+        endLat = point.latitude;
+        endLng = point.longitude;
+        startLat = points[points.length - 1].latitude;
+        startLng = points[points.length - 1].longitude;
+
+        // Get the lines from the API
+        getCoordinate();
+
+        // Place marker on the map
+        Marker marker = addMarker(point);
+        markers.add(marker);
       }
-      endLat = point.latitude;
-      endLng = point.longitude;
-      startLat = points[points.length - 1].latitude;
-      startLng = points[points.length - 1].longitude;
-
-      // Get the lines from the API
-      getCoordinate();
+    } else {
+      // Add the points to list for database
+      dangerpointsListLat.add(point.latitude);
+      dangerpointsListLng.add(point.longitude);
 
       // Place marker on the map
-      Marker marker = addMarker(point);
-      markers.add(marker);
+      Marker marker = addDangerMarker(point);
+      dangerMarkers.add(marker);
+
+      // Set isDanger to false
+      isDanger = false;
+
+      // Refresh screen
+      setState(() {});
     }
   }
 
   // Delete markers and points displayed
   void removePoint() {
     points.removeRange(0, points.length);
+    dangerPoints.removeRange(0, dangerPoints.length);
+
     markers.removeRange(0, markers.length);
+    dangerMarkers.removeRange(0, dangerMarkers.length);
+
     pointsListLat.removeRange(0, pointsListLat.length);
     pointsListLng.removeRange(0, pointsListLng.length);
+    dangerpointsListLat.removeRange(0, dangerpointsListLat.length);
+    dangerpointsListLng.removeRange(0, dangerpointsListLng.length);
+
     distanceTotal = 0.0;
     durationTotal = 0.0;
 
