@@ -25,7 +25,9 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
   List<Routes> listOfFilteredRoutes = <Routes>[];
   var lengthSwitch = "null";
   var durationSwitch = "null";
-  var likedSwitch = "null";
+  bool filterStatus = true;
+  var filterStatusString = "no filters";
+
 
   @override
   initState() {
@@ -60,6 +62,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
       );
 
   List<Routes> items = [];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -77,6 +80,14 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Title(text: "All my routes"),
+                  Text(filterStatusString),
+                  Icon(
+                    (filterStatus
+                        ? Icons.arrow_drop_up_outlined
+                        :Icons.arrow_drop_down_outlined),
+                    color: Colors.black,
+                    size: 40,
+                  ),
                   PopUpMenu(),
                 ],
               ),
@@ -92,6 +103,12 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                         .snapshots()
                         .asyncMap(
                       (snapshot) async {
+
+                        var listOfIds = await getLikedIdsOfUser();
+                        for (var element in listOfIds) {
+                          print("initVariables list of id $element");
+                        }
+
                         //test
                         // Perform asynchronous data manipulation here
                         List<Routes> routes = snapshot.docs.map((document) {
@@ -101,7 +118,6 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                           return Routes.fromJson(e);
                         }).toList();
                         routes = await addLikedOrNotToListOfRoutes(routes);
-// TODO extract all thoses switch's into a method
                         if (checkTextField.isEmpty) {
                         } else {
                           routes = routes
@@ -141,6 +157,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                             print("DEFAULT");
                             break;
                         }
+
                         return routes;
                       },
                     ),
@@ -246,12 +263,16 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
           onTap: () {
             if (lengthSwitch == "null" || lengthSwitch == "DESC") {
               lengthSwitch = "ASC";
+              filterStatus = true;
+              filterStatusString = "by length";
             } else {
               lengthSwitch = "DESC";
+              filterStatus = false;
+              filterStatusString = "by Length";
             }
             //reset the others
             durationSwitch = "null";
-            likedSwitch = "null";
+
             setState(() {});
           },
           child: const ListTile(
@@ -269,12 +290,16 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
           onTap: () {
             if (durationSwitch == "null" || durationSwitch == "DESC") {
               durationSwitch = "ASC";
+              filterStatus = true;
+              filterStatusString = "by duration";
             } else {
               durationSwitch = "DESC";
+              filterStatus = false;
+              filterStatusString = "by duration";
             }
             //reset the others
             lengthSwitch = "null";
-            likedSwitch = "null";
+
             setState(() {});
           },
           child: const ListTile(
@@ -541,6 +566,11 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
     return listOfFilteredRoutes;
   }
 
+  List<Routes> filterByLikedRoutes(List<Routes> listOfFilteredRoutes) {
+
+    return listOfFilteredRoutes;
+  }
+}
   List<Routes> filterByDurationDESV2(List<Routes> listOfFilteredRoutes) {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
@@ -552,7 +582,7 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
     }
     return listOfFilteredRoutes;
   }
-}
+
 
 class Title extends StatelessWidget {
   const Title({

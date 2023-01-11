@@ -25,6 +25,8 @@ Future<List<Routes>> getAllRoutes() async {
   return listOfRoutes;
 }
 
+
+
 // Add a route to the database
 Future<void> addRoute(Routes route) async {
   await FirebaseFirestore.instance.collection("Routes").add(route.toJson());

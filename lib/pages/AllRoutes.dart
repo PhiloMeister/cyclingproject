@@ -25,6 +25,8 @@ class _AllRoutesState extends State<AllRoutes> {
   var lengthSwitch = "null";
   var durationSwitch = "null";
   var likedSwitch = "null";
+  bool filterStatus = true;
+  var filterStatusString = "no filters";
 
   @override
   initState() {
@@ -74,6 +76,7 @@ class _AllRoutesState extends State<AllRoutes> {
       );
 
   List<Routes> items = [];
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -93,6 +96,14 @@ class _AllRoutesState extends State<AllRoutes> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Title(text: "All routes"),
+                  Text(filterStatusString),
+                  Icon(
+                    (filterStatus
+                        ? Icons.arrow_drop_up_outlined
+                        : Icons.arrow_drop_down_outlined),
+                    color: Colors.black,
+                    size: 40,
+                  ),
                   PopUpMenu(),
                 ],
               ),
@@ -250,8 +261,12 @@ class _AllRoutesState extends State<AllRoutes> {
           onTap: () {
             if (lengthSwitch == "null" || lengthSwitch == "DESC") {
               lengthSwitch = "ASC";
+              filterStatus = true;
+              filterStatusString = "by length";
             } else {
               lengthSwitch = "DESC";
+              filterStatus = false;
+              filterStatusString = "by length";
             }
             //reset the others
             durationSwitch = "null";
@@ -273,8 +288,12 @@ class _AllRoutesState extends State<AllRoutes> {
           onTap: () {
             if (durationSwitch == "null" || durationSwitch == "DESC") {
               durationSwitch = "ASC";
+              filterStatus = true;
+              filterStatusString = "by duration";
             } else {
               durationSwitch = "DESC";
+              filterStatus = false;
+              filterStatusString = "by duration";
             }
             //reset the others
             lengthSwitch = "null";
@@ -296,8 +315,11 @@ class _AllRoutesState extends State<AllRoutes> {
           onTap: () {
             if (likedSwitch == "null") {
               likedSwitch = "YES";
+              filterStatus = false;
+              filterStatusString = "by liked";
             } else {
               likedSwitch = "null";
+              filterStatusString = "by liked";
             }
             //reset the others
             lengthSwitch = "null";
@@ -503,14 +525,15 @@ class _AllRoutesState extends State<AllRoutes> {
   }
 
   List<Routes> filterByLikedV2(List<Routes> listOfFilteredRoutes) {
+    List<Routes> listOfFilteredRoutesLikedonly  = <Routes>[];
     if (listOfFilteredRoutes.isNotEmpty) {
-      listOfFilteredRoutes.sort((a, b) =>
-          b.routeLiked!.toString().compareTo(a.routeLiked!.toString()));
-      for (var element in listOfFilteredRoutes) {
-        print("Element : ${element.routeDuration}");
-      }
+      listOfFilteredRoutes.forEach((element) {
+        if (element.routeLiked == true) {
+          listOfFilteredRoutesLikedonly.add(element);
+        }
+      });
     }
-    return listOfFilteredRoutes;
+    return listOfFilteredRoutesLikedonly;
   }
 }
 
