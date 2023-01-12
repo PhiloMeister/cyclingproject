@@ -304,7 +304,7 @@ class _AllRoutesState extends State<AllRoutes> {
               filterStatusString = "by liked";
             } else {
               likedSwitch = "null";
-              filterStatusString = "by liked";
+              filterStatusString = "no filters";
             }
             //reset the others
             lengthSwitch = "null";
