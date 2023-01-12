@@ -333,9 +333,10 @@ class _NewRouteState extends State<NewRoute> {
     await getIdOfRouteByName(myRoute.routeName.toString())
         .then((value) => setState(() {
               testOnName = value;
-            }));
 
-    if (testOnName == null) {
+            }));
+    print("TESTNAME IS :"+testOnName);
+    if (testOnName == null || testOnName == "") {
       // Add the route to the database
       addRoute(routes);
 

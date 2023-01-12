@@ -112,12 +112,12 @@ class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
                         /*for (var element in listOfIds) {
                           print("initVariables list of id $element");
                         }*/
-
                         List<Routes> routes = snapshot.docs.map((document) {
                           //print("get data");
                           Map<String, dynamic> e = document.data();
                           return Routes.fromJson(e);
                         }).toList();
+                        routes = await getCreatedRoutesOfUserList();
                         routes = await addLikedOrNotToListOfRoutes(routes);
                         if (checkTextField.isEmpty) {
                         } else {
