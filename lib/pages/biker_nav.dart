@@ -1,9 +1,8 @@
-import 'package:cyclingproject/pages/AllRoutes.dart';
+import 'package:cyclingproject/pages/all_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'New_route_page.dart';
-import 'Profile.dart';
+import 'profile.dart';
 
 class NavigationBiker extends StatelessWidget {
   const NavigationBiker({super.key});

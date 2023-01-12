@@ -1,7 +1,6 @@
-import 'package:cyclingproject/services/UserManagement.dart';
+import 'package:cyclingproject/services/user_management.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'utils/snackbar.dart';
 import 'firebase_options.dart';
@@ -33,38 +32,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: UserManagement().handleAuth(context),
-      //home: const RootPage(),
     );
   }
 }
-
-/*
-class RootPage extends StatefulWidget {
-  const RootPage({super.key});
-
-  @override
-  State<RootPage> createState() => _RootPageState();
-}
-
-class _RootPageState extends State<RootPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return const Center(child: Text("Error"));
-          } else if (snapshot.hasData) {
-            return const HomePage();
-          } else {
-            return const AuthPage();
-          }
-        },
-      ),
-      backgroundColor: Colors.grey.shade700,
-    );
-  }
-}*/

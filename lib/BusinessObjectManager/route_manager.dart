@@ -1,12 +1,8 @@
 import 'dart:core';
-import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/BusinessObject/Marker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cyclingproject/BusinessObject/Routes.dart';
-import 'package:flutter/services.dart';
+import 'package:cyclingproject/BusinessObject/routes.dart';
 
 import '../utils/snackbar.dart';
 
@@ -14,18 +10,17 @@ import '../utils/snackbar.dart';
 Future<List<Routes>> getAllRoutes() async {
   List<Routes> listOfRoutes = <Routes>[];
 
-  await FirebaseFirestore.instance
-      .collection("Routes")
-      .get()
-      .then((values) => values.docs.forEach((element) {
+  await FirebaseFirestore.instance.collection("Routes").get().then(
+        (values) => values.docs.forEach(
+          (element) {
             listOfRoutes.add(Routes.fromJson(element.data()));
-            Routes routes = Routes.fromJson(element.data());
-            print("route id${element.reference.id}");
-          }));
+            //Routes routes = Routes.fromJson(element.data());
+            //print("route id${element.reference.id}");
+          },
+        ),
+      );
   return listOfRoutes;
 }
-
-
 
 // Add a route to the database
 Future<void> addRoute(Routes route) async {
@@ -54,17 +49,23 @@ Future<List<String>> getLikedIdsOfUser() async {
       .get()
       .then(
         (res) => {
-          res.docs.forEach((element) {
-            String toAdd = element.id;
-            listIds.add(toAdd);
-          })
+          res.docs.forEach(
+            (element) {
+              String toAdd = element.id;
+              listIds.add(toAdd);
+            },
+          )
         },
         onError: (e) => print("Error completing: $e"),
       );
+
+  /*
   for (var value in listIds) {
     print("getLikedIdsOfUser() list id : $value");
   }
-  List<Routes> routes = <Routes>[];
+  */
+
+  //List<Routes> routes = <Routes>[];
 
   return listIds;
 }
@@ -98,7 +99,7 @@ Future<void> addToLikedRoutes(Routes routeInput) async {
   Map<String, dynamic> e = <String, dynamic>{};
   var idOfgodamnRoute =
       await getIdOfRouteByName(routeInput.routeName.toString());
-  print("addToLikedRoute id  : " + idOfgodamnRoute);
+  //print("addToLikedRoute id  : " + idOfgodamnRoute);
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -108,10 +109,10 @@ Future<void> addToLikedRoutes(Routes routeInput) async {
 }
 
 Future<void> removeToLikedRoutes(Routes routeInput) async {
-  Map<String, dynamic> e = <String, dynamic>{};
+  //Map<String, dynamic> e = <String, dynamic>{};
   var idOfgodamnRoute =
       await getIdOfRouteByName(routeInput.routeName.toString());
-  print("addToLikedRoute id  : " + idOfgodamnRoute);
+  //print("addToLikedRoute id  : " + idOfgodamnRoute);
   await FirebaseFirestore.instance
       .collection("Users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -121,7 +122,7 @@ Future<void> removeToLikedRoutes(Routes routeInput) async {
 }
 
 Future<String> getIdOfRouteByName(String nameInput) async {
-  var nameFound;
+  String nameFound = "";
   await FirebaseFirestore.instance
       .collection("Routes")
       .where("name", isEqualTo: nameInput)
@@ -130,7 +131,7 @@ Future<String> getIdOfRouteByName(String nameInput) async {
     try {
       nameFound = value.docs.first.reference.id;
     } catch (e) {
-      nameFound = null;
+      nameFound = "";
     }
   });
   return nameFound;
@@ -156,15 +157,16 @@ Future<List<Routes>> getCreatedRoutesOfUserList() async {
                 elements.docs.forEach(
                   (element) {
                     listOfRoutes.add(Routes.fromJson(element.data()));
-                    print("USER ROUTE : ${element.data()['name']}");
+                    //print("USER ROUTE : ${element.data()['name']}");
                   },
                 )
               },
           onError: (e) => print("Error completing: $e"));
 
-  if (listOfRoutes == null) {
+  /*if (listOfRoutes == null) {
     print("List of created routes is NULL");
-  }
+  }*/
+
   return listOfRoutes;
 }
 
@@ -186,11 +188,8 @@ Future<void> deleteCreatedRouteOfUser(Routes routes) async {
 Future<void> editRoute(Routes routes, String newName) async {
   var idOfRoute = await getIdOfRouteByName(routes.routeName.toString());
   //Edit from Routes collection
-  await FirebaseFirestore.instance
-      .collection("Routes")
-      .doc(idOfRoute)
-      .update({"name": newName})
-      .then(Utils.showSnackBar("You change the name", false));
+  await FirebaseFirestore.instance.collection("Routes").doc(idOfRoute).update(
+      {"name": newName}).then(Utils.showSnackBar("You change the name", false));
 }
 
 // Deprecated but dont delete
@@ -231,11 +230,13 @@ Future<Routes> addLikedOrNotToListOfRoutesButForOneRoute(Routes route) async {
   var listOfIds = await getLikedIdsOfUser();
   listOfLikedRoutes = await getListOfLikedRoutes(listOfIds);
   //get list of all routes
-  listOfLikedRoutes.forEach((routeLiked) {
-    if (routeLiked.routeName == route.routeName) {
-      route.routeLiked = true;
-    }
-  });
+  listOfLikedRoutes.forEach(
+    (routeLiked) {
+      if (routeLiked.routeName == route.routeName) {
+        route.routeLiked = true;
+      }
+    },
+  );
 
   return route;
 }

@@ -1,13 +1,10 @@
 import 'dart:async';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/admin/AdminNav.dart';
-import 'package:cyclingproject/pages/NavigationBiker.dart';
-import 'package:cyclingproject/services/UserManagement.dart';
+import 'package:cyclingproject/services/user_management.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../theme/constants.dart';
 import '../utils/snackbar.dart';
 
 class VerifyEmailPage extends StatefulWidget {
@@ -77,29 +74,48 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
       ? UserManagement().authorizeAccess()
       : Scaffold(
           appBar: AppBar(
-            title: const Text('Verify Email'),
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new_sharp,
+                color: kTextColor,
+                size: 15,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            title: const Text(
+              "Verify Email",
+              style: TextStyle(color: kTextColor),
+            ),
+            centerTitle: true,
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'A verification email has been sent!',
-                  style: TextStyle(fontSize: 20),
+                  'A verification email has been sent! Please check your Emails!',
+                  style: TextStyle(
+                    color: kTitleColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 addVerticalSpace(24),
                 ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: kPrimaryColor,
                       minimumSize: const Size.fromHeight(50),
-                    ),
-                    onPressed: canResendEmail ? sendVerificationEmail : null,
-                    icon: const Icon(Icons.email, size: 32),
-                    label: const Text(
-                      'Resent Email',
-                      style: TextStyle(fontSize: 24),
-                    ))
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0))),
+                  icon: const Icon(
+                      color: kPrimaryLightColor, Icons.mail, size: 24),
+                  label: const Text(
+                    'Resent Email',
+                    style: TextStyle(color: kPrimaryLightColor, fontSize: 18),
+                  ),
+                  onPressed: canResendEmail ? sendVerificationEmail : null,
+                ),
               ],
             ),
           ),

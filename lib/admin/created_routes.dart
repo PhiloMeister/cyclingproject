@@ -1,30 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/services/UserManagement.dart';
+import 'package:cyclingproject/services/user_management.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../BusinessObject/Routes.dart';
-import '../BusinessObjectManager/RouteManager.dart';
+import '../BusinessObject/routes.dart';
+import '../BusinessObjectManager/route_manager.dart';
 import '../theme/constants.dart';
-import 'MapPage.dart';
+import '../pages/map.dart';
 
 enum Menu { itemOne, itemTwo, itemThree, itemFour }
 
-class AllRoutes extends StatefulWidget {
-  const AllRoutes({super.key});
+class MyCreatedRoutes extends StatefulWidget {
+  const MyCreatedRoutes({super.key});
 
   @override
-  State<AllRoutes> createState() => _AllRoutesState();
+  State<MyCreatedRoutes> createState() => _MyCreatedRoutesState();
 }
 
-class _AllRoutesState extends State<AllRoutes> {
+class _MyCreatedRoutesState extends State<MyCreatedRoutes> {
   var checkTextField = "";
+  var newName = "";
   List<Routes> listOfAllRoutes = <Routes>[];
   List<Routes> listOfFilteredRoutes = <Routes>[];
   var lengthSwitch = "null";
   var durationSwitch = "null";
-  var likedSwitch = "null";
   bool filterStatus = true;
   var filterStatusString = "no filters";
 
@@ -42,21 +42,6 @@ class _AllRoutesState extends State<AllRoutes> {
           displayRouteOnMap(routes, context);
           //print("Pressed on LIKE");
         },
-        trailing: IconButton(
-          icon: routes.routeLiked!
-              ? const Icon(Icons.favorite)
-              : const Icon(Icons.favorite_border),
-          onPressed: () async {
-            if (routes.routeLiked == false) {
-              await addToLikedRoutes(routes);
-              setState(() {});
-            } else {
-              await removeToLikedRoutes(routes);
-              setState(() {});
-            }
-            print("Pressed on LIKE");
-          },
-        ),
         leading: CircleAvatar(
           backgroundColor: kPrimaryColor,
           child: Text(
@@ -86,25 +71,30 @@ class _AllRoutesState extends State<AllRoutes> {
         child: Column(
           children: [
             addVerticalSpace(20),
-            HomeHeader(size, context),
-            addVerticalSpace(30),
-            RouteOfTheDayBanner(),
+            homeHeader(size, context),
             addVerticalSpace(30),
             Padding(
               padding: const EdgeInsets.only(left: 25.0, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Title(text: "All routes"),
-                  Text(filterStatusString),
-                  Icon(
-                    (filterStatus
-                        ? Icons.arrow_drop_up_outlined
-                        : Icons.arrow_drop_down_outlined),
-                    color: Colors.black,
-                    size: 40,
+                  const Title(text: "My routes"),
+                  Row(
+                    children: [
+                      Text(
+                        filterStatusString,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      Icon(
+                        (filterStatus
+                            ? Icons.arrow_drop_up_outlined
+                            : Icons.arrow_drop_down_outlined),
+                        color: Colors.black,
+                        size: 30,
+                      ),
+                    ],
                   ),
-                  PopUpMenu(),
+                  popUpMenu(),
                 ],
               ),
             ),
@@ -119,16 +109,16 @@ class _AllRoutesState extends State<AllRoutes> {
                         .snapshots()
                         .asyncMap(
                       (snapshot) async {
-                        //test
-                        // Perform asynchronous data manipulation here
+                        /*for (var element in listOfIds) {
+                          print("initVariables list of id $element");
+                        }*/
+
                         List<Routes> routes = snapshot.docs.map((document) {
-                          print("get data");
-                          Map<String, dynamic> e =
-                              document.data() as Map<String, dynamic>;
+                          //print("get data");
+                          Map<String, dynamic> e = document.data();
                           return Routes.fromJson(e);
                         }).toList();
                         routes = await addLikedOrNotToListOfRoutes(routes);
-// TODO extract all thoses switch's into a method
                         if (checkTextField.isEmpty) {
                         } else {
                           routes = routes
@@ -137,46 +127,40 @@ class _AllRoutesState extends State<AllRoutes> {
                                   .toLowerCase()
                                   .contains(checkTextField.toLowerCase()))
                               .toList();
-                          routes.forEach((element) {
-                            print(element.routeName.toString());
-                          });
+                          /*routes.forEach(
+                            (element) {
+                              print(element.routeName.toString());
+                            },
+                          );*/
                         }
 
                         switch (lengthSwitch) {
                           case "ASC":
-                            print("ASC");
+                            //print("ASC");
                             routes = filterByLengthASCV2(routes);
                             break;
                           case "DESC":
-                            print("DESC");
+                            //print("DESC");
                             routes = filterByLengthDESV2(routes);
                             break;
                           default:
-                            print("DEFAULT");
+                            //print("DEFAULT");
                             break;
                         }
                         switch (durationSwitch) {
                           case "ASC":
-                            print("ASC");
+                            //print("ASC");
                             routes = filterByDurationASCV2(routes);
                             break;
                           case "DESC":
-                            print("DESC");
+                            //print("DESC");
                             routes = filterByDurationDESV2(routes);
                             break;
                           default:
-                            print("DEFAULT");
+                            //print("DEFAULT");
                             break;
                         }
-                        switch (likedSwitch) {
-                          case "YES":
-                            print("LIKED FILTER ON");
-                            routes = filterByLikedV2(routes);
-                            break;
-                          default:
-                            print("DEFAULT");
-                            break;
-                        }
+
                         return routes;
                       },
                     ),
@@ -189,21 +173,35 @@ class _AllRoutesState extends State<AllRoutes> {
                           itemCount: snapshot.data!.length,
                           itemBuilder: (BuildContext context, int index) {
                             // return  buildRoute(listOfLikedRoutes[index]);
-                            return buildRoutes(snapshot.data![index]);
-                            /*return Slidable(
-                              startActionPane: ActionPane(
-                                motion: const StretchMotion(),
-                                children: [
-                                  SlidableAction(
-                                      backgroundColor: Colors.green,
-                                      icon: Icons.map_sharp,
-                                      label: "Show route",
-                                      onPressed: (context) => displayRouteOnMap(
-                                          snapshot.data![index], context))
-                                ],
-                              ),
-                              child: buildRoutes(snapshot.data![index]),
-                            );*/
+                            return Slidable(
+                                startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      backgroundColor: Colors.orangeAccent,
+                                      foregroundColor: Colors.white,
+                                      icon: Icons.edit,
+                                      label: "Edit route",
+                                      onPressed: (context) => {
+                                        editRouteDialog(snapshot.data![index])
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                endActionPane: ActionPane(
+                                  motion: const BehindMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      backgroundColor: Colors.red,
+                                      icon: Icons.delete_sharp,
+                                      label: "Delete route",
+                                      onPressed: (context) =>
+                                          deleteCreatedRouteOfUser(
+                                              snapshot.data![index]),
+                                    ),
+                                  ],
+                                ),
+                                child: buildRoutes(snapshot.data![index]));
                           },
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
@@ -253,7 +251,7 @@ class _AllRoutesState extends State<AllRoutes> {
     );
   }
 
-  PopupMenuButton<Menu> PopUpMenu() {
+  PopupMenuButton<Menu> popUpMenu() {
     return PopupMenuButton<Menu>(
       icon: const Icon(Icons.filter_alt),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
@@ -266,11 +264,11 @@ class _AllRoutesState extends State<AllRoutes> {
             } else {
               lengthSwitch = "DESC";
               filterStatus = false;
-              filterStatusString = "by length";
+              filterStatusString = "by Length";
             }
             //reset the others
             durationSwitch = "null";
-            likedSwitch = "null";
+
             setState(() {});
           },
           child: const ListTile(
@@ -297,7 +295,7 @@ class _AllRoutesState extends State<AllRoutes> {
             }
             //reset the others
             lengthSwitch = "null";
-            likedSwitch = "null";
+
             setState(() {});
           },
           child: const ListTile(
@@ -311,61 +309,11 @@ class _AllRoutesState extends State<AllRoutes> {
             ),
           ),
         ),
-        PopupMenuItem<Menu>(
-          onTap: () {
-            if (likedSwitch == "null") {
-              likedSwitch = "YES";
-              filterStatus = false;
-              filterStatusString = "by liked";
-            } else {
-              likedSwitch = "null";
-              filterStatusString = "by liked";
-            }
-            //reset the others
-            lengthSwitch = "null";
-            durationSwitch = "null";
-            setState(() {});
-          },
-          child: const ListTile(
-            leading: Icon(Icons.favorite), // your icon
-            title: Text(
-              "Liked",
-              style: TextStyle(fontSize: 15, color: kTextColor),
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  Container RouteOfTheDayBanner() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-      width: double.infinity,
-      //height: 90,
-      decoration: BoxDecoration(
-        color: kPrimaryColor,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: const Text.rich(
-        TextSpan(
-            text: "Route of the day\n",
-            style: TextStyle(color: Colors.white),
-            children: [
-              TextSpan(
-                text: "Test",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w900,
-                ),
-              )
-            ]),
-      ),
-    );
-  }
-
-  Padding HomeHeader(Size size, BuildContext context) {
+  Padding homeHeader(Size size, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -440,6 +388,81 @@ class _AllRoutesState extends State<AllRoutes> {
         MaterialPageRoute(builder: (context) => Map_Page(myRoute: myRoute)));
   }
 
+  void editRouteDialog(Routes myRoute) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text(
+            "Enter a new name for the route",
+            style: TextStyle(fontSize: 13),
+          ),
+          content: TextField(
+            controller: TextEditingController(text: myRoute.routeName),
+            decoration: InputDecoration(
+              hintText: "Routename",
+              hintStyle: const TextStyle(color: kTextColor),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                borderSide: const BorderSide(color: kTextColor),
+              ),
+            ),
+            style: const TextStyle(
+              color: kTextColor,
+              fontSize: 13,
+            ),
+            onChanged: (routeName) {
+              setState(() {
+                newName = routeName;
+              });
+            },
+          ),
+          actions: [
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0))),
+                icon: const Icon(
+                    color: kPrimaryLightColor, Icons.save_sharp, size: 13),
+                label: const Text(
+                  'Save route',
+                  style: TextStyle(color: kPrimaryLightColor, fontSize: 13),
+                ),
+                onPressed: () {
+                  editRoute(myRoute, newName);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            // FloatingActionButton(
+            //   backgroundColor: Colors.red,
+            //   onPressed: () {
+            //     editRoute(myRoute, newName);
+            //     // ignore: use_build_context_synchronously
+            //     Navigator.pop(context);
+            //   },
+            //   child: const Icon(Icons.save),
+            // ),
+            /*InkWell(
+              onTap: () {
+                editRoute(myRoute, newName);
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                height: 46,
+                width: 46,
+                decoration: BoxDecoration(
+                  color: kPrimaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.save),
+              ),
+            ),*/
+          ],
+        ),
+      );
+
   Stream<List<Routes>> readRoutes() => FirebaseFirestore.instance
       .collection("Routes")
       .snapshots()
@@ -452,17 +475,21 @@ class _AllRoutesState extends State<AllRoutes> {
         listOfFilteredRoutes.clear();
       });
     } else {
-      setState(() {
-        listOfFilteredRoutes = listOfAllRoutes
-            .where((route) => route.routeName
-                .toString()
-                .toLowerCase()
-                .contains(value.toLowerCase()))
-            .toList();
-        listOfFilteredRoutes.forEach((element) {
-          print(element.routeName.toString());
-        });
-      });
+      setState(
+        () {
+          listOfFilteredRoutes = listOfAllRoutes
+              .where((route) => route.routeName
+                  .toString()
+                  .toLowerCase()
+                  .contains(value.toLowerCase()))
+              .toList();
+          /*listOfFilteredRoutes.forEach(
+            (element) {
+              print(element.routeName.toString());
+            },
+          );*/
+        },
+      );
     }
   }
 
@@ -470,9 +497,11 @@ class _AllRoutesState extends State<AllRoutes> {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => a.routeLenght!.compareTo(b.routeLenght!));
+      /*
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeLenght}");
       }
+      */
     }
     return listOfFilteredRoutes;
   }
@@ -481,9 +510,11 @@ class _AllRoutesState extends State<AllRoutes> {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => b.routeLenght!.compareTo(a.routeLenght!));
+      /*
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeLenght}");
       }
+      */
     }
     return listOfFilteredRoutes;
   }
@@ -504,37 +535,31 @@ class _AllRoutesState extends State<AllRoutes> {
     if (listOfFilteredRoutes.isNotEmpty) {
       listOfFilteredRoutes
           .sort((a, b) => a.routeDuration!.compareTo(b.routeDuration!));
-
+      /*
       for (var element in listOfFilteredRoutes) {
         print("Element : ${element.routeDuration}");
       }
+      */
     }
     return listOfFilteredRoutes;
   }
 
-  List<Routes> filterByDurationDESV2(List<Routes> listOfFilteredRoutes) {
-    if (listOfFilteredRoutes.isNotEmpty) {
-      listOfFilteredRoutes
-          .sort((a, b) => b.routeDuration!.compareTo(a.routeDuration!));
-
-      for (var element in listOfFilteredRoutes) {
-        print("Element : ${element.routeDuration}");
-      }
-    }
+  List<Routes> filterByLikedRoutes(List<Routes> listOfFilteredRoutes) {
     return listOfFilteredRoutes;
   }
+}
 
-  List<Routes> filterByLikedV2(List<Routes> listOfFilteredRoutes) {
-    List<Routes> listOfFilteredRoutesLikedonly  = <Routes>[];
-    if (listOfFilteredRoutes.isNotEmpty) {
-      listOfFilteredRoutes.forEach((element) {
-        if (element.routeLiked == true) {
-          listOfFilteredRoutesLikedonly.add(element);
-        }
-      });
+List<Routes> filterByDurationDESV2(List<Routes> listOfFilteredRoutes) {
+  if (listOfFilteredRoutes.isNotEmpty) {
+    listOfFilteredRoutes
+        .sort((a, b) => b.routeDuration!.compareTo(a.routeDuration!));
+    /*
+    for (var element in listOfFilteredRoutes) {
+      print("Element : ${element.routeDuration}");
     }
-    return listOfFilteredRoutesLikedonly;
+    */
   }
+  return listOfFilteredRoutes;
 }
 
 class Title extends StatelessWidget {

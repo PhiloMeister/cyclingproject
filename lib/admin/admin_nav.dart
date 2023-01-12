@@ -1,10 +1,10 @@
-import 'package:cyclingproject/pages/MyCreatedRoutes.dart';
+import 'package:cyclingproject/admin/created_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-import '../pages/New_route_page.dart';
-import '../pages/Profile.dart';
+import '../pages/new_route.dart';
+import '../pages/profile.dart';
 
 class AdminNav extends StatelessWidget {
   const AdminNav({super.key});

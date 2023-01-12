@@ -1,11 +1,9 @@
 import 'package:cyclingproject/theme/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
 
 import '../utils/helper_widgets.dart';
 import '../utils/snackbar.dart';
-import '../main.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -133,6 +131,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
       Utils.showSnackBar("reset password email send", false);
 
+      // ignore: use_build_context_synchronously
       Navigator.of(context).popUntil((route) => route.isFirst);
     } on FirebaseAuthException catch (e) {
       Utils.showSnackBar(e.message, true);

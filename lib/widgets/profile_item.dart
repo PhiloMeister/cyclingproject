@@ -1,4 +1,3 @@
-import 'package:cyclingproject/widgets/my_account.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/constants.dart';

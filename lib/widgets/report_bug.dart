@@ -1,14 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/services/UserManagement.dart';
 import 'package:cyclingproject/utils/snackbar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 import '../theme/constants.dart';
@@ -51,6 +46,7 @@ class _ReportBugState extends State<ReportBug> {
     var dataDeviceInfos = jsonDecode(deviceInfos);
 
     final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    // ignore: unused_local_variable
     final response = await http.post(
       url,
       headers: {
@@ -128,7 +124,7 @@ class _ReportBugState extends State<ReportBug> {
                       if (snapshot.hasData && snapshot.data != null) {
                         final user = snapshot.data.data();
                         _mailController.text = user['email'];
-                        _roleController.text = user['creator'];
+                        _roleController.text = user['role'];
                         return Column(
                           children: [
                             TextFormField(

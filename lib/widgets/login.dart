@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../utils/snackbar.dart';
 
 import '../main.dart';
-import '../pages/ForgotPasswordPage.dart';
+import '../pages/forgot_password.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({super.key, required this.onClickedSignUp});

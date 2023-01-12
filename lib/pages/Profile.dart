@@ -1,13 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/pages/AppSettings.dart';
-import 'package:cyclingproject/services/UserManagement.dart';
+import 'package:cyclingproject/pages/app_settings.dart';
+import 'package:cyclingproject/services/user_management.dart';
 import 'package:cyclingproject/widgets/my_account.dart';
 import 'package:cyclingproject/widgets/report_bug.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../globals.dart' as globals;
 
-import '../main.dart';
 import '../theme/constants.dart';
 import '../widgets/profile_item.dart';
 import '../widgets/profile_picture.dart';
@@ -62,11 +58,6 @@ class _ProfileState extends State<Profile> {
                   );
                 },
               ),
-              /*ProfileMenu(
-                text: "Notifications",
-                icon: Icons.notifications,
-                press: () {},
-              ),*/
               ProfileList(
                 text: "Settings",
                 icon: Icons.settings,

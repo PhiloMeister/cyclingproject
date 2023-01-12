@@ -1,7 +1,7 @@
 import 'package:cyclingproject/widgets/login.dart';
 import 'package:flutter/material.dart';
 
-import 'signUp.dart';
+import 'sign_up.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});

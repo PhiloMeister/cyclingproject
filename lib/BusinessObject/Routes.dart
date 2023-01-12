@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Routes {
   String? routeCreator;
   String? routeDifficulty;
@@ -58,20 +56,5 @@ class Routes {
       dangerPointsLat: json['dangerPointsLat'],
       dangerPointsLng: json['dangerPointsLng'],
     );
-  }
-
-  //old do not use
-  static Routes fromDocSnap(DocumentSnapshot doc) {
-    return Routes(
-        routeName:
-            doc.data().toString().contains('name') ? doc.get('name') : "",
-        routeLenght:
-            doc.data().toString().contains('length') ? doc.get('length') : "",
-        routeDifficulty: doc.data().toString().contains('difficulty')
-            ? doc.get('difficulty')
-            : "",
-        routeCreator: doc.data().toString().contains('routeCreator')
-            ? doc.get('routeCreator')
-            : "");
   }
 }

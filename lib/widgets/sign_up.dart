@@ -1,15 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cyclingproject/globals.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../theme/constants.dart';
 import '../utils/helper_widgets.dart';
 import '../utils/snackbar.dart';
-import '../BusinessObject/UserModel.dart';
+import '../BusinessObject/user_model.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key, required this.onClickedSignIn});
@@ -252,7 +249,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         firstname: firstNameController.text,
         lastname: lastNameController.text,
         email: emailController.text,
-        creator: "biker",
+        role: "biker",
       );
 
       addUsername(user);
@@ -273,36 +270,3 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     Utils.showSnackBar("save", false);
   }
 }
-
-/*
-Future<String> isAdminOrUser(bool valueSwitch) async {
-  String roleGiven = "";
-
-  if(valueSwitch == true){
-    await FirebaseFirestore
-        .instance
-        .collection("Roles").where("nomRole",isEqualTo: "user")
-        .get()
-        .then((documents) =>
-        documents
-            .docs
-            .forEach((element) {
-          roleGiven = element.id;
-          print("roleGiven is : "+ roleGiven.toString());
-        }));
-    return roleGiven;
-  }else{
-    await FirebaseFirestore
-        .instance
-        .collection("Roles").where("nomRole",isEqualTo: "admin")
-        .get()
-        .then((documents) =>
-        documents
-            .docs
-            .forEach((element) {
-          roleGiven = element.id;
-          print("roleGiven is : "+ roleGiven.toString());
-        }));
-    return roleGiven;
-  }
-}*/

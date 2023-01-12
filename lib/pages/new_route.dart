@@ -1,5 +1,5 @@
-import 'package:cyclingproject/BusinessObject/Routes.dart';
-import 'package:cyclingproject/BusinessObjectManager/RouteManager.dart';
+import 'package:cyclingproject/BusinessObject/routes.dart';
+import 'package:cyclingproject/BusinessObjectManager/route_manager.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +41,7 @@ class NewRoute extends StatefulWidget {
   final bool canEdit;
 
   @override
+  // ignore: no_logic_in_create_state
   State<NewRoute> createState() => _NewRouteState(canEdit);
 }
 
@@ -283,10 +284,11 @@ class _NewRouteState extends State<NewRoute> {
               fontSize: 13,
             ),
             onChanged: (routeName) {
-              setState(() {
-                myRoute.routeName = routeName;
-                print("the name route2 $routeName");
-              });
+              setState(
+                () {
+                  myRoute.routeName = routeName;
+                },
+              );
             },
           ),
           actions: [
@@ -343,7 +345,6 @@ class _NewRouteState extends State<NewRoute> {
       removePoint();
     } else {
       Utils.showSnackBar("A route with this name already exists :(", true);
-      ;
     }
   }
 

@@ -1,16 +1,10 @@
-import 'package:cyclingproject/admin/AdminNav.dart';
-import 'package:cyclingproject/pages/VerifyEmailPage.dart';
-import 'package:cyclingproject/pages/NavigationBiker.dart';
+import 'package:cyclingproject/admin/admin_nav.dart';
+import 'package:cyclingproject/pages/verify_email.dart';
+import 'package:cyclingproject/pages/biker_nav.dart';
 import 'package:cyclingproject/widgets/auth.dart';
-import 'package:cyclingproject/widgets/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import '../globals.dart' as globals;
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:flutter/widgets.dart';
 
 import '../utils/snackbar.dart';
 
@@ -44,7 +38,7 @@ class UserManagement {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           final user = snapshot.data.data();
-          if (user['creator'] == 'admin') {
+          if (user['role'] == 'admin') {
             return const AdminNav();
           } else {
             return const NavigationBiker();
