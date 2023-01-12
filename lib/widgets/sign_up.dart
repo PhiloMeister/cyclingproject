@@ -266,7 +266,5 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         .doc(FirebaseAuth.instance.currentUser!.uid);
 
     await docUser.set(user.toJson());
-
-    Utils.showSnackBar("save", false);
   }
 }

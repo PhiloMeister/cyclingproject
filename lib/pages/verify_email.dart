@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:cyclingproject/services/user_management.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
+import 'package:cyclingproject/widgets/introduction_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/constants.dart';
 import '../utils/snackbar.dart';

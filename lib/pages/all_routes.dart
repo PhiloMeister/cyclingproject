@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyclingproject/main.dart';
 import 'package:cyclingproject/services/user_management.dart';
 import 'package:cyclingproject/utils/helper_widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../BusinessObject/routes.dart';
 import '../BusinessObjectManager/route_manager.dart';
 import '../theme/constants.dart';
+import '../utils/snackbar.dart';
 import 'map.dart';
 
 enum Menu { itemOne, itemTwo, itemThree, itemFour }

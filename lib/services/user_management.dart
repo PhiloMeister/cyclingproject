@@ -2,6 +2,7 @@ import 'package:cyclingproject/admin/admin_nav.dart';
 import 'package:cyclingproject/pages/verify_email.dart';
 import 'package:cyclingproject/pages/biker_nav.dart';
 import 'package:cyclingproject/widgets/auth.dart';
+import 'package:cyclingproject/widgets/introduction_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/snackbar.dart';
 
 class UserManagement {
-  Widget handleAuth(BuildContext context) {
+  Widget handleAuth(BuildContext context, bool? seen) {
+    print("ESTSTST: " + seen.toString());
+
     return Scaffold(
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
@@ -21,6 +24,9 @@ class UserManagement {
           } else if (snapshot.hasData) {
             return const VerifyEmailPage();
           } else {
+            if (seen == null || seen == true) {
+              return const IntroScreen();
+            }
             return const AuthPage();
           }
         },
