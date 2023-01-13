@@ -1,4 +1,5 @@
 import 'package:cyclingproject/admin/created_routes.dart';
+import 'package:cyclingproject/theme/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -52,23 +53,6 @@ class _RootPageState extends State<RootPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      //backgroundColor: Colors.grey.shade200,
-      /*appBar: AppBar(
-        backgroundColor: const Color(0XFFD9D9D9),
-        title: SizedBox(
-            width: 120,
-            child: Image.asset("assets/images/logo-bikevs-cropped.png")),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Profile()),
-                );
-              },
-              icon: const Icon(Icons.account_circle_rounded))
-        ],
-      ),*/
       body: _pages[currentPage],
       bottomNavigationBar: Container(
         color: const Color(0XFF1f1f1f),
@@ -78,7 +62,7 @@ class _RootPageState extends State<RootPage> {
               backgroundColor: const Color(0xFF1F1F1F),
               color: Colors.white,
               activeColor: const Color(0XFFB61818),
-              tabBackgroundColor: Colors.grey.shade200,
+              tabBackgroundColor: kPrimaryLightColor,
               tabBorderRadius: 4,
               gap: 8,
               onTabChange: (index) {

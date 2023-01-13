@@ -138,13 +138,7 @@ class _IntroScreenState extends State<IntroScreen> {
       ],
       dotsDecorator: const DotsDecorator(activeColor: kPrimaryColor),
       onDone: () => {onDone()},
-      onSkip: () => {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => UserManagement().authorizeAccess(),
-          ),
-        ),
-      },
+      onSkip: () => {onDone()},
       showNextButton: true,
       showDoneButton: true,
       showSkipButton: true,
